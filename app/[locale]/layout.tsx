@@ -4,6 +4,13 @@ import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import Navigation from './shared/components/Navigation/Navigation'
+
+// PrimeReact CSS
+import 'primereact/resources/themes/lara-light-blue/theme.css'
+import 'primereact/resources/primereact.min.css'
+import 'primeicons/primeicons.css'
+
+// Custom SCSS
 import './content/scss/main.scss'
 
 export const metadata: Metadata = {
