@@ -2,9 +2,9 @@
 
 import { Link, usePathname } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-import styles from './Navigation.module.scss'
+import styles from './header.module.scss'
 
-export default function Navigation() {
+export default function Header() {
   const pathname = usePathname()
   const t = useTranslations('navigation')
 

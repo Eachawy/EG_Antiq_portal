@@ -15,5 +15,8 @@
   "common": {
     "language": "Language",
     "switchLanguage": "Switch Language"
+  },
+  "footer": {
+    "copyright": "© 2023 Egyptian Antiquities Portal. All rights reserved."
   }
 }
