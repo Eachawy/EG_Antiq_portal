@@ -3,7 +3,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
-import Navigation from './shared/components/Navigation'
+import Navigation from './shared/components/Navigation/Navigation'
 import './content/scss/main.scss'
 
 export const metadata: Metadata = {
