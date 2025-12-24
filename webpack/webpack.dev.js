@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 
@@ -16,7 +17,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.DEBUG_INFO_ENABLED': options.env === 'development',
+      'process.env.NODE_ENV': `'development'`,
       'process.env.GATEWAY_SERVER_API_URL': JSON.stringify('http://localhost:3000/api'),
     })
   ]
