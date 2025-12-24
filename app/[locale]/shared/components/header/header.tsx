@@ -3,6 +3,7 @@
 import { Link, usePathname } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import styles from './header.module.scss'
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher'
 
 export default function Header() {
   const pathname = usePathname()
@@ -20,6 +21,7 @@ export default function Header() {
   return (
     <nav className={styles.nav}>
       <div className={styles.container}>
+        <LanguageSwitcher />
         <ul className={styles.navList}>
           {navItems.map((item) => (
             <li key={item.href}>

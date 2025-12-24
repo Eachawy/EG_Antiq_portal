@@ -54,9 +54,9 @@ export default function Footer() {
     return (
 
         <footer className="bg-theme-card border-t border-theme-border">
-            <div className={styles.nav}>
+            {/* <div className={styles.nav}>
                 {t('copyright')}
-            </div>
+            </div> */}
             {/* Main Footer Content */}
             <div className="container mx-auto px-6 py-12">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">

@@ -4,15 +4,18 @@ import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import Header from './shared/components/header/header'
+import Footer from './shared/components/footer/footer'
+import { ThemeProvider } from '@/config/ThemeContext'
 
 // PrimeReact CSS
 import 'primereact/resources/themes/lara-light-blue/theme.css'
 import 'primereact/resources/primereact.min.css'
 import 'primeicons/primeicons.css'
+import "tailwindcss/index.css";
 
 // Custom SCSS
 import './content/scss/main.scss'
-import Footer from './shared/components/footer/footer'
+
 
 export const metadata: Metadata = {
   title: 'Egyptian Antiquities Portal',
@@ -47,9 +50,11 @@ export default async function RootLayout({
     <html lang={locale} dir={dir}>
       <body suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
-          <Header />
-          {children}
-          <Footer/>
+          <ThemeProvider>
+            <Header />
+            {children}
+            <Footer />
+          </ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>
