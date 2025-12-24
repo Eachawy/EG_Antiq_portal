@@ -1,7 +1,10 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 
-// API base URL - can be configured via environment variable
+// API base URL from webpack environment variable
 const API_BASE_URL = process.env.GATEWAY_SERVER_API_URL
+
+// API token from webpack environment variable
+const API_TOKEN = process.env.GATEWAY_SERVER_API_TOKEN
 
 // Create axios instance
 const httpClient: AxiosInstance = axios.create({
@@ -107,10 +110,20 @@ httpClient.interceptors.response.use(
  * Get authentication token from storage
  */
 function getAuthToken(): string | null {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('auth_token')
+  // Use token from webpack environment variable
+  if (API_TOKEN) {
+    return API_TOKEN;
   }
-  return null
+
+  // Check localStorage if in browser (for runtime token updates)
+  if (typeof window !== 'undefined') {
+    const storedToken = localStorage.getItem('auth_token');
+    if (storedToken) {
+      return storedToken;
+    }
+  }
+
+  return null;
 }
 
 /**
