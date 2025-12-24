@@ -1,0 +1,19 @@
+{
+  "navigation": {
+    "home": "Home",
+    "sites": "Sites",
+    "map": "Map",
+    "tourGuides": "Tour Guides",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "homepage": {
+    "title": "Egyptian Antiquities Portal",
+    "subtitle": "Explore the Rich Heritage of Ancient Egypt",
+    "description": "Discover archaeological sites, monuments, and cultural treasures of Egypt"
+  },
+  "common": {
+    "language": "Language",
+    "switchLanguage": "Switch Language"
+  }
+}

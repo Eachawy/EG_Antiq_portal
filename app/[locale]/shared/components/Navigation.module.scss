@@ -41,6 +41,11 @@
   }
 }
 
+// RTL Support
+[dir='rtl'] .navList {
+  direction: rtl;
+}
+
 @media (max-width: 768px) {
   .navList {
     flex-direction: column;

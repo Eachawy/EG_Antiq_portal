@@ -1,5 +1,8 @@
 import type { NextConfig } from 'next'
 import type { Configuration } from 'webpack'
+import createNextIntlPlugin from 'next-intl/plugin'
+
+const withNextIntl = createNextIntlPlugin()
 
 const nextConfig: NextConfig = {
   webpack: (config: Configuration, { dev, isServer }) => {
@@ -47,4 +50,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+export default withNextIntl(nextConfig)

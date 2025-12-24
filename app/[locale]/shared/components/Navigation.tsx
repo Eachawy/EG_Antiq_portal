@@ -1,19 +1,20 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { Link, usePathname } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import styles from './Navigation.module.scss'
 
 export default function Navigation() {
   const pathname = usePathname()
+  const t = useTranslations('navigation')
 
   const navItems = [
-    { href: '/', label: 'Home' },
-    { href: '/sites', label: 'Sites' },
-    { href: '/map', label: 'Map' },
-    { href: '/tour-guides', label: 'Tour Guides' },
-    { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/', label: t('home') },
+    { href: '/sites', label: t('sites') },
+    { href: '/map', label: t('map') },
+    { href: '/tour-guides', label: t('tourGuides') },
+    { href: '/about', label: t('about') },
+    { href: '/contact', label: t('contact') },
   ]
 
   return (
