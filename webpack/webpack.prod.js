@@ -23,4 +23,10 @@ module.exports = merge(common, {
     maxEntrypointSize: 512000,
     maxAssetSize: 512000,
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.DEBUG_INFO_ENABLED': options.env === 'production',
+      'process.env.GATEWAY_SERVER_API_URL': JSON.stringify('http://localhost:3000/api'),
+    })
+  ]
 });

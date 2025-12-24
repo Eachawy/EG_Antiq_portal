@@ -14,4 +14,10 @@ module.exports = merge(common, {
     errorDetails: true,
     warnings: true,
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.DEBUG_INFO_ENABLED': options.env === 'development',
+      'process.env.GATEWAY_SERVER_API_URL': JSON.stringify('http://localhost:3000/api'),
+    })
+  ]
 });

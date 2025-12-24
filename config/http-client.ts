@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 
 // API base URL - can be configured via environment variable
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api'
+const API_BASE_URL = process.env.GATEWAY_SERVER_API_URL
 
 // Create axios instance
 const httpClient: AxiosInstance = axios.create({
