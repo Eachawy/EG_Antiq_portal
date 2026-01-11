@@ -1,0 +1,41 @@
+{
+  "header": {
+    "KEMETRA":"KEMETRA",
+    "title": "Antiq Portal",
+    "nav": {
+      "home": "Home",
+      "about": "About",
+      "dashboard": "Dashboard",
+      "login": "Login",
+      "logout": "Logout"
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Antiq Portal. All rights reserved."
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "english": "English",
+    "arabic": "Arabic"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "close": "Close"
+  },
+  "errors": {
+    "general": "An error occurred. Please try again.",
+    "notFound": "Page not found",
+    "unauthorized": "You are not authorized to access this page",
+    "serverError": "Server error occurred"
+  }
+}

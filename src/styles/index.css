@@ -1,0 +1,14 @@
+/* KEMETRA Archaeological Sites - Main Stylesheet */
+
+/* Import fonts first */
+@import './fonts.css';
+
+/* Import Tailwind base */
+@import './tailwind.css';
+
+/* Import theme files */
+@import './theme-light.css';
+@import './theme-dark.css';
+
+/* Import global styles, utilities, and animations */
+@import './global-styles.css';

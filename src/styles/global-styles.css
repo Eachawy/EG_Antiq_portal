@@ -1,0 +1,521 @@
+/**
+ * KEMETRA - Global Styles
+ * Shared styles, utilities, animations, and base styles
+ * Theme-agnostic styles that work across light and dark themes
+ * 
+ * NOTE ON INLINE STYLES:
+ * This project minimizes inline styles in TSX files. However, some inline styles
+ * are intentionally kept for the following valid use cases:
+ * 
+ * 1. Dynamic values computed at runtime (e.g., animation delays based on array index)
+ * 2. Dynamic colors from data (e.g., period badge colors from getPeriodColor())
+ * 3. Component library requirements (e.g., PrimeReact, Chart.js internal styling)
+ * 4. Transform/positioning for dynamic UI elements (e.g., progress bars, tooltips)
+ * 
+ * All static styles should use CSS classes defined in theme files.
+ */
+
+/* ============================================
+   RTL SUPPORT
+   ============================================ */
+[dir="rtl"] {
+    direction: rtl;
+}
+
+[dir="rtl"] .rtl\:flex-row-reverse {
+    flex-direction: row-reverse;
+}
+
+/* ============================================
+   BASE LAYER - TYPOGRAPHY & DEFAULTS
+   ============================================ */
+* {
+    border-color: var(--border);
+    outline-color: var(--ring);
+    outline-offset: 2px;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+}
+
+html {
+    font-size: var(--font-size);
+    scroll-behavior: smooth;
+}
+
+h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+}
+
+h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+}
+
+h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.6;
+}
+
+p {
+    line-height: 1.75;
+    margin-bottom: 1em;
+}
+
+label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.6;
+}
+
+button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+}
+
+input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.6;
+}
+
+/* ============================================
+   ANIMATIONS & KEYFRAMES
+   ============================================ */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* ============================================
+   ANIMATION UTILITY CLASSES
+   ============================================ */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Animation delay utilities */
+.animation-delay-0 {
+    animation-delay: 0s;
+}
+
+.animation-delay-100 {
+    animation-delay: 0.1s;
+}
+
+.animation-delay-200 {
+    animation-delay: 0.2s;
+}
+
+.animation-delay-300 {
+    animation-delay: 0.3s;
+}
+
+.animation-delay-400 {
+    animation-delay: 0.4s;
+}
+
+.animation-delay-500 {
+    animation-delay: 0.5s;
+}
+
+.animation-delay-600 {
+    animation-delay: 0.6s;
+}
+
+.animation-delay-700 {
+    animation-delay: 0.7s;
+}
+
+.animation-delay-800 {
+    animation-delay: 0.8s;
+}
+
+.animation-delay-900 {
+    animation-delay: 0.9s;
+}
+
+.animation-delay-1000 {
+    animation-delay: 1s;
+}
+
+/* ============================================
+   TEXT UTILITIES
+   ============================================ */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ============================================
+   CUSTOM RANGE SLIDER STYLES
+   ============================================ */
+input[type="range"].slider {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    height: 8px;
+}
+
+/* Slider track - WebKit */
+input[type="range"].slider::-webkit-slider-track {
+    background: var(--theme-accent);
+    height: 8px;
+    border-radius: 4px;
+}
+
+/* Slider track - Firefox */
+input[type="range"].slider::-moz-range-track {
+    background: var(--theme-accent);
+    height: 8px;
+    border-radius: 4px;
+}
+
+/* Slider thumb - WebKit */
+input[type="range"].slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--theme-primary);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+/* Slider thumb - Firefox */
+input[type="range"].slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--theme-primary);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+/* Slider thumb hover - WebKit */
+input[type="range"].slider::-webkit-slider-thumb:hover {
+    background: var(--theme-secondary);
+    transform: scale(1.1);
+}
+
+/* Slider thumb hover - Firefox */
+input[type="range"].slider::-moz-range-thumb:hover {
+    background: var(--theme-secondary);
+    transform: scale(1.1);
+}
+
+/* Slider thumb active - WebKit */
+input[type="range"].slider::-webkit-slider-thumb:active {
+    transform: scale(1.15);
+}
+
+/* Slider thumb active - Firefox */
+input[type="range"].slider::-moz-range-thumb:active {
+    transform: scale(1.15);
+}
+
+/* ============================================
+   COMPONENT-SPECIFIC UTILITY CLASSES
+   ============================================ */
+
+/* Header dropdown menu */
+.header-user-menu {
+    z-index: 1000;
+}
+
+/* Mobile menu */
+.mobile-menu {
+    top: var(--header-height, 73px);
+    bottom: 0;
+    height: calc(100vh - var(--header-height, 73px));
+}
+
+/* OpenLayers Map */
+.map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--map-bg-color);
+    min-height: 500px;
+}
+
+.map-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-height: 500px;
+}
+
+/* Map pattern overlay */
+.map-pattern-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--pattern-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238B6914' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+/* Focus visible for accessibility */
+*:focus-visible {
+    outline: 2px solid var(--theme-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ============================================
+   PRINT STYLES - Academic & Archival
+   ============================================ */
+@media print {
+
+    /* Force light mode colors for printing */
+    :root,
+    [data-theme='dark'],
+    .dark {
+        --theme-bg: #FFFFFF !important;
+        --theme-text: #1A1614 !important;
+        --theme-primary: #6B5D4F !important;
+        --theme-secondary: #8B7355 !important;
+        --theme-accent: #F5F5F5 !important;
+        --theme-card: #FFFFFF !important;
+        --theme-border: rgba(0, 0, 0, 0.15) !important;
+        --theme-muted: #5A4F43 !important;
+    }
+
+    /* Remove backgrounds and shadows for print */
+    body {
+        background: white !important;
+        color: #1A1614 !important;
+    }
+
+    /* Optimize cards for print */
+    .bg-theme-card,
+    .bg-theme-accent {
+        background: transparent !important;
+        border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Remove decorative elements */
+    .shadow,
+    .shadow-sm,
+    .shadow-md,
+    .shadow-lg,
+    .shadow-xl,
+    .shadow-2xl {
+        box-shadow: none !important;
+    }
+
+    /* Hide interactive elements */
+    button:not(.print-show),
+    .lg\:hidden,
+    header button,
+    nav button,
+    [role="button"] {
+        display: none !important;
+    }
+
+    /* Remove blur effects */
+    .backdrop-blur,
+    .backdrop-blur-sm,
+    .backdrop-blur-md,
+    .backdrop-blur-lg,
+    .backdrop-blur-xl {
+        backdrop-filter: none !important;
+    }
+
+    /* Optimize typography for print */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        page-break-after: avoid;
+        break-after: avoid;
+        color: #1A1614 !important;
+    }
+
+    p {
+        orphans: 3;
+        widows: 3;
+        color: #1A1614 !important;
+    }
+
+    /* Ensure proper link styling */
+    a {
+        color: #6B5D4F !important;
+        text-decoration: underline;
+    }
+
+    /* Show URLs after links in print */
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 0.85em;
+        color: #5A4F43;
+    }
+
+    /* Images */
+    img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    /* Page breaks */
+    .page-break-before {
+        page-break-before: always;
+        break-before: page;
+    }
+
+    .page-break-after {
+        page-break-after: always;
+        break-after: page;
+    }
+
+    /* Remove animations */
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
