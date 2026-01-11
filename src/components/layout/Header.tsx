@@ -92,23 +92,7 @@ export default function Header() {
             >
               {/* Logo Icon */}
               <div className="relative">
-                <div className="bg-theme-primary/20 group-hover:bg-theme-secondary/30 absolute inset-0 rounded-full blur-xl transition-all duration-500"></div>
-                <div className="from-theme-primary to-theme-secondary relative flex size-10 rotate-0 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 group-hover:shadow-2xl sm:size-12">
-                  <svg className="size-6 text-white sm:size-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
-                    <path d="M12 6v12M8 10l4-2 4 2M8 14l4-2 4 2" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Brand Text */}
-              <div className="hidden flex-col sm:flex">
-                <span className="text-theme-primary group-hover:text-theme-secondary text-lg font-bold tracking-[0.15em] transition-colors duration-300">
-                  {t('KEMETRA')}
-                </span>
-                <span className="text-theme-muted -mt-1 text-xs tracking-widest">
-                  Where Egypt&apos;s History Meets the Map
-                </span>
+                <span className='Kemetra_Logo' />
               </div>
             </Link>
 

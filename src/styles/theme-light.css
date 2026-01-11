@@ -82,3 +82,11 @@
     --map-bg-color: #d4c5a9;
     --pattern-opacity: 0.03;
 }
+
+.Kemetra_Logo {
+    background: url(./images/kemetra_light.png) no-repeat;
+    width: 234px;
+    height: 45px;
+    display: block;
+    background-size: contain;
+}
