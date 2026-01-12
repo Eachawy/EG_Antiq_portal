@@ -1,0 +1,122 @@
+/**
+ * KEMETRA - Dark Theme
+ * Earthy Dark Theme inspired by Ancient Egyptian nights
+ * Rich, warm tones suitable for immersive browsing
+ */
+
+[data-theme='dark'] {
+    /* === Typography (inherited from light, but can be overridden) === */
+    --font-size: 16px;
+    --text-2xl: 3.5rem;
+    --text-xl: 2.5rem;
+    --text-lg: 1.5rem;
+    --text-base: 1rem;
+    --font-weight-medium: 500;
+    --font-weight-normal: 400;
+
+    /* === Dark Theme Colors - Earthy & Immersive === */
+    --theme-bg: #4a4635;
+    --theme-text: #F4E4C1;
+    --theme-primary: #D4AF37;
+    /* Golden sand */
+    --theme-secondary: #8B7355;
+    /* Aged bronze */
+    --theme-accent: #585542;
+    /* Dark earth */
+    --theme-card: #3d3a2f;
+    --theme-border: rgba(212, 175, 55, 0.2);
+    --theme-muted: #D4AF37;
+    --theme-hero-overlay: rgba(0, 0, 0, 0.7);
+
+    /* === Shadcn/UI Compatible Variables === */
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.145 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.145 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.985 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.396 0.141 25.723);
+    --destructive-foreground: oklch(0.637 0.237 25.331);
+    --border: rgba(139, 111, 71, 0.15);
+    --input: oklch(0.269 0 0);
+    --ring: oklch(0.439 0 0);
+
+    /* === Chart Colors === */
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+
+    /* === Border Radius === */
+    --radius: 0.5rem;
+
+    /* === Sidebar Variables === */
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(0.269 0 0);
+    --sidebar-ring: oklch(0.439 0 0);
+
+    /* === Component-Specific Variables === */
+    --header-height: 73px;
+    --map-bg-color: #5a5a4a;
+    --pattern-opacity: 0.03;
+}
+
+/* Also apply dark theme when .dark class is present (for compatibility) */
+.dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.145 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.145 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.985 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.396 0.141 25.723);
+    --destructive-foreground: oklch(0.637 0.237 25.331);
+    --border: oklch(0.269 0 0);
+    --input: oklch(0.269 0 0);
+    --ring: oklch(0.439 0 0);
+    --font-weight-medium: 500;
+    --font-weight-normal: 400;
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(0.269 0 0);
+    --sidebar-ring: oklch(0.439 0 0);
+}
+
+.Kemetra_Logo {
+    background: url(./images/kemetra_dark.png) no-repeat;
+    width: 234px;
+    height: 45px;
+    display: block;
+    background-size: contain;
+}

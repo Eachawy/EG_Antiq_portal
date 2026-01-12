@@ -1,0 +1,33 @@
+{
+    "newHeroSection": {
+        "title": "EGYPTIAN ARCHAEOLOGICAL HERITAGE",
+        "explore": "Explore Egypt's Ancient Wonders",
+        "description": "Discover major and minor archaeological sites across different historical periods. From prehistoric settlements to Islamic monuments, explore Egypt's rich cultural heritage spanning over 5,000 years.",
+        "stats": {
+            "majorSites": "Major Sites",
+            "historicalPeriods": "Historical Periods",
+            "historyYears": "Years of History",
+            "governorates": "Governorates"
+        },
+        "buttons": {
+            "exploreSites": "Explore Sites",
+            "viewMap": "View Map"
+        }
+    },
+    "historicalEras": {
+        "title": "Historical Eras of Egypt",
+        "subtitle": "JOURNEY THROUGH TIME",
+        "description": "Explore Egypt's rich history spanning over 5,000 years. From the age of pharaohs to Islamic civilization, discover the diverse cultures and dynasties that shaped this ancient land.",
+        "exploreButton": "Explore {eraName} Era",
+        "browseSitesButton": "Browse Archaeological Sites"
+    },
+    "booksSection": {
+        "title": "Explore Our Book Collection",
+        "badge": "Academic Collection",
+        "description": "Curated scholarly works on Ancient Egyptian archaeology, history, and culture. Perfect for students, researchers, and enthusiasts.",
+        "addToCart": "Add to Cart",
+        "discoverTitle": "Discover Over 50+ Books",
+        "discoverDescription": "From beginner guides to advanced archaeological studies, find the perfect book to deepen your knowledge of Ancient Egypt.",
+        "browseBooksButton": "Browse All Books"
+    }
+}

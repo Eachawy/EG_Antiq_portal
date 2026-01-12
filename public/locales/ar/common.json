@@ -1,0 +1,41 @@
+{
+  "header": {
+    "KEMETRA": "KEMETRA",
+    "title": "بوابة أنتيك",
+    "nav": {
+      "home": "الرئيسية",
+      "about": "حول",
+      "dashboard": "لوحة التحكم",
+      "login": "تسجيل الدخول",
+      "logout": "تسجيل الخروج"
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 بوابة أنتيك. جميع الحقوق محفوظة."
+  },
+  "languageSwitcher": {
+    "label": "اللغة",
+    "english": "English",
+    "arabic": "العربية"
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "retry": "إعادة المحاولة",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "submit": "إرسال",
+    "close": "إغلاق"
+  },
+  "errors": {
+    "general": "حدث خطأ. يرجى المحاولة مرة أخرى.",
+    "notFound": "الصفحة غير موجودة",
+    "unauthorized": "ليس لديك صلاحية للوصول إلى هذه الصفحة",
+    "serverError": "حدث خطأ في الخادم"
+  }
+}

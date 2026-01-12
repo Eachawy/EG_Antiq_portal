@@ -1,0 +1,54 @@
+{
+    "header": {
+        "nav": {
+            "home": "HOME",
+            "sites": "SITES",
+            "map": "MAP",
+            "tourGuides": "TOUR GUIDES",
+            "books": "BOOKS",
+            "about": "ABOUT",
+            "contact": "CONTACT"
+        },
+        "userMenu": {
+            "profile": "Profile",
+            "favorites": "Favorites",
+            "savedSearches": "Saved Searches",
+            "history": "History",
+            "settings": "Settings",
+            "logout": "Logout",
+            "viewProfile": "View Profile",
+            "account": "ACCOUNT"
+        },
+        "auth": {
+            "signIn": "Sign In"
+        },
+        "aria": {
+            "closeMenu": "Close menu",
+            "openMenu": "Open menu",
+            "homeLabel": "Kemetra Home"
+        }
+    },
+    "footer": {
+        "about": {
+            "title": "ANCIENT EGYPT",
+            "description": "Preserving and sharing the wonders of ancient Egyptian civilization. Explore archaeological sites, monuments, and historical treasures from the land of the pharaohs."
+        },
+        "newsletter": {
+            "title": "Subscribe to Our Newsletter",
+            "subtitle": "Get the latest updates on new discoveries and archaeological sites",
+            "placeholder": "Enter your email",
+            "button": "Subscribe",
+            "errors": {
+                "required": "Please enter your email address",
+                "invalid": "Please enter a valid email address"
+            },
+            "success": "You have been subscribed successfully!"
+        },
+        "bottom": {
+            "copyright": "© {year} Ancient Egypt Archaeological Sites. All rights reserved.",
+            "privacyPolicy": "Privacy Policy",
+            "termsOfUse": "Terms of Use",
+            "cookiePolicy": "Cookie Policy"
+        }
+    }
+}
