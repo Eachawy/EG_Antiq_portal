@@ -1,0 +1,27 @@
+{
+    "hero": {
+        "subtitle": "تواصل معنا",
+        "title": "اتصل بنا",
+        "description": "هل لديك أسئلة حول زيارتك؟ نحن هنا لمساعدتك في التخطيط لمغامرة أثرية مثالية."
+    },
+    "info": {
+        "addressTitle": "العنوان",
+        "address": "هضبة الجيزة، الهرم، الجيزة\nمصر",
+        "phoneTitle": "الهاتف",
+        "emailTitle": "البريد الإلكتروني"
+    },
+    "form": {
+        "namePlaceholder": "اسمك",
+        "emailPlaceholder": "بريدك الإلكتروني",
+        "messagePlaceholder": "رسالتك",
+        "submitButton": "أرسل الرسالة",
+        "sending": "جاري الإرسال...",
+        "successMessage": "تم إرسال الرسالة بنجاح!",
+        "errors": {
+            "nameRequired": "يرجى إدخال اسمك",
+            "emailRequired": "يرجى إدخال عنوان بريدك الإلكتروني",
+            "emailInvalid": "يرجى إدخال عنوان بريد إلكتروني صالح",
+            "messageRequired": "يرجى إدخال رسالتك"
+        }
+    }
+}

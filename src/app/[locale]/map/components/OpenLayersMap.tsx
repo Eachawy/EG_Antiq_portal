@@ -2,6 +2,7 @@
 
 
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import { useTranslations } from 'next-intl';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -136,6 +137,8 @@ const createMarkerStyle = (color: string, scale: number = 1): Style => {
 
 export const OpenLayersMap = forwardRef<OpenLayersMapRef, OpenLayersMapProps>(
   ({ sites, onSiteClick }, ref) => {
+    const tMap = useTranslations('map');
+    const tCommon = useTranslations('common');
     const mapRef = useRef<HTMLDivElement>(null);
     const popupRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<Map | null>(null);
@@ -326,7 +329,7 @@ export const OpenLayersMap = forwardRef<OpenLayersMapRef, OpenLayersMapProps>(
     // Format date range for display
     const formatDateRange = (start: number, end: number) => {
       const formatYear = (year: number) => {
-        return year < 0 ? `${Math.abs(year)} BC` : `${year} AD`;
+        return year < 0 ? `${Math.abs(year)} ${tCommon('bc')}` : `${year} ${tCommon('ad')}`;
       };
       return `${formatYear(start)} - ${formatYear(end)}`;
     };
@@ -495,7 +498,7 @@ export const OpenLayersMap = forwardRef<OpenLayersMapRef, OpenLayersMapProps>(
 
                 {/* Click hint */}
                 <p className="text-theme-primary text-[10px] text-center pt-1.5 border-t border-theme-border">
-                  Click for details →
+                  {tMap('tooltips.clickDetails')}
                 </p>
               </div>
             </div>

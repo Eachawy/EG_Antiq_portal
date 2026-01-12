@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl';
 
 export function HistoricalEras() {
     const router = useRouter();
-    const t = useTranslations("historicalEras");
+    const t = useTranslations("homepage.historicalEras");
 
     return (
         <section className="py-16 sm:py-20 lg:py-24 bg-theme-accent">

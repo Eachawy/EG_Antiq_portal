@@ -11,9 +11,12 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
+import { useTranslations } from 'next-intl';
 
 
 export default function SitesPage() {
+    const tHero = useTranslations('hero');
+    const tSearch = useTranslations('search');
     // const t = useTranslations('header');
     const { isAuthenticated } = useAuth();
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -101,8 +104,8 @@ export default function SitesPage() {
         if (!searchName.trim()) {
             toastRef.current?.show({
                 severity: 'warn',
-                summary: 'Name Required',
-                detail: 'Please enter a name for your saved search.',
+                summary: tSearch('saveDialog.title'), // reusing title as summary for now
+                detail: tSearch('saveDialog.nameRequired'),
                 life: 3000,
             });
             return;
@@ -135,8 +138,8 @@ export default function SitesPage() {
 
         toastRef.current?.show({
             severity: 'success',
-            summary: 'Search Saved',
-            detail: `Search criteria "${searchName}" has been saved successfully.`,
+            summary: tSearch('saveDialog.title'),
+            detail: tSearch('saveDialog.success', { name: searchName }),
             life: 3000,
         });
 
@@ -168,11 +171,10 @@ export default function SitesPage() {
 
                 <div className="absolute inset-0 flex items-center justify-center">
                     <div className="container mx-auto px-6 md:px-12 text-center">
-                        <p className="text-white/90 tracking-[0.3em] text-xs sm:text-sm mb-4">ARCHAEOLOGICAL SITES</p>
-                        <h1 className="text-white mb-4 md:mb-6 text-3xl md:text-4xl lg:text-5xl">Sites Directory</h1>
+                        <p className="text-white/90 tracking-[0.3em] text-xs sm:text-sm mb-4">{tHero('subtitle')}</p>
+                        <h1 className="text-white mb-4 md:mb-6 text-3xl md:text-4xl lg:text-5xl">{tHero('title')}</h1>
                         <p className="text-white/90 max-w-3xl mx-auto text-sm md:text-base">
-                            Browse through Egypt's most significant archaeological sites. Use advanced filters to find exactly what
-                            you're looking for.
+                            {tHero('description')}
                         </p>
                     </div>
                 </div>
@@ -190,7 +192,10 @@ export default function SitesPage() {
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
                         <div className="text-theme-text">
                             <span className="text-lg">
-                                Found <strong>{filteredSites.length}</strong> site{filteredSites.length !== 1 ? 's' : ''}
+                                {tSearch.rich('found', {
+                                    count: filteredSites.length,
+                                    strong: (chunks) => <strong>{chunks}</strong>
+                                })}
                             </span>
                         </div>
                         <div className="flex gap-2 items-center">
@@ -209,7 +214,7 @@ export default function SitesPage() {
                                     tooltipOptions={{ position: 'bottom' }}
                                 >
                                     <Save size={18} className="mr-2" />
-                                    <span>Save Search</span>
+                                    <span>{tSearch('saveSearch')}</span>
                                 </Button>
                             )}
 
@@ -251,8 +256,8 @@ export default function SitesPage() {
                     ) : (
                         <div className="text-center py-20">
                             <div className="text-theme-muted text-6xl mb-4">🏛️</div>
-                            <h3 className="text-theme-text mb-2">No sites found</h3>
-                            <p className="text-theme-text/70">Try adjusting your search or filter criteria</p>
+                            <h3 className="text-theme-text mb-2">{tSearch('noSites.title')}</h3>
+                            <p className="text-theme-text/70">{tSearch('noSites.description')}</p>
                         </div>
                     )}
 
@@ -263,7 +268,12 @@ export default function SitesPage() {
                                 {/* Page Info */}
                                 <div className="text-center">
                                     <span className="text-theme-muted text-sm">
-                                        Showing <span className="font-semibold text-theme-primary">{startIndex + 1}-{Math.min(endIndex, filteredSites.length)}</span> of <span className="font-semibold text-theme-primary">{filteredSites.length}</span> archaeological sites
+                                        {tSearch.rich('pagination.showing', {
+                                            start: startIndex + 1,
+                                            end: Math.min(endIndex, filteredSites.length),
+                                            total: filteredSites.length,
+                                            span: (chunks) => <span className="font-semibold text-theme-primary">{chunks}</span>
+                                        })}
                                     </span>
                                 </div>
 
@@ -294,7 +304,7 @@ export default function SitesPage() {
                                             }`}
                                     >
                                         <ChevronLeft size={18} />
-                                        <span className="hidden sm:inline">Previous</span>
+                                        <span className="hidden sm:inline">{tSearch('pagination.previous')}</span>
                                     </button>
 
                                     {/* Page Numbers */}
@@ -384,7 +394,7 @@ export default function SitesPage() {
                                             : 'bg-theme-card border-theme-border text-theme-text hover:border-theme-primary hover:text-theme-primary hover:bg-theme-accent hover:scale-105 active:scale-95'
                                             }`}
                                     >
-                                        <span className="hidden sm:inline">Next</span>
+                                        <span className="hidden sm:inline">{tSearch('pagination.next')}</span>
                                         <ChevronRight size={18} />
                                     </button>
 
@@ -408,7 +418,7 @@ export default function SitesPage() {
                                 {totalPages > 5 && (
                                     <div className="flex items-center gap-3 text-sm">
                                         <label htmlFor="page-jump" className="text-theme-muted">
-                                            Jump to page:
+                                            {tSearch('pagination.jumpTo')}
                                         </label>
                                         <input
                                             id="page-jump"
@@ -424,7 +434,7 @@ export default function SitesPage() {
                                             }}
                                             className="w-20 px-3 py-1.5 rounded-lg border border-theme-border bg-theme-card text-theme-text text-center focus:outline-none focus:ring-2 focus:ring-theme-primary/50 focus:border-theme-primary transition-all"
                                         />
-                                        <span className="text-theme-muted">of {totalPages}</span>
+                                        <span className="text-theme-muted">{tSearch('pagination.of', { total: totalPages })}</span>
                                     </div>
                                 )}
                             </div>
@@ -435,7 +445,7 @@ export default function SitesPage() {
 
             {/* Save Search Dialog */}
             <Dialog
-                header="Save Search"
+                header={tSearch('saveDialog.title')}
                 visible={saveSearchDialogVisible}
                 onHide={() => setSaveSearchDialogVisible(false)}
                 style={{ width: '90vw', maxWidth: '500px' }}
@@ -457,7 +467,7 @@ export default function SitesPage() {
                                 className="w-full sm:w-auto"
                             >
                                 <X size={18} className="mr-2" />
-                                <span>Cancel</span>
+                                <span>{tSearch('saveDialog.cancel')}</span>
                             </Button>
                             <Button
                                 severity="success"
@@ -465,19 +475,19 @@ export default function SitesPage() {
                                 className="w-full sm:w-auto"
                             >
                                 <Check size={18} className="mr-2" />
-                                <span>Save</span>
+                                <span>{tSearch('saveDialog.save')}</span>
                             </Button>
                         </div>
                     </div>
                 }
             >
                 <div className="p-4">
-                    <p className="text-theme-text mb-4">Enter a name for your saved search:</p>
+                    <p className="text-theme-text mb-4">{tSearch('saveDialog.description')}</p>
                     <InputText
                         value={searchName}
                         onChange={(e) => setSearchName(e.target.value)}
                         className="w-full"
-                        placeholder="e.g., Ancient Egyptian Temples"
+                        placeholder={tSearch('saveDialog.placeholder')}
                     />
                 </div>
             </Dialog>

@@ -24,7 +24,7 @@ export default function Header() {
   const pathname = usePathname();
   // const { theme: _theme = "system" } = useTheme();
   const isActive = (href: string) => pathname === href;
-  const t = useTranslations('header');
+  const t = useTranslations('layout.header');
   const router = useRouter();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);

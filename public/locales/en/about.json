@@ -1,0 +1,54 @@
+{
+    "hero": {
+        "subtitle": "EDUCATIONAL RESOURCES",
+        "title": "Understanding Egypt's Heritage",
+        "description": "Learn about the classification of archaeological sites, Egypt's historical timeline, and the importance of cultural preservation."
+    },
+    "classification": {
+        "title": "How Archaeological Sites Are Classified",
+        "intro": "Archaeological sites in Egypt are classified based on several key criteria that help researchers and visitors understand their historical context and significance:",
+        "chronological": {
+            "title": "Chronological Period",
+            "description": "Sites are categorized by the historical era in which they were constructed or primarily used, from Prehistoric times through the Islamic period."
+        },
+        "function": {
+            "title": "Function & Purpose",
+            "description": "Classification includes temples, tombs, fortifications, settlements, and administrative centers based on their original function."
+        },
+        "significance": {
+            "title": "Cultural Significance",
+            "description": "Sites are evaluated for their historical importance, architectural innovation, and contribution to understanding ancient civilizations."
+        },
+        "preservation": {
+            "title": "Preservation State",
+            "description": "Documentation includes the current condition, from well-preserved structures to archaeological ruins requiring ongoing conservation."
+        }
+    },
+    "historicalEras": {
+        "title": "Egypt's Historical Eras"
+    },
+    "preservationImportance": {
+        "title": "Cultural Preservation",
+        "description": "Preserving Egypt's archaeological heritage is crucial for maintaining the connection between past and present civilizations. These sites provide invaluable insights into human development, architectural innovation, and cultural evolution.",
+        "keyEffortsTitle": "Key Preservation Efforts:",
+        "keyEfforts": {
+            "unesco": "UNESCO World Heritage Site designations",
+            "digital": "Digital documentation and 3D scanning",
+            "research": "Ongoing archaeological research and excavations",
+            "conservation": "Conservation and restoration projects"
+        }
+    },
+    "research": {
+        "title": "For Researchers & Students",
+        "description": "This platform serves as an educational resource for academic research, classroom learning, and independent study of Egyptian archaeology.",
+        "featuresTitle": "Research Features:",
+        "features": {
+            "siteDescriptions": "Comprehensive site descriptions and historical context",
+            "dating": "Accurate dating and chronological information",
+            "mapping": "Geographic mapping and spatial relationships",
+            "crossReferencing": "Cross-referencing with nearby archaeological sites"
+        },
+        "targetAudience": "Target Audience:",
+        "targetAudienceList": "Students, Researchers, Tourists, History Enthusiasts, Educators, and Cultural Institutions"
+    }
+}

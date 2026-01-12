@@ -1,11 +1,15 @@
 'use client';
 
-// import { useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { Book, Clock, Shield, Lightbulb } from 'lucide-react';
 import { historicalPeriods } from './data/sitesData';
 
 export default function AboutPage() {
-  // const t = useTranslations('header');
+  const t = useTranslations('about.hero');
+  const tClass = useTranslations('about.classification');
+  const tEras = useTranslations('about.historicalEras');
+  const tPreserve = useTranslations('about.preservationImportance');
+  const tResearch = useTranslations('about.research');
 
   return (
     <div className="bg-theme-bg">
@@ -21,13 +25,13 @@ export default function AboutPage() {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="container mx-auto px-6 md:px-12 text-center">
             <p className="text-white/90 tracking-[0.3em] text-xs sm:text-sm mb-4">
-              EDUCATIONAL RESOURCES
+              {t('subtitle')}
             </p>
             <h1 className="text-white mb-4 md:mb-6 text-3xl md:text-4xl lg:text-5xl">
-              Understanding Egypt's Heritage
+              {t('title')}
             </h1>
             <p className="text-white/90 max-w-3xl mx-auto text-sm md:text-base lg:text-lg">
-              Learn about the classification of archaeological sites, Egypt's historical timeline, and the importance of cultural preservation.
+              {t('description')}
             </p>
           </div>
         </div>
@@ -42,34 +46,34 @@ export default function AboutPage() {
                 <Book className="text-theme-primary" size={28} />
               </div>
               <h3 className="text-theme-text">
-                How Archaeological Sites Are Classified
+                {tClass('title')}
               </h3>
             </div>
 
             <div className="space-y-4 text-theme-text/80 leading-relaxed">
               <p>
-                Archaeological sites in Egypt are classified based on several key criteria that help researchers and visitors understand their historical context and significance:
+                {tClass('intro')}
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div className="bg-theme-accent p-6 rounded-lg">
-                  <h4 className="text-theme-primary mb-3">Chronological Period</h4>
-                  <p className="text-sm">Sites are categorized by the historical era in which they were constructed or primarily used, from Prehistoric times through the Islamic period.</p>
+                  <h4 className="text-theme-primary mb-3">{tClass('chronological.title')}</h4>
+                  <p className="text-sm">{tClass('chronological.description')}</p>
                 </div>
 
                 <div className="bg-theme-accent p-6 rounded-lg">
-                  <h4 className="text-theme-primary mb-3">Function & Purpose</h4>
-                  <p className="text-sm">Classification includes temples, tombs, fortifications, settlements, and administrative centers based on their original function.</p>
+                  <h4 className="text-theme-primary mb-3">{tClass('function.title')}</h4>
+                  <p className="text-sm">{tClass('function.description')}</p>
                 </div>
 
                 <div className="bg-theme-accent p-6 rounded-lg">
-                  <h4 className="text-theme-primary mb-3">Cultural Significance</h4>
-                  <p className="text-sm">Sites are evaluated for their historical importance, architectural innovation, and contribution to understanding ancient civilizations.</p>
+                  <h4 className="text-theme-primary mb-3">{tClass('significance.title')}</h4>
+                  <p className="text-sm">{tClass('significance.description')}</p>
                 </div>
 
                 <div className="bg-theme-accent p-6 rounded-lg">
-                  <h4 className="text-theme-primary mb-3">Preservation State</h4>
-                  <p className="text-sm">Documentation includes the current condition, from well-preserved structures to archaeological ruins requiring ongoing conservation.</p>
+                  <h4 className="text-theme-primary mb-3">{tClass('preservation.title')}</h4>
+                  <p className="text-sm">{tClass('preservation.description')}</p>
                 </div>
               </div>
             </div>
@@ -86,12 +90,12 @@ export default function AboutPage() {
                 <Clock className="text-theme-primary" size={28} />
               </div>
               <h3 className="text-theme-text">
-                Egypt's Historical Eras
+                {tEras('title')}
               </h3>
             </div>
 
             <div className="space-y-6">
-              {historicalPeriods.map((period, index) => (
+              {historicalPeriods.map((period) => (
                 <div
                   key={period.name}
                   className="relative pl-8 pb-6 border-l-2 border-theme-border last:border-l-0 last:pb-0"
@@ -124,33 +128,33 @@ export default function AboutPage() {
                   <Shield className="text-theme-primary" size={28} />
                 </div>
                 <h3 className="text-theme-text">
-                  Cultural Preservation
+                  {tPreserve('title')}
                 </h3>
               </div>
 
               <div className="space-y-4 text-theme-text/80 leading-relaxed text-sm">
                 <p>
-                  Preserving Egypt's archaeological heritage is crucial for maintaining the connection between past and present civilizations. These sites provide invaluable insights into human development, architectural innovation, and cultural evolution.
+                  {tPreserve('description')}
                 </p>
 
                 <div className="bg-theme-accent p-4 rounded-lg">
-                  <h4 className="text-theme-primary mb-2">Key Preservation Efforts:</h4>
+                  <h4 className="text-theme-primary mb-2">{tPreserve('keyEffortsTitle')}</h4>
                   <ul className="space-y-2">
                     <li className="flex items-start gap-2">
                       <span className="text-theme-primary mt-1">•</span>
-                      <span>UNESCO World Heritage Site designations</span>
+                      <span>{tPreserve('keyEfforts.unesco')}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-theme-primary mt-1">•</span>
-                      <span>Digital documentation and 3D scanning</span>
+                      <span>{tPreserve('keyEfforts.digital')}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-theme-primary mt-1">•</span>
-                      <span>Ongoing archaeological research and excavations</span>
+                      <span>{tPreserve('keyEfforts.research')}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-theme-primary mt-1">•</span>
-                      <span>Conservation and restoration projects</span>
+                      <span>{tPreserve('keyEfforts.conservation')}</span>
                     </li>
                   </ul>
                 </div>
@@ -163,40 +167,40 @@ export default function AboutPage() {
                   <Lightbulb className="text-theme-primary" size={28} />
                 </div>
                 <h3 className="text-theme-text">
-                  For Researchers & Students
+                  {tResearch('title')}
                 </h3>
               </div>
 
               <div className="space-y-4 text-theme-text/80 leading-relaxed text-sm">
                 <p>
-                  This platform serves as an educational resource for academic research, classroom learning, and independent study of Egyptian archaeology.
+                  {tResearch('description')}
                 </p>
 
                 <div className="bg-theme-accent p-4 rounded-lg">
-                  <h4 className="text-theme-primary mb-2">Research Features:</h4>
+                  <h4 className="text-theme-primary mb-2">{tResearch('featuresTitle')}</h4>
                   <ul className="space-y-2">
                     <li className="flex items-start gap-2">
                       <span className="text-theme-primary mt-1">•</span>
-                      <span>Comprehensive site descriptions and historical context</span>
+                      <span>{tResearch('features.siteDescriptions')}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-theme-primary mt-1">•</span>
-                      <span>Accurate dating and chronological information</span>
+                      <span>{tResearch('features.dating')}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-theme-primary mt-1">•</span>
-                      <span>Geographic mapping and spatial relationships</span>
+                      <span>{tResearch('features.mapping')}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-theme-primary mt-1">•</span>
-                      <span>Cross-referencing with nearby archaeological sites</span>
+                      <span>{tResearch('features.crossReferencing')}</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="mt-6 p-4 bg-theme-primary/10 border border-theme-primary/30 rounded-lg">
                   <p className="text-theme-text text-sm">
-                    <strong>Target Audience:</strong> Students, Researchers, Tourists, History Enthusiasts, Educators, and Cultural Institutions
+                    <strong>{tResearch('targetAudience')}</strong> {tResearch('targetAudienceList')}
                   </p>
                 </div>
               </div>

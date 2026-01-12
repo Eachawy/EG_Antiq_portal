@@ -6,7 +6,7 @@ import { Facebook, Instagram, Twitter, Youtube, Linkedin } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 export default function Footer() {
-    const t = useTranslations('footer');
+    const t = useTranslations('layout.footer');
 
     const currentYear = new Date().getFullYear();
     const [email, setEmail] = useState('');
