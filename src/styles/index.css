@@ -12,3 +12,6 @@
 
 /* Import global styles, utilities, and animations */
 @import './global-styles.css';
+
+/* Import PrimeReact theme customizations */
+@import './primereact-theme.css';

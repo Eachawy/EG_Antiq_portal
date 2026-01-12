@@ -10,7 +10,7 @@ import { Menu, X, User, LogIn, Heart, BookMarked, History, Settings, LogOut } fr
 import ThemeToggle from '../common/ThemeToggle';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { usePathname } from '@/i18n/routing';
-import { useTheme } from "next-themes";
+// import { useTheme } from "next-themes";
 import Image from 'next/image';
 import { useAuth } from '../auth/AuthContext';
 
