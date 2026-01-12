@@ -4,9 +4,11 @@ import { useRouter } from '@/i18n/routing';
 import { Calendar, ArrowRight, Clock } from 'lucide-react';
 import { eras, type Era } from './data/erasData';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 export function HistoricalEras() {
     const router = useRouter();
+    const t = useTranslations("historicalEras");
 
     return (
         <section className="py-16 sm:py-20 lg:py-24 bg-theme-accent">
@@ -14,13 +16,13 @@ export function HistoricalEras() {
                 {/* Section Header */}
                 <div className="text-center mb-12 sm:mb-16 lg:mb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <p className="text-theme-primary tracking-[0.2em] sm:tracking-[0.3em] text-xs sm:text-sm mb-3 sm:mb-4">
-                        JOURNEY THROUGH TIME
+                        {t("subtitle")}
                     </p>
                     <h2 className="text-theme-text mb-4 sm:mb-6 text-3xl sm:text-4xl lg:text-5xl">
-                        Historical Eras of Egypt
+                        {t("title")}
                     </h2>
                     <p className="text-theme-text/70 max-w-3xl mx-auto text-sm sm:text-base lg:text-lg leading-relaxed px-4">
-                        Explore Egypt&apos;s rich history spanning over 5,000 years. From the age of pharaohs to Islamic civilization, discover the diverse cultures and dynasties that shaped this ancient land.
+                        {t("description")}
                     </p>
                 </div>
 
@@ -86,7 +88,7 @@ export function HistoricalEras() {
                                 className="text-theme-primary group-hover:text-theme-secondary transition-all duration-300 text-xs sm:text-sm flex items-center gap-2 hover:gap-3 focus:outline-none focus:ring-2 focus:ring-theme-primary focus:ring-offset-2 focus:ring-offset-theme-bg rounded-md px-2 py-1"
                                 aria-label={`Learn more about ${era.name} era`}
                             >
-                                <span>Explore {era.name} Era</span>
+                                <span>{t("exploreButton", { eraName: era.name })}</span>
                                 <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
                             </button>
                         </div>
@@ -100,7 +102,7 @@ export function HistoricalEras() {
                         className="inline-flex items-center justify-center gap-2 sm:gap-3 bg-theme-primary hover:bg-theme-secondary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg tracking-wider transition-all duration-300 hover:shadow-2xl hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-theme-primary focus:ring-offset-4 focus:ring-offset-theme-bg text-sm sm:text-base"
                         aria-label="Browse all archaeological sites"
                     >
-                        <span>Browse Archaeological Sites</span>
+                        <span>{t("browseSitesButton")}</span>
                         <ArrowRight size={20} className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
                     </button>
                 </div>

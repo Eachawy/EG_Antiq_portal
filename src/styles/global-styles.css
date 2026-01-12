@@ -26,6 +26,10 @@
     flex-direction: row-reverse;
 }
 
+[dir="rtl"] * {
+    font-family: 'Cairo Regular', sans-serif !important;
+}
+
 /* ============================================
    BASE LAYER - TYPOGRAPHY & DEFAULTS
    ============================================ */

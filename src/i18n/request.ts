@@ -14,8 +14,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
     messages: {
       ...(await import(`../../public/locales/${locale}/common.json`)).default,
       ...(await import(`../../public/locales/${locale}/auth.json`)).default,
-      ...(await import(`../../public/locales/${locale}/dashboard.json`))
-        .default,
+      ...(await import(`../../public/locales/${locale}/homepage.json`)).default,
+      ...(await import(`../../public/locales/${locale}/layout.json`)).default,
     },
     onError(error) {
       if (process.env.NODE_ENV === 'development') {

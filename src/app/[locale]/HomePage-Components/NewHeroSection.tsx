@@ -1,7 +1,9 @@
 import { Search, Map as MapIcon } from 'lucide-react';
 import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 export function NewHeroSection() {
+    const t = useTranslations("newHeroSection");
     return (
         <section
             id="home"
@@ -19,26 +21,25 @@ export function NewHeroSection() {
                     {/* Badge */}
                     <div className="animate-in fade-in slide-in-from-top-4 mb-4 inline-block duration-700 sm:mb-6">
                         <span className="bg-theme-primary/20 border-theme-primary text-theme-primary hover:bg-theme-primary/30 rounded-full border px-3 py-1.5 text-xs tracking-wider backdrop-blur-sm transition-all duration-300 hover:scale-105 sm:px-4 sm:py-2 sm:text-sm">
-                            EGYPTIAN ARCHAEOLOGICAL HERITAGE
+                            {t("title")}
                         </span>
                     </div>
 
                     <h1 className="animate-in fade-in slide-in-from-bottom-6 mb-4 text-3xl leading-tight text-white delay-100 duration-700 sm:mb-6 sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
-                        Explore Egypt&apos;s Ancient Wonders
+                        {t("explore")}
                     </h1>
 
                     <p className="animate-in fade-in slide-in-from-bottom-6 mx-auto mb-8 max-w-2xl px-4 text-sm leading-relaxed text-white/90 delay-200 duration-700 sm:mb-12 sm:text-base md:text-lg">
-                        Discover major and minor archaeological sites across different historical periods.
-                        From prehistoric settlements to Islamic monuments, explore Egypt&apos;s rich cultural heritage spanning over 5,000 years.
+                        {t("description")}
                     </p>
 
                     {/* Quick Stats */}
                     <div className="animate-in fade-in zoom-in-50 mx-auto mb-8 grid max-w-4xl grid-cols-2 gap-3 px-4 delay-300 duration-700 sm:mb-12 sm:gap-4 md:grid-cols-4 lg:gap-6">
                         {[
-                            { value: '8+', label: 'Major Sites' },
-                            { value: '4', label: 'Historical Periods' },
-                            { value: '5000+', label: 'Years of History' },
-                            { value: '27', label: 'Governorates' }
+                            { value: '8+', label: t('stats.majorSites') },
+                            { value: '4', label: t('stats.historicalPeriods') },
+                            { value: '5000+', label: t('stats.historyYears') },
+                            { value: '27', label: t('stats.governorates') }
                         ].map((stat, index) => (
                             <div
                                 key={stat.label}
@@ -61,14 +62,14 @@ export function NewHeroSection() {
                             <button className="bg-theme-primary hover:bg-theme-secondary group flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm tracking-wider text-white transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-4 focus:ring-offset-black/60 active:scale-95 sm:w-auto sm:gap-3 sm:px-8 sm:py-4 sm:text-base"
                                 aria-label="Explore archaeological sites">
                                 <Search size={18} className="transition-transform duration-300 group-hover:rotate-12 sm:size-5" aria-hidden="true" />
-                                <span>Explore Sites</span>
+                                <span>{t('buttons.exploreSites')}</span>
                             </button>
                         </Link>
                         <Link href="/map" className="w-full sm:w-auto">
                             <button className="group flex w-full items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/10 px-6 py-3 text-sm tracking-wider text-white backdrop-blur-md transition-all duration-300 hover:scale-105 hover:border-white/50 hover:bg-white/20 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-4 focus:ring-offset-black/60 active:scale-95 sm:w-auto sm:gap-3 sm:px-8 sm:py-4 sm:text-base"
                                 aria-label="View interactive map">
                                 <MapIcon size={18} className="transition-transform duration-300 group-hover:scale-110 sm:size-5" aria-hidden="true" />
-                                <span>View Map</span>
+                                <span>{t('buttons.viewMap')}</span>
                             </button>
                         </Link>
                     </div>

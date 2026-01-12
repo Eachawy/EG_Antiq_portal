@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import LanguageSwitcher from './LanguageSwitcher';
-import { hasToken } from '@/features/auth/utils/token';
+// import { hasToken } from '@/features/auth/utils/token';
 import { useRouter } from '@/i18n/routing';
 import { useState, useEffect } from 'react';
 import { Menu, X, User, LogIn, Heart, BookMarked, History, Settings, LogOut } from 'lucide-react';
@@ -22,7 +22,7 @@ interface User {
 
 export default function Header() {
   const pathname = usePathname();
-  const { theme: _theme = "system" } = useTheme();
+  // const { theme: _theme = "system" } = useTheme();
   const isActive = (href: string) => pathname === href;
   const t = useTranslations('header');
   const router = useRouter();
@@ -61,13 +61,13 @@ export default function Header() {
   }, [isUserMenuOpen]);
 
   const navLinks = [
-    { name: 'HOME', href: '/' },
-    { name: 'SITES', href: '/sites' },
-    { name: 'MAP', href: '/map' },
-    { name: 'TOUR GUIDES', href: '/tour-guides' },
-    { name: 'BOOKS', href: '/books' },
-    { name: 'ABOUT', href: '/about' },
-    { name: 'CONTACT', href: '/contact' },
+    { name: t('nav.home'), href: '/' },
+    { name: t('nav.sites'), href: '/sites' },
+    { name: t('nav.map'), href: '/map' },
+    { name: t('nav.tourGuides'), href: '/tour-guides' },
+    { name: t('nav.books'), href: '/books' },
+    { name: t('nav.about'), href: '/about' },
+    { name: t('nav.contact'), href: '/contact' },
   ];
 
 
@@ -88,7 +88,7 @@ export default function Header() {
             <Link
               href="/"
               className="group flex items-center gap-3"
-              aria-label="Kemetra Home"
+              aria-label={t('aria.homeLabel')}
             >
               {/* Logo Icon */}
               <div className="relative">
@@ -103,8 +103,8 @@ export default function Header() {
                   key={link.name}
                   href={link.href}
                   className={`group relative rounded-xl px-4 py-2.5 text-xs font-medium tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 xl:px-5 xl:text-sm ${isActive(link.href)
-                      ? 'text-theme-primary'
-                      : 'text-theme-muted hover:text-theme-primary'
+                    ? 'text-theme-primary'
+                    : 'text-theme-muted hover:text-theme-primary'
                     }`}
                   aria-current={isActive(link.href) ? 'page' : undefined}
                 >
@@ -168,7 +168,7 @@ export default function Header() {
                         className="text-theme-text hover:text-theme-primary hover:bg-theme-accent/50 flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-all duration-200"
                       >
                         <User size={18} />
-                        <span>Profile</span>
+                        <span>{t('userMenu.profile')}</span>
                       </button>
                       <button
                         onClick={() => {
@@ -178,7 +178,7 @@ export default function Header() {
                         className="text-theme-text hover:text-theme-primary hover:bg-theme-accent/50 flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-all duration-200"
                       >
                         <Heart size={18} />
-                        <span>Favorites</span>
+                        <span>{t('userMenu.favorites')}</span>
                       </button>
                       <button
                         onClick={() => {
@@ -188,7 +188,7 @@ export default function Header() {
                         className="text-theme-text hover:text-theme-primary hover:bg-theme-accent/50 flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-all duration-200"
                       >
                         <BookMarked size={18} />
-                        <span>Saved Searches</span>
+                        <span>{t('userMenu.savedSearches')}</span>
                       </button>
                       <button
                         onClick={() => {
@@ -198,7 +198,7 @@ export default function Header() {
                         className="text-theme-text hover:text-theme-primary hover:bg-theme-accent/50 flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-all duration-200"
                       >
                         <History size={18} />
-                        <span>History</span>
+                        <span>{t('userMenu.history')}</span>
                       </button>
                       <button
                         onClick={() => {
@@ -208,7 +208,7 @@ export default function Header() {
                         className="text-theme-text hover:text-theme-primary hover:bg-theme-accent/50 flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-all duration-200"
                       >
                         <Settings size={18} />
-                        <span>Settings</span>
+                        <span>{t('userMenu.settings')}</span>
                       </button>
                     </div>
 
@@ -222,7 +222,7 @@ export default function Header() {
                         className="flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-red-600 transition-all duration-200 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-500/10"
                       >
                         <LogOut size={18} />
-                        <span>Logout</span>
+                        <span>{t('userMenu.logout')}</span>
                       </button>
                     </div>
                   </div>
@@ -233,7 +233,7 @@ export default function Header() {
                   className="bg-theme-primary hover:bg-theme-secondary hover:shadow-theme-primary/30 group hidden items-center gap-2 whitespace-nowrap rounded-xl px-5 py-2.5 font-medium text-white transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95 lg:flex"
                 >
                   <LogIn size={18} className="transition-transform duration-300 group-hover:rotate-12" />
-                  <span className="text-sm">Sign In</span>
+                  <span className="text-sm">{t('auth.signIn')}</span>
                 </button>
               )}
 
@@ -244,7 +244,7 @@ export default function Header() {
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="text-theme-primary hover:text-theme-secondary hover:bg-theme-accent focus:ring-theme-primary/50 rounded-xl p-2.5 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 active:scale-95 lg:hidden"
-                aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+                aria-label={isMenuOpen ? t('aria.closeMenu') : t('aria.openMenu')}
                 aria-expanded={isMenuOpen}
               >
                 <div className="relative size-6 sm:size-7">
@@ -295,7 +295,7 @@ export default function Header() {
                 {isAuthenticated && user && (
                   <>
                     <div className="border-theme-border/50 my-4 border-t pt-4">
-                      <div className="text-theme-muted px-4 pb-2 text-xs tracking-wider">ACCOUNT</div>
+                      <div className="text-theme-muted px-4 pb-2 text-xs tracking-wider">{t('userMenu.account').toUpperCase()}</div>
 
                       <Link
                         href="/profile"
@@ -307,7 +307,7 @@ export default function Header() {
                         aria-current={isActive('/profile') ? 'page' : undefined}
                       >
                         <User size={18} />
-                        <span>PROFILE</span>
+                        <span>{t('userMenu.profile').toUpperCase()}</span>
                       </Link>
 
                       <Link
@@ -320,7 +320,7 @@ export default function Header() {
                         aria-current={isActive('/favorites') ? 'page' : undefined}
                       >
                         <Heart size={18} />
-                        <span>FAVORITES</span>
+                        <span>{t('userMenu.favorites').toUpperCase()}</span>
                       </Link>
 
                       <Link
@@ -333,7 +333,7 @@ export default function Header() {
                         aria-current={isActive('/saved-searches') ? 'page' : undefined}
                       >
                         <BookMarked size={18} />
-                        <span>SAVED SEARCHES</span>
+                        <span>{t('userMenu.savedSearches').toUpperCase()}</span>
                       </Link>
 
                       <Link
@@ -346,7 +346,7 @@ export default function Header() {
                         aria-current={isActive('/history') ? 'page' : undefined}
                       >
                         <History size={18} />
-                        <span>HISTORY</span>
+                        <span>{t('userMenu.history').toUpperCase()}</span>
                       </Link>
 
                       <Link
@@ -359,7 +359,7 @@ export default function Header() {
                         aria-current={isActive('/settings') ? 'page' : undefined}
                       >
                         <Settings size={18} />
-                        <span>SETTINGS</span>
+                        <span>{t('userMenu.settings').toUpperCase()}</span>
                       </Link>
                     </div>
                   </>
@@ -386,7 +386,7 @@ export default function Header() {
                       </div>
                       <div className="flex-1 text-left">
                         <div className="text-sm font-medium">{user.name}</div>
-                        <div className="text-theme-muted text-xs">View Profile</div>
+                        <div className="text-theme-muted text-xs">{t('userMenu.viewProfile')}</div>
                       </div>
                       <User size={18} className="text-theme-muted" />
                     </button>
@@ -400,7 +400,7 @@ export default function Header() {
                       className="flex w-full items-center justify-center gap-2 rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-600 transition-all duration-300 hover:bg-red-100 hover:text-red-700 dark:bg-red-500/10 dark:hover:bg-red-500/20"
                     >
                       <LogOut size={18} />
-                      <span>Logout</span>
+                      <span>{t('userMenu.logout')}</span>
                     </button>
                   </div>
                 ) : (
@@ -412,7 +412,7 @@ export default function Header() {
                     className="bg-theme-primary hover:bg-theme-secondary hover:shadow-theme-primary/30 flex w-full items-center justify-center gap-2 rounded-xl px-6 py-4 text-base font-medium text-white transition-all duration-300 hover:shadow-xl"
                   >
                     <LogIn size={20} />
-                    <span>Sign In</span>
+                    <span>{t('auth.signIn')}</span>
                   </button>
                 )}
               </div>

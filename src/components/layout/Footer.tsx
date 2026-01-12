@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { Facebook, Instagram, Twitter, Youtube, Linkedin } from 'lucide-react';
-import { usePathname } from '@/i18n/routing';
+// import { usePathname } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 
 export default function Footer() {
-    const t = useTranslations('footer')
+    const t = useTranslations('footer');
 
     const currentYear = new Date().getFullYear();
     const [email, setEmail] = useState('');
@@ -22,12 +22,12 @@ export default function Footer() {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!email) {
-            setErrorMessage('Please enter your email address');
+            setErrorMessage(t('newsletter.errors.required'));
             return;
         }
 
         if (!emailRegex.test(email)) {
-            setErrorMessage('Please enter a valid email address');
+            setErrorMessage(t('newsletter.errors.invalid'));
             return;
         }
 
@@ -54,9 +54,9 @@ export default function Footer() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
                     {/* About Section */}
                     <div>
-                        <h3 className="text-theme-primary tracking-[0.2em] mb-4">ANCIENT EGYPT</h3>
+                        <h3 className="text-theme-primary tracking-[0.2em] mb-4">{t('about.title')}</h3>
                         <p className="text-theme-text/70 text-sm leading-relaxed mb-6">
-                            Preserving and sharing the wonders of ancient Egyptian civilization. Explore archaeological sites, monuments, and historical treasures from the land of the pharaohs.
+                            {t('about.description')}
                         </p>
                         <div className="flex gap-3">
                             <a
@@ -109,25 +109,25 @@ export default function Footer() {
 
                     {/* Newsletter Section */}
                     <div>
-                        <h3 className="text-theme-primary mb-4">Subscribe to Our Newsletter</h3>
+                        <h3 className="text-theme-primary mb-4">{t('newsletter.title')}</h3>
                         <p className="text-theme-text/70 text-sm mb-6">
-                            Get the latest updates on new discoveries and archaeological sites
+                            {t('newsletter.subtitle')}
                         </p>
                         <div className="flex flex-col sm:flex-row gap-3">
                             <input
                                 type="email"
-                                placeholder="Enter your email"
+                                placeholder={t('newsletter.placeholder')}
                                 className="flex-1 px-4 py-3 bg-theme-bg border border-theme-border rounded-lg text-theme-text text-sm focus:outline-none focus:border-theme-primary transition-colors"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 onKeyPress={handleKeyPress}
                             />
                             <button className="bg-theme-primary hover:bg-theme-secondary text-white px-6 py-3 rounded-lg transition-colors duration-300 text-sm whitespace-nowrap" onClick={handleSubscribe}>
-                                Subscribe
+                                {t('newsletter.button')}
                             </button>
                         </div>
                         {errorMessage && <p className="text-red-500 text-sm mt-2">{errorMessage}</p>}
-                        {showSuccess && <p className="text-green-500 text-sm mt-2">You have been subscribed successfully!</p>}
+                        {showSuccess && <p className="text-green-500 text-sm mt-2">{t('newsletter.success')}</p>}
                     </div>
                 </div>
 
@@ -135,17 +135,17 @@ export default function Footer() {
                 <div className="border-t border-theme-border pt-8">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <p className="text-center text-theme-text/50 text-sm">
-                            © {currentYear} Ancient Egypt Archaeological Sites. All rights reserved.
+                            {t('bottom.copyright', { year: currentYear })}
                         </p>
                         <div className="flex gap-6">
                             <a href="#privacy" className="text-theme-text/50 hover:text-theme-primary text-sm transition-colors">
-                                Privacy Policy
+                                {t('bottom.privacyPolicy')}
                             </a>
                             <a href="#terms" className="text-theme-text/50 hover:text-theme-primary text-sm transition-colors">
-                                Terms of Use
+                                {t('bottom.termsOfUse')}
                             </a>
                             <a href="#cookies" className="text-theme-text/50 hover:text-theme-primary text-sm transition-colors">
-                                Cookie Policy
+                                {t('bottom.cookiePolicy')}
                             </a>
                         </div>
                     </div>

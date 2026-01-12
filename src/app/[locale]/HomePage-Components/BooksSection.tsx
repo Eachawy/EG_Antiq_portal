@@ -4,8 +4,10 @@ import { Book, ArrowRight, ShoppingCart } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 export function BooksSection() {
+    const t = useTranslations("booksSection");
     const featuredBooks = [
         {
             id: '1',
@@ -46,7 +48,7 @@ export function BooksSection() {
                     >
                         <Book className="text-theme-primary" size={24} />
                         <span className="text-theme-muted text-sm font-medium uppercase tracking-wider">
-                            Academic Collection
+                            {t("badge")}
                         </span>
                     </motion.div>
 
@@ -57,7 +59,7 @@ export function BooksSection() {
                         transition={{ delay: 0.1 }}
                         className="text-theme-text mb-4"
                     >
-                        Explore Our Book Collection
+                        {t("title")}
                     </motion.h2>
 
                     <motion.p
@@ -67,8 +69,7 @@ export function BooksSection() {
                         transition={{ delay: 0.2 }}
                         className="text-theme-muted mx-auto max-w-2xl text-lg"
                     >
-                        Curated scholarly works on Ancient Egyptian archaeology, history, and culture.
-                        Perfect for students, researchers, and enthusiasts.
+                        {t("description")}
                     </motion.p>
                 </div>
 
@@ -114,7 +115,7 @@ export function BooksSection() {
                                             </span>
                                             <div className="text-theme-primary flex items-center gap-1 text-sm font-medium">
                                                 <ShoppingCart size={16} />
-                                                <span>Add to Cart</span>
+                                                <span>{t("addToCart")}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -133,17 +134,16 @@ export function BooksSection() {
                 >
                     <div className="relative z-10 text-center">
                         <h3 className="text-theme-text mb-4">
-                            Discover Over 50+ Books
+                            {t("discoverTitle")}
                         </h3>
                         <p className="text-theme-muted mx-auto mb-8 max-w-2xl text-lg">
-                            From beginner guides to advanced archaeological studies, find the perfect book
-                            to deepen your knowledge of Ancient Egypt.
+                            {t("discoverDescription")}
                         </p>
                         <Link
                             href="/books"
                             className="bg-theme-primary hover:bg-theme-secondary hover:shadow-theme-primary/30 group inline-flex items-center gap-2 rounded-xl px-8 py-4 font-medium text-white transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
                         >
-                            <span>Browse All Books</span>
+                            <span>{t("browseBooksButton")}</span>
                             <ArrowRight
                                 size={20}
                                 className="transition-transform duration-300 group-hover:translate-x-1"
