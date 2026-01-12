@@ -20,7 +20,8 @@ export interface SearchParams {
 }
 
 export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
-  const t = useTranslations('filters');
+  const t = useTranslations('sites.filters');
+  const tCommon = useTranslations('sites.common');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [searchParams, setSearchParams] = useState<SearchParams>({
     query: '',
@@ -157,8 +158,8 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
               <label className="text-theme-text text-sm">{t('dateRange')}</label>
               <span className="text-theme-text text-sm">
                 {searchParams.startDate && searchParams.endDate
-                  ? `${Math.abs(Number(searchParams.startDate))} ${Number(searchParams.startDate) < 0 ? 'BC' : 'AD'} – ${Math.abs(Number(searchParams.endDate))} ${Number(searchParams.endDate) < 0 ? 'BC' : 'AD'}`
-                  : 'Select range'}
+                  ? `${Math.abs(Number(searchParams.startDate))} ${Number(searchParams.startDate) < 0 ? tCommon('bc') : tCommon('ad')} – ${Math.abs(Number(searchParams.endDate))} ${Number(searchParams.endDate) < 0 ? tCommon('bc') : tCommon('ad')}`
+                  : t('selectRange')}
               </span>
             </div>
             <Slider.Root
@@ -189,8 +190,8 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
               />
             </Slider.Root>
             <div className="flex justify-between text-xs text-theme-muted mt-2">
-              <span>3100 BC</span>
-              <span>2025 AD</span>
+              <span>3100 {tCommon('bc')}</span>
+              <span>2025 {tCommon('ad')}</span>
             </div>
           </div>
 

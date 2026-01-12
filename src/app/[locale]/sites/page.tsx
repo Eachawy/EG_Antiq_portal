@@ -15,8 +15,8 @@ import { useTranslations } from 'next-intl';
 
 
 export default function SitesPage() {
-    const tHero = useTranslations('hero');
-    const tSearch = useTranslations('search');
+    const tHero = useTranslations('sites.hero');
+    const tSearch = useTranslations('sites.search');
     // const t = useTranslations('header');
     const { isAuthenticated } = useAuth();
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);

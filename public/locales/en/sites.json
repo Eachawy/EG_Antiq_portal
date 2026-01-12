@@ -33,6 +33,7 @@
         "period": "Period",
         "dynasty": "Dynasty",
         "dateRange": "Date Range",
+        "selectRange": "Select range",
         "siteType": "Site Type",
         "duration": "Duration (years)",
         "minDuration": "Min Duration",

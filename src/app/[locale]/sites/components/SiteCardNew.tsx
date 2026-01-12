@@ -9,7 +9,7 @@ interface SiteCardNewProps {
 }
 
 export function SiteCardNew({ site }: SiteCardNewProps) {
-  const tCard = useTranslations('card');
+  const tCard = useTranslations('sites.card');
   const tCommon = useTranslations('common');
 
   const formatDate = (year: number) => {
