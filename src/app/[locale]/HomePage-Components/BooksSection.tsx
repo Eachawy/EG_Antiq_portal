@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 
 export function BooksSection() {
-    const t = useTranslations("booksSection");
+    const t = useTranslations("homepage.booksSection");
     const featuredBooks = [
         {
             id: '1',

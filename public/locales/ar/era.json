@@ -1,0 +1,49 @@
+{
+    "notFound": {
+        "title": "العصر غير موجود",
+        "description": "العصر التاريخي الذي تبحث عنه غير موجود أو تمت إزالته.",
+        "backButton": "العودة إلى الصفحة الرئيسية"
+    },
+    "hero": {
+        "backButton": "العودة إلى الصفحة الرئيسية",
+        "historicalEra": "عصر تاريخي",
+        "title": "عصر {eraName}",
+        "duration": "{years} سنة",
+        "sitesCount": "{count} موقع"
+    },
+    "sections": {
+        "historicalContext": {
+            "title": "السياق التاريخي"
+        },
+        "culturalSignificance": {
+            "title": "الأهمية الثقافية"
+        },
+        "architecturalStyle": {
+            "title": "النمط المعماري"
+        },
+        "religiousBeliefs": {
+            "title": "المعتقدات الدينية"
+        },
+        "keyCharacteristics": {
+            "title": "الخصائص الرئيسية"
+        },
+        "notableSites": {
+            "title": "مواقع بارزة"
+        },
+        "archaeologicalSites": {
+            "title": "مواقع أثرية من عصر {eraName}",
+            "description": "استكشف {count} موقع من هذه الفترة",
+            "viewAllButton": "عرض جميع مواقع {eraName}"
+        },
+        "dynasties": {
+            "title": "الأسرات والفترات",
+            "description": "استكشف الأسرات والفترات الرئيسية التي حددت عصر {eraName}"
+        },
+        "notableRulers": {
+            "title": "حكام بارزون"
+        },
+        "keyAchievements": {
+            "title": "إنجازات رئيسية"
+        }
+    }
+}

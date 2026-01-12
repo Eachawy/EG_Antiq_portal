@@ -1,0 +1,35 @@
+{
+    "notFound": {
+        "title": "الموقع غير موجود",
+        "backButton": "العودة إلى دليل المواقع"
+    },
+    "buttons": {
+        "back": "العودة إلى دليل المواقع",
+        "addToFavorites": "أضف إلى المفضلة",
+        "removeFromFavorites": "إزالة من المفضلة",
+        "favorite": "مفضل",
+        "openMap": "افتح في خرائط جوجل",
+        "findBook": "ابحث عن كتاب"
+    },
+    "sections": {
+        "description": "الوصف",
+        "historicalSignificance": "الأهمية التاريخية",
+        "sources": "المصادر",
+        "relatedBooks": "كتب ذات صلة",
+        "quickInfo": "معلومات سريعة",
+        "timeline": "الجدول الزمني",
+        "locationMap": "خريطة الموقع",
+        "nearbySites": "مواقع قريبة",
+        "favorite": "المفضلة"
+    },
+    "labels": {
+        "reliableSources": "مراجع موثوقة ويمكن التحقق منها",
+        "furtherReading": "قراءة متعمقة عن مصر القديمة",
+        "location": "الموقع",
+        "period": "الفترة",
+        "startPeriod": "فترة البداية",
+        "endPeriod": "فترة النهاية",
+        "duration": "المدة:",
+        "interactiveMap": "خريطة تفاعلية"
+    }
+}

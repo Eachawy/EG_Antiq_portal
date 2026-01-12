@@ -2,6 +2,7 @@
 
 
 import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { MapPin, Filter, Landmark, Church, Mountain, Pyramid, Sparkles, Map, Moon, GraduationCap, Crown, Castle, ShoppingBag, DoorOpen, House, Droplet, Bath, Heart, Navigation } from 'lucide-react';
 import { useState, useMemo, useRef } from 'react';
 import { archaeologicalSites, dynastiesByPeriod } from '../about/data/sitesData';
@@ -13,6 +14,9 @@ import { useAuth } from '@/components/auth/AuthContext';
 import { LoginModal } from '@/components/auth/LoginModal';
 
 export default function InteractiveMapPage() {
+    const tMap = useTranslations('map');
+    const tSites = useTranslations('sites');
+    const tCommon = useTranslations('common');
     const router = useRouter();
     const mapRef = useRef<OpenLayersMapRef>(null);
     const { isAuthenticated } = useAuth();
@@ -67,24 +71,24 @@ export default function InteractiveMapPage() {
 
     // Site type options with icons
     const siteTypes = [
-        { value: 'all', label: 'All', icon: Map },
-        { value: 'capital-cities', label: 'Capital Cities', icon: Landmark },
-        { value: 'temples', label: 'Temples', icon: Church },
-        { value: 'cemeteries', label: 'Cemeteries', icon: Mountain },
-        { value: 'pyramids', label: 'Pyramids', icon: Pyramid },
-        { value: 'obelisks', label: 'Obelisks', icon: Sparkles },
-        { value: 'areas', label: 'Areas', icon: Map },
-        { value: 'churches', label: 'Churches', icon: Church },
-        { value: 'masjids', label: 'Masjids', icon: Moon },
-        { value: 'schools', label: 'Schools', icon: GraduationCap },
-        { value: 'palaces', label: 'Palaces', icon: Crown },
-        { value: 'castles', label: 'Castles', icon: Castle },
-        { value: 'markets', label: 'Markets', icon: ShoppingBag },
-        { value: 'doors', label: 'Doors', icon: DoorOpen },
-        { value: 'houses', label: 'Houses', icon: House },
-        { value: 'sabil', label: 'Sabil', icon: Droplet },
-        { value: 'hammam', label: 'Hammam', icon: Bath },
-        { value: 'heart', label: 'Heart', icon: Heart },
+        { value: 'all', label: tSites('filters.allTypes'), icon: Map },
+        { value: 'capital-cities', label: tSites('filters.types.capital-cities'), icon: Landmark },
+        { value: 'temples', label: tSites('filters.types.temples'), icon: Church },
+        { value: 'cemeteries', label: tSites('filters.types.cemeteries'), icon: Mountain },
+        { value: 'pyramids', label: tSites('filters.types.pyramids'), icon: Pyramid },
+        { value: 'obelisks', label: tSites('filters.types.obelisks'), icon: Sparkles },
+        { value: 'areas', label: tSites('filters.types.areas'), icon: Map },
+        { value: 'churches', label: tSites('filters.types.churches'), icon: Church },
+        { value: 'masjids', label: tSites('filters.types.masjids'), icon: Moon },
+        { value: 'schools', label: tSites('filters.types.schools'), icon: GraduationCap },
+        { value: 'palaces', label: tSites('filters.types.palaces'), icon: Crown },
+        { value: 'castles', label: tSites('filters.types.castles'), icon: Castle },
+        { value: 'markets', label: tSites('filters.types.markets'), icon: ShoppingBag },
+        { value: 'doors', label: tSites('filters.types.doors'), icon: DoorOpen },
+        { value: 'houses', label: tSites('filters.types.houses'), icon: House },
+        { value: 'sabil', label: tSites('filters.types.sabil'), icon: Droplet },
+        { value: 'hammam', label: tSites('filters.types.hammam'), icon: Bath },
+        { value: 'heart', label: tSites('filters.types.heart'), icon: Heart },
     ];
 
     // Get available dynasties based on selected period
@@ -126,9 +130,9 @@ export default function InteractiveMapPage() {
 
     const formatDate = (year: number) => {
         if (year < 0) {
-            return `${Math.abs(year)} BC`;
+            return `${Math.abs(year)} ${tCommon('bc')}`;
         } else {
-            return `${year} AD`;
+            return `${year} ${tCommon('ad')}`;
         }
     };
 
@@ -155,11 +159,10 @@ export default function InteractiveMapPage() {
             <div className="hidden md:block pt-24 md:pt-32 pb-8 md:pb-12 px-4 md:px-6 bg-gradient-to-br from-theme-primary/20 via-theme-secondary/10 to-theme-primary/20 border-b border-theme-border">
                 <div className="container mx-auto">
                     <div className="text-center mb-6 md:mb-8">
-                        <p className="text-theme-primary tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-sm mb-3 md:mb-4 pt-4 md:pt-6">INTERACTIVE VISUALIZATION</p>
-                        <h1 className="text-theme-text mb-4 md:mb-6 text-2xl md:text-3xl lg:text-4xl">Sites Map</h1>
+                        <p className="text-theme-primary tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-sm mb-3 md:mb-4 pt-4 md:pt-6">{tMap('hero.subtitle')}</p>
+                        <h1 className="text-theme-text mb-4 md:mb-6 text-2xl md:text-3xl lg:text-4xl">{tMap('hero.title')}</h1>
                         <p className="text-theme-text/70 max-w-3xl mx-auto text-sm md:text-base px-4">
-                            Explore archaeological sites on an interactive map. Filter by historical period or location to discover
-                            sites in specific regions.
+                            {tMap('hero.description')}
                         </p>
                     </div>
 
@@ -172,7 +175,7 @@ export default function InteractiveMapPage() {
                             raised
                         >
                             <Navigation className="h-4 w-4 md:h-5 md:w-5 mr-2" />
-                            <span>Get your current location</span>
+                            <span>{tMap('buttons.findLocation')}</span>
                         </Button>
                     </div>
                 </div>
@@ -191,10 +194,10 @@ export default function InteractiveMapPage() {
                                 className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-3 bg-theme-card border border-theme-border rounded-lg shadow-lg hover:shadow-xl transition-all hover:bg-theme-accent"
                             >
                                 <Filter size={18} className="text-theme-primary" />
-                                <span className="text-theme-text font-medium text-sm md:text-base">Filters</span>
+                                <span className="text-theme-text font-medium text-sm md:text-base">{tMap('buttons.filters')}</span>
                                 {!showFilters && filteredSites.length < archaeologicalSites.length && (
                                     <span className="ml-1 px-2 py-0.5 bg-theme-primary text-white rounded-full text-xs">
-                                        Active
+                                        {tMap('buttons.active')}
                                     </span>
                                 )}
                             </button>
@@ -206,7 +209,7 @@ export default function InteractiveMapPage() {
                             >
                                 <MapPin size={18} className="text-theme-primary" />
                                 <span className="text-theme-text font-medium text-sm">
-                                    Sites ({filteredSites.length})
+                                    {tMap('sidebar.title', { count: filteredSites.length })}
                                 </span>
                             </button>
                         </div>
@@ -226,7 +229,7 @@ export default function InteractiveMapPage() {
                                 <div className="flex items-center justify-between mb-6">
                                     <div className="flex items-center gap-2 text-theme-text">
                                         <Filter size={20} />
-                                        <h3>Map Filters</h3>
+                                        <h3>{tMap('filters.title')}</h3>
                                     </div>
                                     <button
                                         onClick={() => setShowFilters(false)}
@@ -244,7 +247,7 @@ export default function InteractiveMapPage() {
                                         <div>
                                             <label className="block text-theme-text text-sm mb-2">
                                                 <span className="flex items-center gap-2">
-                                                    Historical Period
+                                                    {tMap('filters.period')}
                                                 </span>
                                             </label>
                                             <select
@@ -252,7 +255,7 @@ export default function InteractiveMapPage() {
                                                 onChange={(e) => handlePeriodChange(e.target.value)}
                                                 className="w-full bg-theme-bg border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:border-theme-primary transition-colors"
                                             >
-                                                <option value="all">All Periods</option>
+                                                <option value="all">{tMap('filters.allPeriods')}</option>
                                                 <option value="Ancient Egyptian">Ancient Egyptian (3100 BC – 332 BC)</option>
                                                 <option value="Ptolemaic">Ptolemaic (332 BC – 30 BC)</option>
                                                 <option value="Roman">Roman (30 BC – 395 AD)</option>
@@ -262,13 +265,13 @@ export default function InteractiveMapPage() {
                                         </div>
 
                                         <div>
-                                            <label className="block text-theme-text text-sm mb-2">Dynasty</label>
+                                            <label className="block text-theme-text text-sm mb-2">{tMap('filters.dynasty')}</label>
                                             <select
                                                 value={selectedDynasty}
                                                 onChange={(e) => setSelectedDynasty(e.target.value)}
                                                 className="w-full bg-theme-bg border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:border-theme-primary transition-colors"
                                             >
-                                                <option value="all">All Dynasties</option>
+                                                <option value="all">{tMap('filters.allDynasties')}</option>
                                                 {availableDynasties.map((dynasty: any) => (
                                                     <option key={dynasty} value={dynasty}>
                                                         {dynasty}
@@ -281,9 +284,9 @@ export default function InteractiveMapPage() {
                                     {/* Row 2: Date Range Slider */}
                                     <div>
                                         <div className="mb-2 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
-                                            <label className="text-theme-text text-sm">Date Range</label>
+                                            <label className="text-theme-text text-sm">{tMap('filters.dateRange')}</label>
                                             <span className="text-theme-primary text-sm font-medium">
-                                                {Math.abs(startDate)} {startDate < 0 ? 'BC' : 'AD'} – {Math.abs(endDate)} {endDate < 0 ? 'BC' : 'AD'}
+                                                {Math.abs(startDate)} {startDate < 0 ? tCommon('bc') : tCommon('ad')} – {Math.abs(endDate)} {endDate < 0 ? tCommon('bc') : tCommon('ad')}
                                             </span>
                                         </div>
                                         <Slider.Root
@@ -318,7 +321,7 @@ export default function InteractiveMapPage() {
 
                                     {/* Row 3: Site Type Icons */}
                                     <div>
-                                        <label className="block text-theme-text mb-3 text-sm">Site Type</label>
+                                        <label className="block text-theme-text mb-3 text-sm">{tMap('filters.siteType')}</label>
                                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 max-h-[200px] overflow-y-auto pr-2">
                                             {siteTypes.map((type) => {
                                                 const Icon = type.icon;
@@ -343,14 +346,14 @@ export default function InteractiveMapPage() {
                                 </div>
 
                                 <div className="mt-6 pt-6 border-t border-gray-200 text-sm text-theme-muted">
-                                    Showing {filteredSites.length} of {archaeologicalSites.length} sites
+                                    {tMap('filters.showing', { count: filteredSites.length, total: archaeologicalSites.length })}
                                 </div>
                             </div>
                         )}
 
                         {/* Legend - Hidden on Mobile */}
                         <div className="hidden md:block absolute top-20 right-6 bg-theme-card border border-theme-border rounded-lg p-4 shadow-lg z-10">
-                            <div className="text-theme-text mb-3 text-sm font-medium">Period Legend</div>
+                            <div className="text-theme-text mb-3 text-sm font-medium">{tMap('legend.title')}</div>
                             <div className="space-y-2">
                                 <div className="flex items-center gap-2">
                                     <div className="w-3 h-3 rounded-full bg-amber-500"></div>
@@ -398,7 +401,7 @@ export default function InteractiveMapPage() {
                         } lg:relative lg:block inset-0 lg:inset-auto z-50 lg:z-0 w-full lg:w-80 xl:w-96 bg-theme-card lg:border-l border-theme-border flex flex-col overflow-hidden shadow-2xl lg:shadow-none`}>
                         {/* Mobile Header with Close Button */}
                         <div className="lg:hidden sticky top-0 z-10 bg-theme-card border-b border-theme-border p-4 flex items-center justify-between shadow-sm">
-                            <h3 className="text-theme-text font-medium">Sites in View ({filteredSites.length})</h3>
+                            <h3 className="text-theme-text font-medium">{tMap('sidebar.title', { count: filteredSites.length })}</h3>
                             <button
                                 onClick={() => setShowSidebar(false)}
                                 className="p-2.5 rounded-lg bg-theme-primary text-white hover:bg-theme-primary/90 transition-colors shadow-md"
@@ -411,7 +414,7 @@ export default function InteractiveMapPage() {
                         </div>
 
                         {/* Desktop Header */}
-                        <h3 className="hidden lg:block text-theme-text mb-0 p-4 md:p-6 pb-0">Sites in View ({filteredSites.length})</h3>
+                        <h3 className="hidden lg:block text-theme-text mb-0 p-4 md:p-6 pb-0">{tMap('sidebar.title', { count: filteredSites.length })}</h3>
 
                         {/* Sites List */}
                         <div className="space-y-3 flex-1 overflow-y-auto p-4 md:p-6 pt-4">

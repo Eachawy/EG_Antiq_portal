@@ -1,10 +1,13 @@
 'use client';
 
-// import { useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { Mail, MapPin, Phone, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
 export default function ContactPage() {
+    const tHero = useTranslations('contact.hero');
+    const tInfo = useTranslations('contact.info');
+    const tForm = useTranslations('contact.form');
     // const t = useTranslations('header');
     const [formData, setFormData] = useState({
         name: '',
@@ -31,22 +34,22 @@ export default function ContactPage() {
 
         // Validate fields
         if (!formData.name.trim()) {
-            setErrorMessage('Please enter your name');
+            setErrorMessage(tForm('errors.nameRequired'));
             return;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!formData.email.trim()) {
-            setErrorMessage('Please enter your email address');
+            setErrorMessage(tForm('errors.emailRequired'));
             return;
         }
         if (!emailRegex.test(formData.email)) {
-            setErrorMessage('Please enter a valid email address');
+            setErrorMessage(tForm('errors.emailInvalid'));
             return;
         }
 
         if (!formData.message.trim()) {
-            setErrorMessage('Please enter your message');
+            setErrorMessage(tForm('errors.messageRequired'));
             return;
         }
 
@@ -86,13 +89,13 @@ export default function ContactPage() {
                 <div className="absolute inset-0 flex items-center justify-center">
                     <div className="container mx-auto px-6 md:px-12 text-center">
                         <p className="text-white/90 tracking-[0.3em] text-xs sm:text-sm mb-4">
-                            GET IN TOUCH
+                            {tHero('subtitle')}
                         </p>
                         <h1 className="text-white mb-4 md:mb-6 text-3xl md:text-4xl lg:text-5xl">
-                            Contact Us
+                            {tHero('title')}
                         </h1>
                         <p className="text-white/90 max-w-2xl mx-auto text-sm md:text-base">
-                            Have questions about your visit? We're here to help you plan the perfect archaeological adventure.
+                            {tHero('description')}
                         </p>
                     </div>
                 </div>
@@ -109,10 +112,14 @@ export default function ContactPage() {
                                     <MapPin className="text-theme-primary" size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-theme-text mb-2">Address</h3>
+                                    <h3 className="text-theme-text mb-2">{tInfo('addressTitle')}</h3>
                                     <p className="text-theme-text/70">
-                                        Giza Plateau, Al Haram, Giza<br />
-                                        Egypt
+                                        {tInfo('address').split('\n').map((line, i) => (
+                                            <span key={i}>
+                                                {line}
+                                                <br />
+                                            </span>
+                                        ))}
                                     </p>
                                 </div>
                             </div>
@@ -122,7 +129,7 @@ export default function ContactPage() {
                                     <Phone className="text-theme-primary" size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-theme-text mb-2">Phone</h3>
+                                    <h3 className="text-theme-text mb-2">{tInfo('phoneTitle')}</h3>
                                     <p className="text-theme-text/70">+20 2 3377 3222</p>
                                 </div>
                             </div>
@@ -132,7 +139,7 @@ export default function ContactPage() {
                                     <Mail className="text-theme-primary" size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-theme-text mb-2">Email</h3>
+                                    <h3 className="text-theme-text mb-2">{tInfo('emailTitle')}</h3>
                                     <p className="text-theme-text/70">info@ancientegypt.com</p>
                                 </div>
                             </div>
@@ -143,7 +150,7 @@ export default function ContactPage() {
                             <div>
                                 <input
                                     type="text"
-                                    placeholder="Your Name"
+                                    placeholder={tForm('namePlaceholder')}
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
@@ -153,7 +160,7 @@ export default function ContactPage() {
                             <div>
                                 <input
                                     type="email"
-                                    placeholder="Your Email"
+                                    placeholder={tForm('emailPlaceholder')}
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
@@ -162,7 +169,7 @@ export default function ContactPage() {
                             </div>
                             <div>
                                 <textarea
-                                    placeholder="Your Message"
+                                    placeholder={tForm('messagePlaceholder')}
                                     rows={5}
                                     name="message"
                                     value={formData.message}
@@ -179,13 +186,13 @@ export default function ContactPage() {
                                 {isLoading ? (
                                     <>
                                         <Loader2 className="animate-spin" size={20} />
-                                        SENDING...
+                                        {tForm('sending')}
                                     </>
                                 ) : (
-                                    'SEND MESSAGE'
+                                    tForm('submitButton')
                                 )}
                             </button>
-                            {showSuccess && <p className="text-green-500 text-sm">Message sent successfully!</p>}
+                            {showSuccess && <p className="text-green-500 text-sm">{tForm('successMessage')}</p>}
                         </form>
                     </div>
                 </div>

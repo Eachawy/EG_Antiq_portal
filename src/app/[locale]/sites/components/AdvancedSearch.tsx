@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { Search, SlidersHorizontal, X, Landmark, Church, Mountain, Pyramid, Sparkles, Map, Moon, GraduationCap, Crown, Castle, ShoppingBag, DoorOpen, House, Droplet, Bath } from 'lucide-react';
 import { dynastiesByPeriod } from '../../about/data/sitesData';
 import * as Slider from '@radix-ui/react-slider';
@@ -19,6 +20,8 @@ export interface SearchParams {
 }
 
 export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
+  const t = useTranslations('sites.filters');
+  const tCommon = useTranslations('sites.common');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [searchParams, setSearchParams] = useState<SearchParams>({
     query: '',
@@ -33,23 +36,23 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
 
   // Site type options with icons
   const siteTypes = [
-    { value: 'all', label: 'All', icon: Map },
-    { value: 'capital-cities', label: 'Capital Cities', icon: Landmark },
-    { value: 'temples', label: 'Temples', icon: Church },
-    { value: 'cemeteries', label: 'Cemeteries', icon: Mountain },
-    { value: 'pyramids', label: 'Pyramids', icon: Pyramid },
-    { value: 'obelisks', label: 'Obelisks', icon: Sparkles },
-    { value: 'areas', label: 'Areas', icon: Map },
-    { value: 'churches', label: 'Churches', icon: Church },
-    { value: 'masjids', label: 'Masjids', icon: Moon },
-    { value: 'schools', label: 'Schools', icon: GraduationCap },
-    { value: 'palaces', label: 'Palaces', icon: Crown },
-    { value: 'castles', label: 'Castles', icon: Castle },
-    { value: 'markets', label: 'Markets', icon: ShoppingBag },
-    { value: 'doors', label: 'Doors', icon: DoorOpen },
-    { value: 'houses', label: 'Houses', icon: House },
-    { value: 'sabil', label: 'Sabil', icon: Droplet },
-    { value: 'hammam', label: 'Hammam', icon: Bath },
+    { value: 'all', label: t('allTypes'), icon: Map },
+    { value: 'capital-cities', label: t('types.capital-cities'), icon: Landmark },
+    { value: 'temples', label: t('types.temples'), icon: Church },
+    { value: 'cemeteries', label: t('types.cemeteries'), icon: Mountain },
+    { value: 'pyramids', label: t('types.pyramids'), icon: Pyramid },
+    { value: 'obelisks', label: t('types.obelisks'), icon: Sparkles },
+    { value: 'areas', label: t('types.areas'), icon: Map },
+    { value: 'churches', label: t('types.churches'), icon: Church },
+    { value: 'masjids', label: t('types.masjids'), icon: Moon },
+    { value: 'schools', label: t('types.schools'), icon: GraduationCap },
+    { value: 'palaces', label: t('types.palaces'), icon: Crown },
+    { value: 'castles', label: t('types.castles'), icon: Castle },
+    { value: 'markets', label: t('types.markets'), icon: ShoppingBag },
+    { value: 'doors', label: t('types.doors'), icon: DoorOpen },
+    { value: 'houses', label: t('types.houses'), icon: House },
+    { value: 'sabil', label: t('types.sabil'), icon: Droplet },
+    { value: 'hammam', label: t('types.hammam'), icon: Bath },
   ];
 
   // Get available dynasties based on selected period
@@ -88,14 +91,14 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
     <div className="bg-theme-card border border-theme-border rounded-xl p-6 shadow-lg">
       {/* Basic Search */}
       <div className="mb-6">
-        <label className="block text-theme-text mb-2">Search Sites</label>
+        <label className="block text-theme-text mb-2">{t('searchLabel')}</label>
         <div className="relative">
           <input
             type="text"
             value={searchParams.query}
             onChange={(e) => setSearchParams({ ...searchParams, query: e.target.value })}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder="Enter site name (English or Arabic)..."
+            placeholder={t('placeholder')}
             className="w-full bg-theme-bg border border-theme-border rounded-lg pl-12 pr-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none focus:border-theme-primary transition-colors"
           />
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-theme-muted" size={20} />
@@ -108,7 +111,7 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
         className="flex items-center gap-2 text-theme-primary hover:text-theme-secondary transition-colors mb-4"
       >
         <SlidersHorizontal size={18} />
-        <span>{showAdvanced ? 'Hide' : 'Show'} Advanced Filters</span>
+        <span>{showAdvanced ? t('hideAdvanced') : t('showAdvanced')}</span>
       </button>
 
       {/* Advanced Filters */}
@@ -117,13 +120,13 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
           {/* Row 1: Period & Dynasty */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-theme-text mb-2 text-sm">Historical Period</label>
+              <label className="block text-theme-text mb-2 text-sm">{t('period')}</label>
               <select
                 value={searchParams.period}
                 onChange={(e) => handlePeriodChange(e.target.value)}
                 className="w-full bg-theme-card border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:ring-2 focus:ring-theme-primary"
               >
-                <option value="all">All Periods</option>
+                <option value="all">{t('allPeriods')}</option>
                 <option value="Ancient Egyptian">Ancient Egyptian (3100 BC – 332 BC)</option>
                 <option value="Ptolemaic">Ptolemaic (332 BC – 30 BC)</option>
                 <option value="Roman">Roman (30 BC – 395 AD)</option>
@@ -133,13 +136,13 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
             </div>
 
             <div>
-              <label className="block text-theme-text mb-2 text-sm">Dynasty</label>
+              <label className="block text-theme-text mb-2 text-sm">{t('dynasty')}</label>
               <select
                 value={searchParams.dynasty}
                 onChange={(e) => setSearchParams({ ...searchParams, dynasty: e.target.value })}
                 className="w-full bg-theme-bg border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:border-theme-primary transition-colors"
               >
-                <option value="all">All Dynasties</option>
+                <option value="all">{t('allDynasties')}</option>
                 {availableDynasties.map((dynasty) => (
                   <option key={dynasty} value={dynasty}>
                     {dynasty}
@@ -152,11 +155,11 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
           {/* Row 2: Date Range */}
           <div>
             <div className="mb-2 flex justify-between items-center">
-              <label className="text-theme-text text-sm">Date Range</label>
+              <label className="text-theme-text text-sm">{t('dateRange')}</label>
               <span className="text-theme-text text-sm">
                 {searchParams.startDate && searchParams.endDate
-                  ? `${Math.abs(Number(searchParams.startDate))} ${Number(searchParams.startDate) < 0 ? 'BC' : 'AD'} – ${Math.abs(Number(searchParams.endDate))} ${Number(searchParams.endDate) < 0 ? 'BC' : 'AD'}`
-                  : 'Select range'}
+                  ? `${Math.abs(Number(searchParams.startDate))} ${Number(searchParams.startDate) < 0 ? tCommon('bc') : tCommon('ad')} – ${Math.abs(Number(searchParams.endDate))} ${Number(searchParams.endDate) < 0 ? tCommon('bc') : tCommon('ad')}`
+                  : t('selectRange')}
               </span>
             </div>
             <Slider.Root
@@ -187,14 +190,14 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
               />
             </Slider.Root>
             <div className="flex justify-between text-xs text-theme-muted mt-2">
-              <span>3100 BC</span>
-              <span>2025 AD</span>
+              <span>3100 {tCommon('bc')}</span>
+              <span>2025 {tCommon('ad')}</span>
             </div>
           </div>
 
           {/* Row 3: Site Type Icons */}
           <div>
-            <label className="block text-theme-text mb-3 text-sm">Site Type</label>
+            <label className="block text-theme-text mb-3 text-sm">{t('siteType')}</label>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
               {siteTypes.map((type) => {
                 const Icon = type.icon;
@@ -219,11 +222,11 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
 
           {/* Help Text */}
           <div className="bg-theme-accent border border-theme-border rounded-lg p-4">
-            <h4 className="text-theme-text mb-2 text-sm">Search Tips:</h4>
+            <h4 className="text-theme-text mb-2 text-sm">{t('tips')}</h4>
             <ul className="text-theme-muted text-xs space-y-1">
-              <li>• Use negative numbers for BC dates (e.g., -3000 for 3000 BC)</li>
-              <li>• Use positive numbers for AD dates (e.g., 1176 for 1176 AD)</li>
-              <li>• Combine multiple filters for more specific results</li>
+              <li>{t('tipsList.negative')}</li>
+              <li>{t('tipsList.positive')}</li>
+              <li>{t('tipsList.combine')}</li>
             </ul>
           </div>
         </div>
@@ -236,14 +239,14 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
           className="flex-1 bg-theme-primary hover:bg-theme-secondary text-white px-6 py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
         >
           <Search size={18} />
-          <span>Search Sites</span>
+          <span>{t('searchButton')}</span>
         </button>
         <button
           onClick={handleReset}
           className="sm:w-auto px-6 py-3 bg-theme-accent hover:bg-theme-accent/70 text-theme-text border border-theme-border rounded-lg transition-colors flex items-center justify-center gap-2"
         >
           <X size={18} />
-          <span>Reset</span>
+          <span>{t('reset')}</span>
         </button>
       </div>
     </div>

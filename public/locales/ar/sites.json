@@ -1,0 +1,85 @@
+{
+    "hero": {
+        "subtitle": "المواقع الأثرية",
+        "title": "دليل المواقع",
+        "description": "تصفح أهم المواقع الأثرية في مصر. استخدم المرشحات المتقدمة للعثور على ما تبحث عنه بالضبط."
+    },
+    "search": {
+        "found": "تم العثور على <strong>{count}</strong> موقع",
+        "saveSearch": "حفظ البحث",
+        "noSites": {
+            "title": "لم يتم العثور على مواقع",
+            "description": "حاول تعديل معايير البحث أو التصفية"
+        },
+        "pagination": {
+            "showing": "عرض <span class=\"font-semibold text-theme-primary\">{start}-{end}</span> من <span class=\"font-semibold text-theme-primary\">{total}</span> مواقع أثرية",
+            "previous": "السابق",
+            "next": "التالي",
+            "jumpTo": "الانتقال إلى صفحة:",
+            "of": "من {total}"
+        },
+        "saveDialog": {
+            "title": "حفظ البحث",
+            "description": "أدخل اسمًا لبحثك المحفوظ:",
+            "placeholder": "مثال: المعابد المصرية القديمة",
+            "cancel": "إلغاء",
+            "save": "حفظ",
+            "success": "تم حفظ معايير البحث \"{name}\" بنجاح.",
+            "nameRequired": "يرجى إدخال اسم لبحثك المحفوظ."
+        }
+    },
+    "filters": {
+        "placeholder": "بحث في المواقع...",
+        "period": "الفترة",
+        "dynasty": "الأسرة",
+        "dateRange": "النطاق الزمني",
+        "selectRange": "تحديد النطاق",
+        "siteType": "نوع الموقع",
+        "duration": "المدة (سنوات)",
+        "minDuration": "الحد الأدنى للمدة",
+        "maxDuration": "الحد الأقصى للمدة",
+        "reset": "إعادة تعيين المرشحات",
+        "apply": "تطبيق المرشحات",
+        "advanced": "بحث متقدم",
+        "simple": "بحث بسيط",
+        "allPeriods": "كل الفترات",
+        "allDynasties": "كل الأسرات",
+        "allTypes": "كل الأنواع",
+        "searchLabel": "البحث في المواقع",
+        "showAdvanced": "إظهار المرشحات المتقدمة",
+        "hideAdvanced": "إخفاء المرشحات المتقدمة",
+        "searchButton": "بحث",
+        "tips": "نصائح البحث:",
+        "tipsList": {
+            "negative": "• استخدم الأرقام السالبة لتواريخ قبل الميلاد (مثال: -3000 لعام 3000 ق.م)",
+            "positive": "• استخدم الأرقام الموجبة لتواريخ بعد الميلاد (مثال: 1176 لعام 1176 م)",
+            "combine": "• ادمج مرشحات متعددة للحصول على نتائج أكثر دقة"
+        },
+        "types": {
+            "capital-cities": "عواصم",
+            "temples": "معابد",
+            "cemeteries": "مقابر",
+            "pyramids": "أهرامات",
+            "obelisks": "مسلات",
+            "areas": "مناطق",
+            "churches": "كنائس",
+            "masjids": "مساجد",
+            "schools": "مدارس",
+            "palaces": "قصور",
+            "castles": "قلاع",
+            "markets": "أسواق",
+            "doors": "أبواب",
+            "houses": "منازل",
+            "sabil": "سبيل",
+            "hammam": "حمام",
+            "heart": "قلب"
+        }
+    },
+    "card": {
+        "viewDetails": "عرض التفاصيل"
+    },
+    "common": {
+        "bc": "ق.م",
+        "ad": "م"
+    }
+}

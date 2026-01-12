@@ -9,7 +9,10 @@ interface LoginModalProps {
   onClose: () => void;
 }
 
+import { useTranslations } from 'next-intl';
+
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
+  const t = useTranslations('auth.login');
   const { login } = useAuth();
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
@@ -87,7 +90,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
           <button
             onClick={onClose}
             className="text-theme-muted hover:text-theme-primary hover:bg-theme-accent absolute right-4 top-4 z-20 rounded-full p-2 transition-colors"
-            aria-label="Close modal"
+            aria-label={t('closeModal')}
           >
             <X size={24} />
           </button>
@@ -95,12 +98,12 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
           {/* Header */}
           <div className="p-8 pb-6">
             <h2 className="text-theme-text mb-2 text-3xl">
-              {isSignUp ? 'Create Account' : 'Welcome Back'}
+              {isSignUp ? t('createAccountTitle') : t('title')}
             </h2>
             <p className="text-theme-muted">
               {isSignUp
-                ? 'Sign up to explore ancient Egypt'
-                : 'Sign in to continue your journey'}
+                ? t('createAccountSubtitle')
+                : t('subtitle')}
             </p>
           </div>
 
@@ -130,7 +133,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                Continue with Google
+                {t('social.google')}
               </button>
 
               <button
@@ -138,7 +141,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 className="flex w-full items-center justify-center gap-3 rounded-lg bg-[#1877F2] px-4 py-3 text-white transition-colors duration-300 hover:bg-[#1664D9]"
               >
                 <Facebook size={20} fill="white" />
-                Continue with Facebook
+                {t('social.facebook')}
               </button>
 
               <button
@@ -146,7 +149,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 className="flex w-full items-center justify-center gap-3 rounded-lg bg-black px-4 py-3 text-white transition-colors duration-300 hover:bg-gray-900"
               >
                 <Apple size={20} fill="white" />
-                Continue with Apple
+                {t('social.apple')}
               </button>
             </div>
 
@@ -156,7 +159,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 <div className="border-theme-border w-full border-t"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-theme-card text-theme-muted px-2">Or continue with email</span>
+                <span className="bg-theme-card text-theme-muted px-2">{t('orEmail')}</span>
               </div>
             </div>
 
@@ -165,7 +168,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               {isSignUp && (
                 <div>
                   <label htmlFor="name" className="text-theme-text mb-2 block text-sm">
-                    Full Name
+                    {t('fullName')}
                   </label>
                   <div className="relative">
                     <UserIcon className="text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" size={20} />
@@ -174,7 +177,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="John Doe"
+                      placeholder={t('namePlaceholder')}
                       required={isSignUp}
                       className="bg-theme-bg border-theme-border text-theme-text focus:border-theme-primary w-full rounded-lg border py-3 pl-10 pr-4 transition-colors focus:outline-none"
                     />
@@ -184,7 +187,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
               <div>
                 <label htmlFor="email" className="text-theme-text mb-2 block text-sm">
-                  Email Address
+                  {t('email')}
                 </label>
                 <div className="relative">
                   <Mail className="text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" size={20} />
@@ -193,7 +196,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
+                    placeholder={t('emailPlaceholder')}
                     required
                     className="bg-theme-bg border-theme-border text-theme-text focus:border-theme-primary w-full rounded-lg border py-3 pl-10 pr-4 transition-colors focus:outline-none"
                   />
@@ -202,7 +205,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
               <div>
                 <label htmlFor="password" className="text-theme-text mb-2 block text-sm">
-                  Password
+                  {t('password')}
                 </label>
                 <div className="relative">
                   <Lock className="text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" size={20} />
@@ -211,7 +214,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
+                    placeholder={t('passwordPlaceholder')}
                     required
                     className="bg-theme-bg border-theme-border text-theme-text focus:border-theme-primary w-full rounded-lg border py-3 pl-10 pr-4 transition-colors focus:outline-none"
                   />
@@ -222,10 +225,10 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 <div className="flex items-center justify-between text-sm">
                   <label className="text-theme-text flex cursor-pointer items-center gap-2">
                     <input type="checkbox" className="border-theme-border rounded" />
-                    Remember me
+                    {t('rememberMe')}
                   </label>
                   <a href="#" className="text-theme-primary hover:text-theme-secondary">
-                    Forgot password?
+                    {t('forgotPassword')}
                   </a>
                 </div>
               )}
@@ -234,20 +237,20 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 type="submit"
                 className="bg-theme-primary hover:bg-theme-secondary w-full rounded-lg py-3 text-white transition-colors duration-300"
               >
-                {isSignUp ? 'Create Account' : 'Sign In'}
+                {isSignUp ? t('createAccountButton') : t('signInButton')}
               </button>
             </form>
 
             {/* Toggle Sign Up/Sign In */}
             <div className="mt-6 text-center text-sm">
               <span className="text-theme-muted">
-                {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+                {isSignUp ? t('haveAccount') : t('noAccount')}{' '}
               </span>
               <button
                 onClick={() => setIsSignUp(!isSignUp)}
                 className="text-theme-primary hover:text-theme-secondary font-medium"
               >
-                {isSignUp ? 'Sign In' : 'Sign Up'}
+                {isSignUp ? t('signInLink') : t('signUpLink')}
               </button>
             </div>
           </div>

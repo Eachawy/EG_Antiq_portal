@@ -1,0 +1,39 @@
+{
+    "hero": {
+        "subtitle": "INTERACTIVE VISUALIZATION",
+        "title": "Sites Map",
+        "description": "Explore archaeological sites on an interactive map. Filter by historical period or location to discover sites in specific regions."
+    },
+    "buttons": {
+        "findLocation": "Get your current location",
+        "filters": "Filters",
+        "active": "Active",
+        "sitesInView": "Sites in View ({count})"
+    },
+    "filters": {
+        "title": "Map Filters",
+        "period": "Historical Period",
+        "dynasty": "Dynasty",
+        "dateRange": "Date Range",
+        "siteType": "Site Type",
+        "showing": "Showing {count} of {total} sites",
+        "allPeriods": "All Periods",
+        "allDynasties": "All Dynasties"
+    },
+    "legend": {
+        "title": "Period Legend"
+    },
+    "sidebar": {
+        "title": "Sites in View ({count})"
+    },
+    "tooltips": {
+        "clickDetails": "Click for details →"
+    },
+    "errors": {
+        "geolocationUnsupported": "Geolocation is not supported by your browser",
+        "locationError": "Unable to retrieve your location",
+        "permissionDenied": "Location permission denied. Please enable location services.",
+        "positionUnavailable": "Location information is unavailable.",
+        "timeout": "Location request timed out. Please try again."
+    }
+}

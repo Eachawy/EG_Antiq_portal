@@ -1,5 +1,6 @@
 'use client';
 import { MapPin, Calendar, ExternalLink } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { ArchaeologicalSite } from '../../about/data/sitesData';
 import { Link } from '@/i18n/routing';
 
@@ -8,11 +9,14 @@ interface SiteCardNewProps {
 }
 
 export function SiteCardNew({ site }: SiteCardNewProps) {
+  const tCard = useTranslations('sites.card');
+  const tCommon = useTranslations('common');
+
   const formatDate = (year: number) => {
     if (year < 0) {
-      return `${Math.abs(year)} BC`;
+      return `${Math.abs(year)} ${tCommon('bc')}`;
     } else {
-      return `${year} AD`;
+      return `${year} ${tCommon('ad')}`;
     }
   };
 
@@ -78,7 +82,7 @@ export function SiteCardNew({ site }: SiteCardNewProps) {
 
           {/* View Details Link */}
           <div className="flex items-center gap-2 text-theme-primary group-hover:text-theme-secondary transition-colors text-sm">
-            <span>View Details</span>
+            <span>{tCard('viewDetails')}</span>
             <ExternalLink size={16} />
           </div>
         </div>

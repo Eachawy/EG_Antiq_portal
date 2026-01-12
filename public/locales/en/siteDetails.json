@@ -1,0 +1,35 @@
+{
+    "notFound": {
+        "title": "Site Not Found",
+        "backButton": "Back to Sites Directory"
+    },
+    "buttons": {
+        "back": "Back to Sites Directory",
+        "addToFavorites": "Add to Favorites",
+        "removeFromFavorites": "Remove from Favorites",
+        "favorite": "Favorite",
+        "openMap": "Open in Google Maps",
+        "findBook": "Find Book"
+    },
+    "sections": {
+        "description": "Description",
+        "historicalSignificance": "Historical Significance",
+        "sources": "Sources",
+        "relatedBooks": "Related Books",
+        "quickInfo": "Quick Information",
+        "timeline": "Timeline",
+        "locationMap": "Location Map",
+        "nearbySites": "Nearby Sites",
+        "favorite": "Favorite"
+    },
+    "labels": {
+        "reliableSources": "Reliable and verifiable references",
+        "furtherReading": "Further reading on ancient Egypt",
+        "location": "Location",
+        "period": "Period",
+        "startPeriod": "Start Period",
+        "endPeriod": "End Period",
+        "duration": "Duration:",
+        "interactiveMap": "Interactive Map"
+    }
+}

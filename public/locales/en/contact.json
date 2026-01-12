@@ -1,0 +1,27 @@
+{
+    "hero": {
+        "subtitle": "GET IN TOUCH",
+        "title": "Contact Us",
+        "description": "Have questions about your visit? We're here to help you plan the perfect archaeological adventure."
+    },
+    "info": {
+        "addressTitle": "Address",
+        "address": "Giza Plateau, Al Haram, Giza\nEgypt",
+        "phoneTitle": "Phone",
+        "emailTitle": "Email"
+    },
+    "form": {
+        "namePlaceholder": "Your Name",
+        "emailPlaceholder": "Your Email",
+        "messagePlaceholder": "Your Message",
+        "submitButton": "SEND MESSAGE",
+        "sending": "SENDING...",
+        "successMessage": "Message sent successfully!",
+        "errors": {
+            "nameRequired": "Please enter your name",
+            "emailRequired": "Please enter your email address",
+            "emailInvalid": "Please enter a valid email address",
+            "messageRequired": "Please enter your message"
+        }
+    }
+}

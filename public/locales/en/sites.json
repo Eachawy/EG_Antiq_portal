@@ -1,0 +1,85 @@
+{
+    "hero": {
+        "subtitle": "ARCHAEOLOGICAL SITES",
+        "title": "Sites Directory",
+        "description": "Browse through Egypt's most significant archaeological sites. Use advanced filters to find exactly what you're looking for."
+    },
+    "search": {
+        "found": "Found <strong>{count}</strong> site{s, plural, one {} other {s}}",
+        "saveSearch": "Save Search",
+        "noSites": {
+            "title": "No sites found",
+            "description": "Try adjusting your search or filter criteria"
+        },
+        "pagination": {
+            "showing": "Showing <span class=\"font-semibold text-theme-primary\">{start}-{end}</span> of <span class=\"font-semibold text-theme-primary\">{total}</span> archaeological sites",
+            "previous": "Previous",
+            "next": "Next",
+            "jumpTo": "Jump to page:",
+            "of": "of {total}"
+        },
+        "saveDialog": {
+            "title": "Save Search",
+            "description": "Enter a name for your saved search:",
+            "placeholder": "e.g., Ancient Egyptian Temples",
+            "cancel": "Cancel",
+            "save": "Save",
+            "success": "Search criteria \"{name}\" has been saved successfully.",
+            "nameRequired": "Please enter a name for your saved search."
+        }
+    },
+    "filters": {
+        "placeholder": "Search sites...",
+        "period": "Period",
+        "dynasty": "Dynasty",
+        "dateRange": "Date Range",
+        "selectRange": "Select range",
+        "siteType": "Site Type",
+        "duration": "Duration (years)",
+        "minDuration": "Min Duration",
+        "maxDuration": "Max Duration",
+        "reset": "Reset Filters",
+        "apply": "Apply Filters",
+        "advanced": "Advanced Search",
+        "simple": "Simple Search",
+        "allPeriods": "All Periods",
+        "allDynasties": "All Dynasties",
+        "allTypes": "All Types",
+        "searchLabel": "Search Sites",
+        "showAdvanced": "Show Advanced Filters",
+        "hideAdvanced": "Hide Advanced Filters",
+        "searchButton": "Search Sites",
+        "tips": "Search Tips:",
+        "tipsList": {
+            "negative": "• Use negative numbers for BC dates (e.g., -3000 for 3000 BC)",
+            "positive": "• Use positive numbers for AD dates (e.g., 1176 for 1176 AD)",
+            "combine": "• Combine multiple filters for more specific results"
+        },
+        "types": {
+            "capital-cities": "Capital Cities",
+            "temples": "Temples",
+            "cemeteries": "Cemeteries",
+            "pyramids": "Pyramids",
+            "obelisks": "Obelisks",
+            "areas": "Areas",
+            "churches": "Churches",
+            "masjids": "Masjids",
+            "schools": "Schools",
+            "palaces": "Palaces",
+            "castles": "Castles",
+            "markets": "Markets",
+            "doors": "Doors",
+            "houses": "Houses",
+            "sabil": "Sabil",
+            "hammam": "Hammam",
+            "heart": "Heart"
+        }
+    },
+    "card": {
+        "viewDetails": "View Details"
+    },
+    "common": {
+        "bc": "BC",
+        "ad": "AD"
+    }
+}

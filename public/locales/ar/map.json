@@ -1,0 +1,39 @@
+{
+    "hero": {
+        "subtitle": "تصور تفاعلي",
+        "title": "خريطة المواقع",
+        "description": "استكشف المواقع الأثرية على خريطة تفاعلية. قم بالتصفية حسب الفترة التاريخية أو الموقع لاكتشاف المواقع في مناطق محددة."
+    },
+    "buttons": {
+        "findLocation": "احصل على موقعك الحالي",
+        "filters": "المرشحات",
+        "active": "نشط",
+        "sitesInView": "المواقع في العرض ({count})"
+    },
+    "filters": {
+        "title": "مرشحات الخريطة",
+        "period": "الفترة التاريخية",
+        "dynasty": "الأسرة",
+        "dateRange": "النطاق الزمني",
+        "siteType": "نوع الموقع",
+        "showing": "عرض {count} من {total} موقع",
+        "allPeriods": "كل الفترات",
+        "allDynasties": "كل الأسرات"
+    },
+    "legend": {
+        "title": "مفتاح الفترة"
+    },
+    "sidebar": {
+        "title": "المواقع في العرض ({count})"
+    },
+    "tooltips": {
+        "clickDetails": "اضغط للتفاصيل →"
+    },
+    "errors": {
+        "geolocationUnsupported": "تحديد الموقع الجغرافي غير مدعوم من قبل متصفحك",
+        "locationError": "تعذر استرداد موقعك",
+        "permissionDenied": "تم رفض إذن الموقع. يرجى تمكين خدمات الموقع.",
+        "positionUnavailable": "معلومات الموقع غير متوفرة.",
+        "timeout": "انتهت مهلة طلب الموقع. حاول مرة اخرى."
+    }
+}

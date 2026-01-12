@@ -1,9 +1,10 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import { archaeologicalSites } from '../../about/data/sitesData';
-import { MapPin, Clock, Info, Calendar, ExternalLink, Globe, ArrowLeft, BookOpen, Heart } from 'lucide-react';
+import { MapPin, Clock, Info, Calendar, ExternalLink, ArrowLeft, BookOpen, Heart, AlertCircle, Map } from 'lucide-react';
 import { ImageGallery } from './components/ImageGallery';
 import { useFavorites } from '../../../../components/auth/FavoriteContext';
 import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from 'react';
@@ -12,10 +13,11 @@ import { useAuth } from '@/components/auth/AuthContext';
 import { LoginModal } from '@/components/auth/LoginModal';
 
 export default function SiteDetailsPage() {
-    const params = useParams();
-    const id = params.siteId as string;
+    const { siteId, locale } = useParams();
+    const t = useTranslations('siteDetails');
+    const tCommon = useTranslations('common');
     const router = useRouter();
-    const site = archaeologicalSites.find((s: any) => s.id === id);
+    const site = archaeologicalSites.find((s: any) => s.id === siteId);
     const { isAuthenticated } = useAuth();
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
@@ -51,7 +53,7 @@ export default function SiteDetailsPage() {
             id: 3,
             title: "Ancient Egypt: Anatomy of a Civilization",
             author: "Barry J. Kemp",
-            imageUrl: "https://images.unsplash.com/photo-1472173148041-00294f0814a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoaXN0b3J5JTIwYm9va3xlbnwxfHx8fDE3NjYzOTk0ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+            imageUrl: "https://images.unsplash.com/photo-1472173148041-00294f0814a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiaXN0b3J5JTIwYm9va3xlbnwxfHx8fDE3NjYzOTk0ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
             publisher: "Routledge",
             year: 2018
         }
@@ -59,31 +61,29 @@ export default function SiteDetailsPage() {
 
     if (!site) {
         return (
-            <div className="min-h-screen bg-theme-bg flex items-center justify-center py-24">
-                <div className="text-center">
-                    <h2 className="text-theme-text mb-4">Site Not Found</h2>
+            <div className="min-h-screen bg-theme-bg flex items-center justify-center">
+                <div className="text-center p-8 bg-theme-card border border-theme-border rounded-xl shadow-2xl max-w-md mx-4">
+                    <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
+                    <h2 className="text-2xl font-bold text-theme-text mb-2">{t('notFound.title')}</h2>
+                    <p className="text-theme-text/70 mb-6">The site you requested could not be found.</p>
                     <button
                         onClick={() => router.push('/sites')}
-                        className="bg-theme-primary hover:bg-theme-secondary text-white px-6 py-3 rounded-lg transition-colors"
+                        className="px-6 py-2 bg-theme-primary text-white rounded-lg hover:opacity-90 transition-colors"
                     >
-                        Back to Sites Directory
+                        {t('notFound.backButton')}
                     </button>
                 </div>
             </div>
         );
     }
 
-    const formatDate = (year: number) => {
-        if (year < 0) {
-            return `${Math.abs(year)} BC`;
-        } else {
-            return `${year} AD`;
-        }
+    const formatYear = (year: number) => {
+        return year < 0 ? `${Math.abs(year)} ${tCommon('bc')}` : `${year} ${tCommon('ad')}`;
     };
 
     const getTimelineDuration = (start: number, end: number) => {
         const duration = Math.abs(end - start);
-        return `${duration} years`;
+        return `${duration} ${tCommon('years')}`;
     };
 
     const nearbySites = archaeologicalSites.filter((s: { id: any; }) => site.nearbySites.includes(s.id));
@@ -91,7 +91,7 @@ export default function SiteDetailsPage() {
     const { isFavorite, toggleFavorite } = useFavorites();
 
     const formatDateRange = (start: number, end: number) => {
-        return `${formatDate(start)} – ${formatDate(end)}`;
+        return `${formatYear(start)} – ${formatYear(end)}`;
     };
 
     const handleFavoriteToggle = () => {
@@ -130,14 +130,16 @@ export default function SiteDetailsPage() {
                     onClick={() => router.push('/sites')}
                     className="absolute top-24 md:top-28 left-6 md:left-12 text-white hover:text-theme-primary transition-colors flex items-center gap-2 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-lg"
                 >
-                    <ArrowLeft size={20} />
-                    <span>Back to Sites Directory</span>
+                    <ArrowLeft className="w-5 h-5 mr-2" />
+                    {t('buttons.back')}
                 </button>
 
                 {/* Hero Content */}
                 <div className="absolute bottom-0 left-0 right-0">
                     <div className="container mx-auto px-6 md:px-12 pb-8 md:pb-12">
-                        <h1 className="text-white mb-4 md:mb-6">{site.name.english}</h1>
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-md">
+                            {locale === 'ar' ? site.name.arabic : site.name.english}
+                        </h1>
                         <div className="flex flex-wrap gap-3 md:gap-4">
                             <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white text-sm">
                                 {site.historicalPeriod}
@@ -161,11 +163,11 @@ export default function SiteDetailsPage() {
                             <div className="bg-theme-card border border-theme-border rounded-xl p-8">
                                 <h3 className="text-theme-primary mb-4 flex items-center gap-2">
                                     <Info size={24} />
-                                    Description
+                                    {t('sections.description')}
                                 </h3>
                                 <p className="text-theme-text leading-relaxed mb-6">{site.description}</p>
 
-                                <h4 className="text-theme-primary mb-3">Historical Significance</h4>
+                                <h4 className="text-theme-primary mb-3">{t('sections.historicalSignificance')}</h4>
                                 <p className="text-theme-text/80 leading-relaxed">{site.significance}</p>
                             </div>
 
@@ -176,45 +178,48 @@ export default function SiteDetailsPage() {
                             <div className="bg-theme-card border border-theme-border rounded-xl p-8">
                                 <h3 className="text-theme-primary mb-4 flex items-center gap-2">
                                     <ExternalLink size={24} />
-                                    Sources
+                                    {t('sections.sources')}
                                 </h3>
-                                <p className="text-theme-muted text-sm mb-4">Reliable and verifiable references</p>
+                                <div className="bg-theme-bg p-4 rounded-lg border border-theme-border">
+                                    <p className="text-theme-text text-sm italic mb-3">
+                                        {t('labels.reliableSources')}
+                                    </p>
+                                    <div className="space-y-3">
+                                        <div className="p-4 bg-theme-accent rounded-lg hover:bg-theme-accent/70 transition-colors">
+                                            <div className="text-theme-text mb-1">UNESCO World Heritage Centre</div>
+                                            <a
+                                                href="https://whc.unesco.org/"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-theme-primary hover:text-theme-secondary text-sm flex items-center gap-1"
+                                            >
+                                                whc.unesco.org <ExternalLink size={12} />
+                                            </a>
+                                        </div>
 
-                                <div className="space-y-3">
-                                    <div className="p-4 bg-theme-accent rounded-lg hover:bg-theme-accent/70 transition-colors">
-                                        <div className="text-theme-text mb-1">UNESCO World Heritage Centre</div>
-                                        <a
-                                            href="https://whc.unesco.org/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-theme-primary hover:text-theme-secondary text-sm flex items-center gap-1"
-                                        >
-                                            whc.unesco.org <ExternalLink size={12} />
-                                        </a>
-                                    </div>
+                                        <div className="p-4 bg-theme-accent rounded-lg hover:bg-theme-accent/70 transition-colors">
+                                            <div className="text-theme-text mb-1">Egyptian Ministry of Tourism and Antiquities</div>
+                                            <a
+                                                href="https://egymonuments.gov.eg/"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-theme-primary hover:text-theme-secondary text-sm flex items-center gap-1"
+                                            >
+                                                egymonuments.gov.eg <ExternalLink size={12} />
+                                            </a>
+                                        </div>
 
-                                    <div className="p-4 bg-theme-accent rounded-lg hover:bg-theme-accent/70 transition-colors">
-                                        <div className="text-theme-text mb-1">Egyptian Ministry of Tourism and Antiquities</div>
-                                        <a
-                                            href="https://egymonuments.gov.eg/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-theme-primary hover:text-theme-secondary text-sm flex items-center gap-1"
-                                        >
-                                            egymonuments.gov.eg <ExternalLink size={12} />
-                                        </a>
-                                    </div>
-
-                                    <div className="p-4 bg-theme-accent rounded-lg hover:bg-theme-accent/70 transition-colors">
-                                        <div className="text-theme-text mb-1">Digital Egypt for Universities (UCL)</div>
-                                        <a
-                                            href="https://www.ucl.ac.uk/museums-static/digitalegypt/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-theme-primary hover:text-theme-secondary text-sm flex items-center gap-1"
-                                        >
-                                            ucl.ac.uk/digitalegypt <ExternalLink size={12} />
-                                        </a>
+                                        <div className="p-4 bg-theme-accent rounded-lg hover:bg-theme-accent/70 transition-colors">
+                                            <div className="text-theme-text mb-1">Digital Egypt for Universities (UCL)</div>
+                                            <a
+                                                href="https://www.ucl.ac.uk/museums-static/digitalegypt/"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-theme-primary hover:text-theme-secondary text-sm flex items-center gap-1"
+                                            >
+                                                ucl.ac.uk/digitalegypt <ExternalLink size={12} />
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -223,10 +228,11 @@ export default function SiteDetailsPage() {
                             <div className="bg-theme-card border border-theme-border rounded-xl p-8">
                                 <h3 className="text-theme-primary mb-4 flex items-center gap-2">
                                     <BookOpen size={24} />
-                                    Related Books
+                                    {t('sections.relatedBooks')}
                                 </h3>
-                                <p className="text-theme-muted text-sm mb-6">Further reading on ancient Egypt</p>
-
+                                <p className="text-theme-muted text-sm mb-6">
+                                    {t('labels.furtherReading')}
+                                </p>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                                     {relatedBooks.map(book => (
                                         <div key={book.id} className="bg-theme-accent rounded-lg overflow-hidden hover:shadow-lg transition-shadow group">
@@ -247,7 +253,7 @@ export default function SiteDetailsPage() {
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center gap-2 px-4 py-2 bg-theme-primary/10 hover:bg-theme-primary hover:text-white text-theme-primary rounded-lg text-sm font-medium transition-all duration-300 group"
                                                 >
-                                                    <span>Find Book</span>
+                                                    <span>{t('buttons.findBook')}</span>
                                                     <ExternalLink size={14} className="group-hover:translate-x-0.5 transition-transform" />
                                                 </a>
                                             </div>
@@ -261,7 +267,7 @@ export default function SiteDetailsPage() {
                         <div className="space-y-6">
                             {/* Favorite Button */}
                             <div className="bg-theme-card border border-theme-border rounded-xl p-6">
-                                <h4 className="text-theme-primary mb-4">Favorite</h4>
+                                <h3 className="text-theme-text font-bold mb-4">{t('sections.favorite')}</h3>
                                 <button
                                     onClick={handleFavoriteToggle}
                                     className={`w-full p-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 border-2 ${isFavorite(site.id)
@@ -269,40 +275,46 @@ export default function SiteDetailsPage() {
                                         : 'bg-theme-accent hover:bg-theme-primary/10 border-theme-border hover:border-theme-primary text-theme-text'
                                         }`}
                                 >
-                                    <Heart
-                                        size={20}
-                                        className={isFavorite(site.id) ? 'fill-theme-primary text-theme-primary' : ''}
-                                    />
-                                    <span className="font-medium">
-                                        {isFavorite(site.id) ? 'Remove from Favorites' : 'Add to Favorites'}
-                                    </span>
+                                    {isFavorite(site.id) ? (
+                                        <>
+                                            <Heart className="w-5 h-5 mr-2 fill-theme-primary" />
+                                            <span className="font-medium">{t('buttons.removeFromFavorites')}</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Heart className="w-5 h-5 mr-2" />
+                                            <span className="font-medium">{t('buttons.addToFavorites')}</span>
+                                        </>
+                                    )}
                                 </button>
                             </div>
 
                             {/* Quick Info */}
                             <div className="bg-theme-card border border-theme-border rounded-xl p-6">
-                                <h4 className="text-theme-primary mb-4">Quick Information</h4>
+                                <h3 className="text-theme-text font-bold mb-4">{t('sections.quickInfo')}</h3>
 
                                 <div className="space-y-4">
                                     <div>
-                                        <div className="text-theme-muted text-sm mb-1">Location</div>
-                                        <div className="text-theme-text">{site.location.city}</div>
-                                        <div className="text-theme-text/70 text-sm">{site.location.governorate}</div>
+                                        <label className="text-theme-muted text-xs uppercase tracking-wider">{t('labels.location')}</label>
+                                        <p className="text-theme-text flex items-center gap-2 mt-1">
+                                            <MapPin size={16} className="text-theme-primary" />
+                                            {site.location.city}, {site.location.governorate}
+                                        </p>
                                     </div>
 
-                                    <div className="border-t border-theme-border pt-4">
-                                        <div className="text-theme-muted text-sm mb-1">Period</div>
-                                        <div className="text-theme-text">{site.historicalPeriod}</div>
+                                    <div>
+                                        <label className="text-theme-muted text-xs uppercase tracking-wider">{t('labels.period')}</label>
+                                        <p className="text-theme-text mt-1">{site.historicalPeriod}</p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Timeline */}
                             <div className="bg-theme-card border border-theme-border rounded-xl p-6">
-                                <h4 className="text-theme-primary mb-4 flex items-center gap-2">
+                                <h3 className="text-theme-primary mb-4 flex items-center gap-2">
                                     <Calendar size={20} />
-                                    Timeline
-                                </h4>
+                                    {t('sections.timeline')}
+                                </h3>
 
                                 <div className="relative">
                                     {/* Timeline Bar */}
@@ -312,16 +324,16 @@ export default function SiteDetailsPage() {
                                         <div className="relative">
                                             <div className="absolute -left-[30px] top-0 w-4 h-4 rounded-full bg-theme-primary border-4 border-theme-bg"></div>
                                             <div>
-                                                <div className="text-theme-primary text-sm mb-1">Start Period</div>
-                                                <div className="text-theme-text">{formatDate(site.dateRange.start)}</div>
+                                                <div className="text-theme-primary text-sm mb-1">{t('labels.startPeriod')}</div>
+                                                <div className="text-theme-text">{formatYear(site.dateRange.start)}</div>
                                             </div>
                                         </div>
 
                                         <div className="relative">
                                             <div className="absolute -left-[30px] top-0 w-4 h-4 rounded-full bg-theme-secondary border-4 border-theme-bg"></div>
                                             <div>
-                                                <div className="text-theme-primary text-sm mb-1">End Period</div>
-                                                <div className="text-theme-text">{formatDate(site.dateRange.end)}</div>
+                                                <div className="text-theme-primary text-sm mb-1">{t('labels.endPeriod')}</div>
+                                                <div className="text-theme-text">{formatYear(site.dateRange.end)}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -330,34 +342,32 @@ export default function SiteDetailsPage() {
                                 <div className="mt-4 p-3 bg-theme-accent rounded-lg">
                                     <div className="flex items-center gap-2 text-theme-text text-sm">
                                         <Clock size={16} />
-                                        <span>Duration: {getTimelineDuration(site.dateRange.start, site.dateRange.end)}</span>
+                                        <span>{t('labels.duration')}: {getTimelineDuration(site.dateRange.start, site.dateRange.end)}</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Google Map */}
                             <div className="bg-theme-card border border-theme-border rounded-xl p-6">
-                                <h4 className="text-theme-primary mb-4 flex items-center gap-2">
-                                    <Globe size={20} />
-                                    Location Map
-                                </h4>
+                                <h3 className="text-theme-text font-bold mb-4">{t('sections.locationMap')}</h3>
 
-                                <div className="bg-theme-accent rounded-lg overflow-hidden aspect-video flex items-center justify-center">
-                                    <div className="text-center">
-                                        <MapPin className="text-theme-primary mx-auto mb-2" size={36} />
-                                        <p className="text-theme-text text-sm mb-1">Interactive Map</p>
-                                        <p className="text-theme-text/60 text-xs mb-3">
-                                            {site.location.coordinates.lat.toFixed(4)}, {site.location.coordinates.lng.toFixed(4)}
-                                        </p>
-                                        <a
-                                            href={`https://www.google.com/maps?q=${site.location.coordinates.lat},${site.location.coordinates.lng}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 text-theme-primary hover:text-theme-secondary transition-colors text-sm"
-                                        >
-                                            <span>Open in Google Maps</span>
-                                            <ExternalLink size={14} />
-                                        </a>
+                                <div className="rounded-lg overflow-hidden h-64 border border-theme-border relative">
+                                    {/* Embedded Map or Placeholder */}
+                                    <div className="w-full h-full bg-theme-bg flex items-center justify-center relative group">
+                                        <div className="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/31.1342,29.9792,9,0/600x400')] bg-cover bg-center opacity-50 grayscale group-hover:grayscale-0 transition-all duration-500"></div>
+                                        <div className="z-10 text-center">
+                                            <Map size={32} className="text-theme-primary mx-auto mb-2" />
+                                            <p className="text-theme-text font-medium">{t('labels.interactiveMap')}</p>
+                                            <a
+                                                href={`https://www.google.com/maps?q=${site.location.coordinates.lat},${site.location.coordinates.lng}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="mt-2 px-4 py-1.5 bg-theme-primary/90 text-white text-sm rounded-lg hover:bg-theme-primary transition-colors inline-flex items-center gap-2"
+                                            >
+                                                <span>{t('buttons.openMap')}</span>
+                                                <ExternalLink size={14} />
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -365,16 +375,16 @@ export default function SiteDetailsPage() {
                             {/* Nearby Sites */}
                             {nearbySites.length > 0 && (
                                 <div className="bg-theme-card border border-theme-border rounded-xl p-6">
-                                    <h4 className="text-theme-primary mb-4">Nearby Sites</h4>
+                                    <h4 className="text-theme-primary mb-4">{t('sections.nearbySites')}</h4>
                                     <div className="space-y-3">
-                                        {nearbySites.map((nearbySite: { id: Key | null | undefined; name: { english: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }; location: { city: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }; }) => (
+                                        {nearbySites.map((nearbySite: { id: Key | null | undefined; name: { english: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; arabic: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }; location: { city: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }; }) => (
                                             <button
                                                 key={nearbySite.id}
                                                 onClick={() => router.push(`/sites/${nearbySite.id}`)}
                                                 className="w-full text-left block p-3 bg-theme-accent hover:bg-theme-accent/70 rounded-lg transition-colors group"
                                             >
                                                 <div className="text-theme-text group-hover:text-theme-primary text-sm mb-1">
-                                                    {nearbySite.name.english}
+                                                    {locale === 'ar' ? nearbySite.name.arabic : nearbySite.name.english}
                                                 </div>
                                                 <div className="text-theme-muted text-xs flex items-center gap-1">
                                                     <MapPin size={12} />

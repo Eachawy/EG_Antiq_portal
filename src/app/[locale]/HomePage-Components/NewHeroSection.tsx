@@ -3,7 +3,7 @@ import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 
 export function NewHeroSection() {
-    const t = useTranslations("newHeroSection");
+    const t = useTranslations("homepage.newHeroSection");
     return (
         <section
             id="home"
