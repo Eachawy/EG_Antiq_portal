@@ -64,8 +64,8 @@ export default function Header() {
     { name: t('nav.home'), href: '/' },
     { name: t('nav.sites'), href: '/sites' },
     { name: t('nav.map'), href: '/map' },
-    { name: t('nav.tourGuides'), href: '/tour-guides' },
-    { name: t('nav.books'), href: '/books' },
+    // { name: t('nav.tourGuides'), href: '/tour-guides' },
+    // { name: t('nav.books'), href: '/books' },
     { name: t('nav.about'), href: '/about' },
     { name: t('nav.contact'), href: '/contact' },
   ];

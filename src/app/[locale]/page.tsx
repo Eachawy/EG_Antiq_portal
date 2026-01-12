@@ -2,7 +2,7 @@
 
 import { NewHeroSection } from './HomePage-Components/NewHeroSection';
 import { HistoricalEras } from './HomePage-Components/HistoricalEras';
-import { BooksSection } from './HomePage-Components/BooksSection';
+// import { BooksSection } from './HomePage-Components/BooksSection';
 
 export default function HomePage() {
 
@@ -10,7 +10,7 @@ export default function HomePage() {
     <div>
       <NewHeroSection />
       <HistoricalEras />
-      <BooksSection />
+      {/* <BooksSection /> */}
     </div>
   );
 }
