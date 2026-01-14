@@ -19,7 +19,8 @@
         "subtitle": "JOURNEY THROUGH TIME",
         "description": "Explore Egypt's rich history spanning over 5,000 years. From the age of pharaohs to Islamic civilization, discover the diverse cultures and dynasties that shaped this ancient land.",
         "exploreButton": "Explore {eraName} Era",
-        "browseSitesButton": "Browse Archaeological Sites"
+        "browseSitesButton": "Browse Archaeological Sites",
+        "era": "Era"
     },
     "booksSection": {
         "title": "Explore Our Book Collection",
