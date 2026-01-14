@@ -1,0 +1,52 @@
+{
+    "hero": {
+        "title": "Settings",
+        "subtitle": "Customize your experience and manage your account preferences"
+    },
+    "appearance": {
+        "title": "Appearance",
+        "darkMode": "Dark Mode",
+        "darkModeDesc": "Switch between light and dark theme",
+        "language": "Language",
+        "languageDesc": "Choose your preferred language"
+    },
+    "notifications": {
+        "title": "Notifications",
+        "email": "Email Notifications",
+        "emailDesc": "Receive updates via email",
+        "push": "Push Notifications",
+        "pushDesc": "Get browser push notifications",
+        "newsletter": "Newsletter",
+        "newsletterDesc": "Receive monthly newsletter",
+        "updates": "Site Updates",
+        "updatesDesc": "Get notified about new content"
+    },
+    "privacy": {
+        "title": "Privacy & Security",
+        "history": "Show Browsing History",
+        "historyDesc": "Display your site visit history",
+        "autoSave": "Auto-Save Searches",
+        "autoSaveDesc": "Automatically save your search queries",
+        "password": "Change Password",
+        "passwordDesc": "Update your account password",
+        "btnPassword": "Change Password"
+    },
+    "data": {
+        "title": "Data Management",
+        "download": "Download Your Data",
+        "downloadDesc": "Export all your account data in JSON format",
+        "btnDownload": "Download Data",
+        "clear": "Clear Browsing History",
+        "clearDesc": "Remove all your browsing history",
+        "btnClear": "Clear History",
+        "delete": "Delete Account",
+        "deleteDesc": "Permanently delete your account and all associated data. This action cannot be undone.",
+        "btnDelete": "Delete Account"
+    },
+    "about": {
+        "title": "About",
+        "terms": "Terms of Service",
+        "privacy": "Privacy Policy",
+        "help": "Help Center"
+    }
+}

@@ -7,7 +7,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { ShoppingCart, Book as BookIcon, Filter, Search, Check } from 'lucide-react';
 import { useCart, Book } from '@/components/auth/CartContext';
 import { CartSidebar } from './components/CartSidebar';
-// import { useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { ImageWithFallback } from './components/ImageWithFallback';
 
 const booksData: Book[] = [
@@ -282,7 +282,7 @@ function BooksContent() {
     const [selectedAvailability, setSelectedAvailability] = useState<string | null>(null);
     const [cartOpen, setCartOpen] = useState(false);
     const { addToCart, isInCart, getTotalItems } = useCart();
-    // const { t } = useTranslations();
+    const t = useTranslations('books');
 
     const periods = [
         { label: 'All Periods', value: null },
@@ -363,9 +363,9 @@ function BooksContent() {
                                 <BookIcon size={48} className="text-theme-primary" />
                             </div>
                         </div>
-                        <h1 className="text-theme-text mb-4">Ancient Egypt Book Collection</h1>
+                        <h1 className="text-theme-text mb-4">{t('title')}</h1>
                         <p className="text-theme-muted text-lg max-w-2xl mx-auto">
-                            Explore our curated selection of scholarly works on Ancient Egyptian archaeology, history, culture, and civilization.
+                            {t('subtitle')}
                         </p>
                     </div>
                 </div>
@@ -379,13 +379,13 @@ function BooksContent() {
                         <div className="bg-theme-card rounded-xl border border-theme-border p-6 sticky top-24">
                             <div className="flex items-center gap-3 mb-6 pb-4 border-b border-theme-border">
                                 <Filter size={24} className="text-theme-primary" />
-                                <h3 className="text-theme-text">Filters</h3>
+                                <h3 className="text-theme-text">{t('filters.title')}</h3>
                             </div>
 
                             {/* Search */}
                             <div className="mb-6">
                                 <label htmlFor="search" className="block text-theme-text mb-2 text-sm">
-                                    Search Books
+                                    {t('filters.search')}
                                 </label>
                                 <span className="p-input-icon-left w-full">
                                     <Search size={18} className="text-theme-muted" />
@@ -393,7 +393,7 @@ function BooksContent() {
                                         id="search"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        placeholder="Title, author, keyword..."
+                                        placeholder={t('filters.placeholder')}
                                         className="w-full bg-theme-accent border-theme-border text-theme-text placeholder:text-theme-muted"
                                     />
                                 </span>
@@ -402,7 +402,7 @@ function BooksContent() {
                             {/* Period Filter */}
                             <div className="mb-6">
                                 <label htmlFor="period" className="block text-theme-text mb-2 text-sm">
-                                    Historical Period
+                                    {t('filters.period')}
                                 </label>
                                 <Dropdown
                                     id="period"
@@ -418,7 +418,7 @@ function BooksContent() {
                             {/* Category Filter */}
                             <div className="mb-6">
                                 <label htmlFor="category" className="block text-theme-text mb-2 text-sm">
-                                    Category
+                                    {t('filters.category')}
                                 </label>
                                 <Dropdown
                                     id="category"
@@ -434,7 +434,7 @@ function BooksContent() {
                             {/* Audience Filter */}
                             <div className="mb-6">
                                 <label htmlFor="audience" className="block text-theme-text mb-2 text-sm">
-                                    Audience
+                                    {t('filters.audience')}
                                 </label>
                                 <Dropdown
                                     id="audience"
@@ -450,7 +450,7 @@ function BooksContent() {
                             {/* Language Filter */}
                             <div className="mb-6">
                                 <label htmlFor="language" className="block text-theme-text mb-2 text-sm">
-                                    Language
+                                    {t('filters.language')}
                                 </label>
                                 <Dropdown
                                     id="language"
@@ -466,7 +466,7 @@ function BooksContent() {
                             {/* Availability Filter */}
                             <div className="mb-6">
                                 <label htmlFor="availability" className="block text-theme-text mb-2 text-sm">
-                                    Format
+                                    {t('filters.format')}
                                 </label>
                                 <Dropdown
                                     id="availability"
@@ -482,7 +482,7 @@ function BooksContent() {
                             {/* Results Count */}
                             <div className="pt-4 border-t border-theme-border">
                                 <p className="text-theme-muted text-sm text-center">
-                                    {filteredBooks.length} {filteredBooks.length === 1 ? 'book' : 'books'} found
+                                    {t('list.showing', { count: filteredBooks.length })}
                                 </p>
                             </div>
                         </div>
@@ -491,7 +491,7 @@ function BooksContent() {
                     {/* Books Grid */}
                     <div className="lg:col-span-3">
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                            <h2 className="text-theme-text text-xl">Available Books</h2>
+                            <h2 className="text-theme-text text-xl">{t('list.available')}</h2>
                             <button
                                 onClick={() => setCartOpen(true)}
                                 className="flex items-center gap-2 px-4 py-2 bg-theme-primary text-white rounded-lg hover:bg-theme-secondary transition-colors font-medium relative"
@@ -609,12 +609,12 @@ function BooksContent() {
                                                     {isInCart(book.id) ? (
                                                         <>
                                                             <Check size={18} />
-                                                            <span>Added</span>
+                                                            {t('card.added')}
                                                         </>
                                                     ) : (
                                                         <>
                                                             <ShoppingCart size={18} />
-                                                            <span>Add to Cart</span>
+                                                            <span>{t('card.addToCart')}</span>
                                                         </>
                                                     )}
                                                 </button>
@@ -628,9 +628,9 @@ function BooksContent() {
                         {filteredBooks.length === 0 && (
                             <div className="text-center py-16">
                                 <BookIcon size={64} className="text-theme-muted mx-auto mb-4 opacity-50" />
-                                <h3 className="text-theme-text mb-2">No Books Found</h3>
+                                <h3 className="text-theme-text mb-2">{t('list.noResults')}</h3>
                                 <p className="text-theme-muted">
-                                    Try adjusting your search criteria or filters
+                                    {t('list.tryAdjusting')}
                                 </p>
                             </div>
                         )}

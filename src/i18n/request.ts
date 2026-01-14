@@ -22,6 +22,13 @@ export default getRequestConfig(async ({ requestLocale }) => {
       map: (await import(`../../public/locales/${locale}/map.json`)).default,
       era: (await import(`../../public/locales/${locale}/era.json`)).default,
       siteDetails: (await import(`../../public/locales/${locale}/siteDetails.json`)).default,
+      books: (await import(`../../public/locales/${locale}/books.json`)).default,
+      tourGuides: (await import(`../../public/locales/${locale}/tourGuides.json`)).default,
+      profile: (await import(`../../public/locales/${locale}/profile.json`)).default,
+      favorites: (await import(`../../public/locales/${locale}/favorites.json`)).default,
+      history: (await import(`../../public/locales/${locale}/history.json`)).default,
+      savedSearches: (await import(`../../public/locales/${locale}/savedSearches.json`)).default,
+      settings: (await import(`../../public/locales/${locale}/settings.json`)).default,
     },
     onError(error) {
       if (process.env.NODE_ENV === 'development') {
