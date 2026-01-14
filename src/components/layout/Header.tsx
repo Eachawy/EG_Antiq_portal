@@ -64,8 +64,8 @@ export default function Header() {
     { name: t('nav.home'), href: '/' },
     { name: t('nav.sites'), href: '/sites' },
     { name: t('nav.map'), href: '/map' },
-    // { name: t('nav.tourGuides'), href: '/tour-guides' },
-    // { name: t('nav.books'), href: '/books' },
+    { name: t('nav.tourGuides'), href: '/tour-guides' },
+    { name: t('nav.books'), href: '/books' },
     { name: t('nav.about'), href: '/about' },
     { name: t('nav.contact'), href: '/contact' },
   ];
@@ -202,7 +202,7 @@ export default function Header() {
                       </button>
                       <button
                         onClick={() => {
-                          router.push('/hisettingsstory');
+                          router.push('/settings');
                           setIsUserMenuOpen(false);
                         }}
                         className="text-theme-text hover:text-theme-primary hover:bg-theme-accent/50 flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-all duration-200"
