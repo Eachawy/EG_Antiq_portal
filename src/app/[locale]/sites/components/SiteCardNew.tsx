@@ -1,18 +1,21 @@
 'use client';
 import { MapPin, Calendar, ExternalLink } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { ArchaeologicalSite } from '../../about/data/sitesData';
-import { Link } from '@/i18n/routing';
+import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import { useAuth } from '@/components/auth/AuthContext';
+import { historyEndpoints } from '@/lib/api/endpoints';
 
-interface SiteCardNewProps {
-  site: ArchaeologicalSite;
-}
-
-export function SiteCardNew({ site }: SiteCardNewProps) {
+export function SiteCardNew({ site }: any) {
   const tCard = useTranslations('sites.card');
-  const tCommon = useTranslations('common');
+  const tCommon = useTranslations('sites.common');
+  const router = useRouter();
+  const params = useParams();
+  const locale = params.locale;
+  const { isAuthenticated } = useAuth();
 
   const formatDate = (year: number) => {
+    if (!year || year === 0) return '';
     if (year < 0) {
       return `${Math.abs(year)} ${tCommon('bc')}`;
     } else {
@@ -37,8 +40,23 @@ export function SiteCardNew({ site }: SiteCardNewProps) {
     }
   };
 
+  const handleClick = async (e: React.MouseEvent) => {
+    // Track browsing history for authenticated users (non-blocking)
+    if (isAuthenticated) {
+      try {
+        // Fire and forget - don't block navigation
+        historyEndpoints.trackVisit(parseInt(site.id));
+      } catch (err) {
+        console.error('Failed to track visit:', err);
+        // Silently fail - don't block navigation
+      }
+    }
+    // Navigate to detail page
+    router.push(`/${locale}/sites/${site.id}`);
+  };
+
   return (
-    <Link href={`/sites/${site.id}`}>
+    <div onClick={handleClick}>
       <div className="group bg-theme-card border border-theme-border rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:border-theme-primary cursor-pointer h-full flex flex-col">
         {/* Image */}
         <div className="relative h-56 overflow-hidden">
@@ -47,11 +65,13 @@ export function SiteCardNew({ site }: SiteCardNewProps) {
             alt={site.name.english}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
-          <div className="absolute top-3 right-3">
-            <span className={`px-3 py-1 rounded-full text-xs border ${getPeriodColor(site.historicalPeriod)}`}>
-              {site.historicalPeriod}
-            </span>
-          </div>
+          {site.historicalPeriod && (
+            <div className="absolute top-3 right-3">
+              <span className={`px-3 py-1 rounded-full text-xs border ${getPeriodColor(site.historicalPeriod)}`}>
+                {site.historicalPeriod}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Content */}
@@ -59,26 +79,39 @@ export function SiteCardNew({ site }: SiteCardNewProps) {
           {/* Title */}
           <div className="mb-3">
             <h3 className="text-theme-text group-hover:text-theme-primary transition-colors">
-              {site.name.english}
+              {site.name[locale === 'en' ? 'english' : 'arabic']}
             </h3>
           </div>
 
           {/* Location */}
-          <div className="flex items-center gap-2 text-theme-muted text-sm mb-3">
+          {/* <div className="flex items-center gap-2 text-theme-muted text-sm mb-3">
             <MapPin size={16} />
-            <span>{site.location.city}, {site.location.governorate}</span>
-          </div>
+            <span>
+              {site.location.city}
+              {site.location.governorate && `, ${site.location.governorate}`}
+            </span>
+          </div> */}
 
           {/* Date Range */}
-          <div className="flex items-center gap-2 text-theme-muted text-sm mb-4">
-            <Calendar size={16} />
-            <span>{formatDate(site.dateRange.start)} – {formatDate(site.dateRange.end)}</span>
-          </div>
+          {site.dateRange && (site.dateRange.start || site.dateRange.end) && (
+            <div className="flex items-center gap-2 text-theme-muted text-sm mb-4">
+              <Calendar size={16} />
+              <span>
+                {formatDate(site.dateRange.start)}
+                {site.dateRange.start && site.dateRange.end && ' – '}
+                {formatDate(site.dateRange.end)}
+              </span>
+            </div>
+          )}
 
           {/* Description */}
-          <p className="text-theme-text/70 text-sm leading-relaxed mb-4 flex-1">
-            {site.description.substring(0, 120)}...
-          </p>
+          {site.description && (
+            <p className="text-theme-text/70 text-sm leading-relaxed mb-4 flex-1">
+              {site.description.length > 120
+                ? `${site.description.substring(0, 120)}...`
+                : site.description}
+            </p>
+          )}
 
           {/* View Details Link */}
           <div className="flex items-center gap-2 text-theme-primary group-hover:text-theme-secondary transition-colors text-sm">
@@ -87,6 +120,6 @@ export function SiteCardNew({ site }: SiteCardNewProps) {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

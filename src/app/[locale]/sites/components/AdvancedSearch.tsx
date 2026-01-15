@@ -1,11 +1,14 @@
 import { useState, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 import { Search, SlidersHorizontal, X, Landmark, Church, Mountain, Pyramid, Sparkles, Map, Moon, GraduationCap, Crown, Castle, ShoppingBag, DoorOpen, House, Droplet, Bath } from 'lucide-react';
-import { dynastiesByPeriod } from '../../about/data/sitesData';
 import * as Slider from '@radix-ui/react-slider';
+import { Era, Dynasty } from '@/lib/api/types/monuments.dto';
 
 interface AdvancedSearchProps {
   onSearch: (params: SearchParams) => void;
+  eras: Era[];
+  dynasties: Dynasty[];
 }
 
 export interface SearchParams {
@@ -19,9 +22,11 @@ export interface SearchParams {
   maxDuration: string;
 }
 
-export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
+export function AdvancedSearch({ onSearch, eras, dynasties }: AdvancedSearchProps) {
   const t = useTranslations('sites.filters');
   const tCommon = useTranslations('sites.common');
+  const params = useParams();
+  const locale = params.locale as 'en' | 'ar';
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [searchParams, setSearchParams] = useState<SearchParams>({
     query: '',
@@ -55,13 +60,13 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
     { value: 'hammam', label: t('types.hammam'), icon: Bath },
   ];
 
-  // Get available dynasties based on selected period
+  // Get available dynasties based on selected era
   const availableDynasties = useMemo(() => {
     if (searchParams.period === 'all') {
-      return Object.values(dynastiesByPeriod).flat();
+      return dynasties;
     }
-    return dynastiesByPeriod[searchParams.period] || [];
-  }, [searchParams.period]);
+    return dynasties.filter((dynasty) => dynasty.eraId === parseInt(searchParams.period));
+  }, [searchParams.period, dynasties]);
 
   const handleSearch = () => {
     onSearch(searchParams);
@@ -127,11 +132,12 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
                 className="w-full bg-theme-card border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:ring-2 focus:ring-theme-primary"
               >
                 <option value="all">{t('allPeriods')}</option>
-                <option value="Ancient Egyptian">Ancient Egyptian (3100 BC – 332 BC)</option>
-                <option value="Ptolemaic">Ptolemaic (332 BC – 30 BC)</option>
-                <option value="Roman">Roman (30 BC – 395 AD)</option>
-                <option value="Byzantine">Byzantine (395 AD – 641 AD)</option>
-                <option value="Islamic">Islamic (641 AD – Present)</option>
+                {eras.map((era) => (
+                  <option key={era.id} value={era.id.toString()}>
+                    {locale === 'ar' ? era.nameAr : era.nameEn}
+                    {era.fromYear && era.toYear && ` (${era.fromYear} – ${era.toYear})`}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -141,11 +147,13 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
                 value={searchParams.dynasty}
                 onChange={(e) => setSearchParams({ ...searchParams, dynasty: e.target.value })}
                 className="w-full bg-theme-bg border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:border-theme-primary transition-colors"
+                disabled={!availableDynasties.length}
               >
                 <option value="all">{t('allDynasties')}</option>
                 {availableDynasties.map((dynasty) => (
-                  <option key={dynasty} value={dynasty}>
-                    {dynasty}
+                  <option key={dynasty.id} value={dynasty.id.toString()}>
+                    {locale === 'ar' ? dynasty.nameAr : dynasty.nameEn}
+                    {dynasty.fromYear && dynasty.toYear && ` (${dynasty.fromYear} – ${dynasty.toYear})`}
                   </option>
                 ))}
               </select>
