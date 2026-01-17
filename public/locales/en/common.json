@@ -1,6 +1,6 @@
 {
   "header": {
-    "KEMETRA":"KEMETRA",
+    "KEMETRA": "KEMETRA",
     "title": "Antiq Portal",
     "nav": {
       "home": "Home",
@@ -30,7 +30,8 @@
     "next": "Next",
     "previous": "Previous",
     "submit": "Submit",
-    "close": "Close"
+    "close": "Close",
+    "backToHome": "Back to Home"
   },
   "errors": {
     "general": "An error occurred. Please try again.",

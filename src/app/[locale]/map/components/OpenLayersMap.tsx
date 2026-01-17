@@ -14,6 +14,8 @@ import Point from 'ol/geom/Point';
 import { Style, Icon, Circle, Fill, Stroke } from 'ol/style';
 import Overlay from 'ol/Overlay';
 import 'ol/ol.css';
+import { formatDate } from '@/lib/utils/utils';
+
 
 interface Site {
   id: string;
@@ -36,6 +38,7 @@ interface Site {
 interface OpenLayersMapProps {
   sites: Site[];
   onSiteClick?: (siteId: string) => void;
+  currentLocale: string
 }
 
 export interface OpenLayersMapRef {
@@ -109,9 +112,9 @@ const createMarkerStyle = (color: string, scale: number = 1): Style => {
 };
 
 const OpenLayersMapComponent = forwardRef<OpenLayersMapRef, OpenLayersMapProps>(
-  ({ sites, onSiteClick }, ref) => {
+  ({ sites, onSiteClick, currentLocale }, ref) => {
     const tMap = useTranslations('map');
-    const tCommon = useTranslations('common');
+    const tCommon = useTranslations('sites.common');
     const mapRef = useRef<HTMLDivElement>(null);
     const popupRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<Map | null>(null);
@@ -121,6 +124,7 @@ const OpenLayersMapComponent = forwardRef<OpenLayersMapRef, OpenLayersMapProps>(
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [currentLocationLayer, setCurrentLocationLayer] = useState<VectorLayer<VectorSource> | null>(null);
     const [isLocating, setIsLocating] = useState(false);
+
 
     // Initialize map once
     useEffect(() => {
@@ -310,14 +314,6 @@ const OpenLayersMapComponent = forwardRef<OpenLayersMapRef, OpenLayersMapProps>(
       }
     }, [sites]); // Only run when sites change
 
-    // Format date range for display
-    const formatDateRange = (start: number, end: number) => {
-      const formatYear = (year: number) => {
-        return year < 0 ? `${Math.abs(year)} ${tCommon('bc')}` : `${year} ${tCommon('ad')}`;
-      };
-      return `${formatYear(start)} - ${formatYear(end)}`;
-    };
-
     // Get current location
     const getCurrentLocation = () => {
       if (!navigator.geolocation) {
@@ -422,7 +418,7 @@ const OpenLayersMapComponent = forwardRef<OpenLayersMapRef, OpenLayersMapProps>(
 
               <div className="p-3 space-y-1.5">
                 <h3 className="text-theme-text text-sm font-medium line-clamp-1">
-                  {hoveredSite.name.english}
+                  {hoveredSite.name[currentLocale === 'en' ? 'english' : 'arabic']}
                 </h3>
 
                 <div className="flex items-center gap-1 text-theme-muted text-xs">
@@ -437,7 +433,7 @@ const OpenLayersMapComponent = forwardRef<OpenLayersMapRef, OpenLayersMapProps>(
                   <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <span className="line-clamp-1">{formatDateRange(hoveredSite.dateRange.start, hoveredSite.dateRange.end)}</span>
+                  <span className="line-clamp-1">{formatDate(hoveredSite.dateRange.start, tCommon)} - {formatDate(hoveredSite.dateRange.end, tCommon)}</span>
                 </div>
 
                 <p className="text-theme-primary text-[10px] text-center pt-1.5 border-t border-theme-border">

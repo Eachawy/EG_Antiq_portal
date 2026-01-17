@@ -6,6 +6,7 @@ import { BookMarked, Search, MapPin, Calendar, Clock, Trash2, Play } from 'lucid
 import { useAuth } from '@/components/auth/AuthContext';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
+import { formatDatecreatedAt } from '@/lib/utils/utils';
 
 interface SavedSearch {
     id: string;
@@ -85,14 +86,6 @@ export default function SavedSearchPage() {
         if (search.filters.period) params.set('period', search.filters.period);
         if (search.filters.location) params.set('location', search.filters.location);
         router.push(`/sites?${params.toString()}`);
-    };
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-        });
     };
 
     return (
@@ -205,7 +198,7 @@ export default function SavedSearchPage() {
                                         <div className="flex items-center gap-4 text-sm text-theme-muted">
                                             <div className="flex items-center gap-1.5">
                                                 <Clock size={16} />
-                                                <span>{formatDate(search.createdAt)}</span>
+                                                <span>{formatDatecreatedAt(search.createdAt)}</span>
                                             </div>
                                             <div className="flex items-center gap-1.5">
                                                 <span className="font-semibold text-theme-primary">{search.resultsCount}</span>

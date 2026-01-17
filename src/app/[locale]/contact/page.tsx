@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Mail, MapPin, Phone, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { contactEndpoints } from '@/lib/api/endpoints';
 
 export default function ContactPage() {
     const tHero = useTranslations('contact.hero');
@@ -17,12 +18,62 @@ export default function ContactPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [fieldErrors, setFieldErrors] = useState({
+        name: '',
+        email: '',
+        message: ''
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [name]: value
         });
+        // Clear field error when user starts typing
+        if (fieldErrors[name as keyof typeof fieldErrors]) {
+            setFieldErrors({
+                ...fieldErrors,
+                [name]: ''
+            });
+        }
+        // Clear general error message
+        if (errorMessage) {
+            setErrorMessage('');
+        }
+    };
+
+    // Enhanced email validation
+    const validateEmail = (email: string): boolean => {
+        // Basic format check
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return false;
+        }
+
+        // Additional checks
+        const parts = email.split('@');
+        if (parts.length !== 2) return false;
+
+        const [localPart, domain] = parts;
+
+        // Check local part (before @)
+        if (localPart.length === 0 || localPart.length > 64) return false;
+        if (localPart.startsWith('.') || localPart.endsWith('.')) return false;
+        if (localPart.includes('..')) return false;
+
+        // Check domain part (after @)
+        if (domain.length === 0 || domain.length > 255) return false;
+        if (domain.startsWith('.') || domain.endsWith('.')) return false;
+        if (domain.includes('..')) return false;
+
+        // Check domain has valid TLD
+        const domainParts = domain.split('.');
+        if (domainParts.length < 2) return false;
+        const tld = domainParts[domainParts.length - 1];
+        if (tld.length < 2) return false;
+
+        return true;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -31,34 +82,59 @@ export default function ContactPage() {
         // Reset messages
         setShowSuccess(false);
         setErrorMessage('');
+        setFieldErrors({ name: '', email: '', message: '' });
 
-        // Validate fields
+        let isValid = true;
+        const newFieldErrors = { name: '', email: '', message: '' };
+
+        // Validate name
         if (!formData.name.trim()) {
-            setErrorMessage(tForm('errors.nameRequired'));
-            return;
+            newFieldErrors.name = tForm('errors.nameRequired');
+            isValid = false;
+        } else if (formData.name.trim().length < 2) {
+            newFieldErrors.name = tForm('errors.nameTooShort') || 'Name must be at least 2 characters';
+            isValid = false;
+        } else if (formData.name.trim().length > 100) {
+            newFieldErrors.name = tForm('errors.nameTooLong') || 'Name must be less than 100 characters';
+            isValid = false;
         }
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // Validate email
         if (!formData.email.trim()) {
-            setErrorMessage(tForm('errors.emailRequired'));
-            return;
-        }
-        if (!emailRegex.test(formData.email)) {
-            setErrorMessage(tForm('errors.emailInvalid'));
-            return;
+            newFieldErrors.email = tForm('errors.emailRequired');
+            isValid = false;
+        } else if (!validateEmail(formData.email.trim())) {
+            newFieldErrors.email = tForm('errors.emailInvalid');
+            isValid = false;
         }
 
+        // Validate message
         if (!formData.message.trim()) {
-            setErrorMessage(tForm('errors.messageRequired'));
+            newFieldErrors.message = tForm('errors.messageRequired');
+            isValid = false;
+        } else if (formData.message.trim().length < 10) {
+            newFieldErrors.message = tForm('errors.messageTooShort') || 'Message must be at least 10 characters';
+            isValid = false;
+        } else if (formData.message.trim().length > 1000) {
+            newFieldErrors.message = tForm('errors.messageTooLong') || 'Message must be less than 1000 characters';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            setFieldErrors(newFieldErrors);
             return;
         }
 
-        // Simulate form submission
+        // Submit to API
         setIsLoading(true);
 
-        // Simulate API call delay
-        setTimeout(() => {
-            setIsLoading(false);
+        try {
+            await contactEndpoints.submit({
+                name: formData.name.trim(),
+                email: formData.email.trim(),
+                message: formData.message.trim(),
+            });
+
             setShowSuccess(true);
 
             // Reset form
@@ -72,7 +148,16 @@ export default function ContactPage() {
             setTimeout(() => {
                 setShowSuccess(false);
             }, 5000);
-        }, 2000);
+        } catch (error: any) {
+            console.error('Error submitting contact form:', error);
+            setErrorMessage(
+                error?.response?.data?.error?.message ||
+                tForm('errors.submitFailed') ||
+                'Failed to submit contact form. Please try again.'
+            );
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -154,8 +239,17 @@ export default function ContactPage() {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="w-full bg-theme-card border border-theme-border rounded-lg px-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none focus:border-theme-primary transition-colors"
+                                    className={`w-full bg-theme-card border rounded-lg px-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none transition-colors ${
+                                        fieldErrors.name
+                                            ? 'border-red-500 focus:border-red-500'
+                                            : 'border-theme-border focus:border-theme-primary'
+                                    }`}
                                 />
+                                {fieldErrors.name && (
+                                    <p className="text-red-500 text-sm mt-1.5 flex items-center gap-1">
+                                        <span className="text-xs">⚠</span> {fieldErrors.name}
+                                    </p>
+                                )}
                             </div>
                             <div>
                                 <input
@@ -164,8 +258,17 @@ export default function ContactPage() {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="w-full bg-theme-card border border-theme-border rounded-lg px-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none focus:border-theme-primary transition-colors"
+                                    className={`w-full bg-theme-card border rounded-lg px-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none transition-colors ${
+                                        fieldErrors.email
+                                            ? 'border-red-500 focus:border-red-500'
+                                            : 'border-theme-border focus:border-theme-primary'
+                                    }`}
                                 />
+                                {fieldErrors.email && (
+                                    <p className="text-red-500 text-sm mt-1.5 flex items-center gap-1">
+                                        <span className="text-xs">⚠</span> {fieldErrors.email}
+                                    </p>
+                                )}
                             </div>
                             <div>
                                 <textarea
@@ -174,10 +277,25 @@ export default function ContactPage() {
                                     name="message"
                                     value={formData.message}
                                     onChange={handleChange}
-                                    className="w-full bg-theme-card border border-theme-border rounded-lg px-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none focus:border-theme-primary transition-colors resize-none"
+                                    className={`w-full bg-theme-card border rounded-lg px-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none transition-colors resize-none ${
+                                        fieldErrors.message
+                                            ? 'border-red-500 focus:border-red-500'
+                                            : 'border-theme-border focus:border-theme-primary'
+                                    }`}
                                 ></textarea>
+                                {fieldErrors.message && (
+                                    <p className="text-red-500 text-sm mt-1.5 flex items-center gap-1">
+                                        <span className="text-xs">⚠</span> {fieldErrors.message}
+                                    </p>
+                                )}
                             </div>
-                            {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+                            {errorMessage && (
+                                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                                    <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
+                                        <span className="text-base">⚠</span> {errorMessage}
+                                    </p>
+                                </div>
+                            )}
                             <button
                                 type="submit"
                                 disabled={isLoading}
@@ -192,7 +310,13 @@ export default function ContactPage() {
                                     tForm('submitButton')
                                 )}
                             </button>
-                            {showSuccess && <p className="text-green-500 text-sm">{tForm('successMessage')}</p>}
+                            {showSuccess && (
+                                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <p className="text-green-600 dark:text-green-400 text-sm flex items-center gap-2">
+                                        <span className="text-base">✓</span> {tForm('successMessage')}
+                                    </p>
+                                </div>
+                            )}
                         </form>
                     </div>
                 </div>

@@ -7,6 +7,7 @@ import {
     LogOut, Heart, BookMarked, History, Settings
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthContext';
+import { formatDatecreatedAt } from '@/lib/utils/utils';
 
 export default function ProfilePage() {
     const { user, logout, updateProfile, isAuthenticated } = useAuth();
@@ -53,14 +54,6 @@ export default function ProfilePage() {
         router.push('/');
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
-
     const getProviderName = (provider: string) => {
         const providers: Record<string, string> = {
             email: 'Email',
@@ -98,7 +91,7 @@ export default function ProfilePage() {
                             <div className="border-t border-b border-theme-border py-4 mb-4">
                                 <div className="flex items-center justify-between text-sm mb-2">
                                     <span className="text-theme-muted">Member Since</span>
-                                    <span className="text-theme-text">{formatDate(user.joinDate)}</span>
+                                    <span className="text-theme-text">{formatDatecreatedAt(user.joinDate)}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-theme-muted">Status</span>

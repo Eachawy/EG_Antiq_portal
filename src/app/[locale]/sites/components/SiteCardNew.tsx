@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import { useAuth } from '@/components/auth/AuthContext';
 import { historyEndpoints } from '@/lib/api/endpoints';
+import { formatDate } from '@/lib/utils/utils';
 
 export function SiteCardNew({ site }: any) {
   const tCard = useTranslations('sites.card');
@@ -13,15 +14,6 @@ export function SiteCardNew({ site }: any) {
   const params = useParams();
   const locale = params.locale;
   const { isAuthenticated } = useAuth();
-
-  const formatDate = (year: number) => {
-    if (!year || year === 0) return '';
-    if (year < 0) {
-      return `${Math.abs(year)} ${tCommon('bc')}`;
-    } else {
-      return `${year} ${tCommon('ad')}`;
-    }
-  };
 
   const getPeriodColor = (period: string) => {
     switch (period) {
@@ -97,9 +89,9 @@ export function SiteCardNew({ site }: any) {
             <div className="flex items-center gap-2 text-theme-muted text-sm mb-4">
               <Calendar size={16} />
               <span>
-                {formatDate(site.dateRange.start)}
+                {formatDate(site.dateRange.start, tCommon)}
                 {site.dateRange.start && site.dateRange.end && ' – '}
-                {formatDate(site.dateRange.end)}
+                {formatDate(site.dateRange.end, tCommon)}
               </span>
             </div>
           )}

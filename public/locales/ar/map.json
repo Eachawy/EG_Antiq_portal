@@ -6,7 +6,7 @@
     },
     "buttons": {
         "findLocation": "احصل على موقعك الحالي",
-        "filters": "المرشحات",
+        "filters": "البحث",
         "active": "نشط",
         "sitesInView": "المواقع في العرض ({count})"
     },

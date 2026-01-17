@@ -6,6 +6,7 @@ import { useAuth } from '@/components/auth/AuthContext';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { ImageWithFallback } from '../books/components/ImageWithFallback';
+import { formatDateTime } from '@/lib/utils/utils';
 
 interface HistoryItem {
     id: string;
@@ -83,24 +84,6 @@ export default function HistoryPage() {
         item.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.period.toLowerCase().includes(searchTerm.toLowerCase())
     );
-
-    const formatDateTime = (dateString: string) => {
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-
-        if (diffInHours < 24) {
-            return `${diffInHours} hours ago`;
-        } else if (diffInHours < 48) {
-            return 'Yesterday';
-        } else {
-            return date.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-            });
-        }
-    };
 
     const formatDuration = (seconds: number) => {
         const minutes = Math.floor(seconds / 60);

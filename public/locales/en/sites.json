@@ -12,7 +12,7 @@
             "description": "Try adjusting your search or filter criteria"
         },
         "pagination": {
-            "showing": "Showing <span class=\"font-semibold text-theme-primary\">{start}-{end}</span> of <span class=\"font-semibold text-theme-primary\">{total}</span> archaeological sites",
+            "showing": "Showing {start}-{end} of {total} archaeological sites",
             "previous": "Previous",
             "next": "Next",
             "jumpTo": "Jump to page:",

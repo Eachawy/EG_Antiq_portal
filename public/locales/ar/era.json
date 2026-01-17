@@ -9,7 +9,9 @@
         "historicalEra": "عصر تاريخي",
         "title": "عصر {eraName}",
         "duration": "{years} سنة",
-        "sitesCount": "{count} موقع"
+        "sitesCount": "{count} موقع",
+        "notableRulers": "حكام بارزون",
+        "keyAchievements": "إنجازات رئيسية"
     },
     "sections": {
         "historicalContext": {

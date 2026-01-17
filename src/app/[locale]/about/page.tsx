@@ -4,7 +4,12 @@ import { useTranslations } from 'next-intl';
 import { Book, Clock, Shield, Lightbulb } from 'lucide-react';
 import { historicalPeriods } from './data/sitesData';
 
+import { useParams } from 'next/navigation';
+import { type Locale } from '@/i18n/config';
+
 export default function AboutPage() {
+  const params = useParams();
+  const currentLocale = (params.locale as Locale) || 'en';
   const t = useTranslations('about.hero');
   const tClass = useTranslations('about.classification');
   const tEras = useTranslations('about.historicalEras');
@@ -95,21 +100,21 @@ export default function AboutPage() {
             </div>
 
             <div className="space-y-6">
-              {historicalPeriods.map((period) => (
+              {historicalPeriods.map((period, index) => (
                 <div
-                  key={period.name}
+                  key={index}
                   className="relative pl-8 pb-6 border-l-2 border-theme-border last:border-l-0 last:pb-0"
                 >
                   <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-theme-primary border-4 border-theme-bg"></div>
 
                   <div className="bg-theme-accent p-6 rounded-lg">
                     <div className="flex flex-wrap items-center gap-3 mb-3">
-                      <h4 className="text-theme-primary text-xl">{period.name}</h4>
+                      <h4 className="text-theme-primary text-xl">{period.name[currentLocale]}</h4>
                       <span className="px-3 py-1 bg-theme-primary/20 rounded-full text-theme-primary text-xs">
-                        {period.dateRange}
+                        {period.dateRange[currentLocale]}
                       </span>
                     </div>
-                    <p className="text-theme-text/80 leading-relaxed">{period.description}</p>
+                    <p className="text-theme-text/80 leading-relaxed">{period.description[currentLocale]}</p>
                   </div>
                 </div>
               ))}

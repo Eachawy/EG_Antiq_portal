@@ -9,7 +9,9 @@
         "historicalEra": "Historical Era",
         "title": "The {eraName} Era",
         "duration": "{years} years",
-        "sitesCount": "{count} Sites"
+        "sitesCount": "{count} Sites",
+        "notableRulers": "Notable Rulers",
+        "keyAchievements": "Key Achievements"
     },
     "sections": {
         "historicalContext": {

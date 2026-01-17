@@ -2,7 +2,7 @@
     "hero": {
         "subtitle": "المواقع الأثرية",
         "title": "دليل المواقع",
-        "description": "تصفح أهم المواقع الأثرية في مصر. استخدم المرشحات المتقدمة للعثور على ما تبحث عنه بالضبط."
+        "description": "تصفح أهم المواقع الأثرية في مصر. استخدم البحث المتقدمة للعثور على ما تبحث عنه بالضبط."
     },
     "search": {
         "found": "تم العثور على {count} موقع",
@@ -12,7 +12,7 @@
             "description": "حاول تعديل معايير البحث أو التصفية"
         },
         "pagination": {
-            "showing": "عرض <span class=\"font-semibold text-theme-primary\">{start}-{end}</span> من <span class=\"font-semibold text-theme-primary\">{total}</span> مواقع أثرية",
+            "showing": "عرض {start}-{end} من {total} مواقع أثرية",
             "previous": "السابق",
             "next": "التالي",
             "jumpTo": "الانتقال إلى صفحة:",
@@ -39,16 +39,16 @@
         "duration": "المدة (سنوات)",
         "minDuration": "الحد الأدنى للمدة",
         "maxDuration": "الحد الأقصى للمدة",
-        "reset": "إعادة تعيين المرشحات",
-        "apply": "تطبيق المرشحات",
+        "reset": "إعادة تعيين البحث",
+        "apply": "تطبيق البحث",
         "advanced": "بحث متقدم",
         "simple": "بحث بسيط",
         "allPeriods": "كل الفترات",
         "allDynasties": "كل الأسرات",
         "allTypes": "كل الأنواع",
         "searchLabel": "البحث في المواقع",
-        "showAdvanced": "إظهار المرشحات المتقدمة",
-        "hideAdvanced": "إخفاء المرشحات المتقدمة",
+        "showAdvanced": "إظهار البحث المتقدم",
+        "hideAdvanced": "إخفاء البحث المتقدم",
         "searchButton": "بحث",
         "tips": "نصائح البحث:",
         "tipsList": {

@@ -3,12 +3,15 @@
 import { useParams } from 'next/navigation';
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft, Calendar, MapPin, Building2, Sparkles, BookOpen, Heart, Clock, Landmark, ArrowUpRight, Crown, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Building2, Sparkles, BookOpen, Heart, Clock, Landmark, ArrowUpRight, AlertCircle } from 'lucide-react';
+import { type Locale } from '@/i18n/config';
 import { getEraById } from '../../HomePage-Components/data/erasData';
 import { archaeologicalSites } from '../../about/data/sitesData';
 
 export default function EraDetailsPage() {
-    const { erasId } = useParams();
+    const params = useParams();
+    const currentLocale = (params.locale as Locale) || 'en';
+    const erasId = params.erasId;
     const t = useTranslations('era');
     const tCommon = useTranslations('common');
     const router = useRouter();
@@ -34,7 +37,7 @@ export default function EraDetailsPage() {
 
     // Find sites from this era
     const eraSites = archaeologicalSites.filter(
-        site => site.historicalPeriod === era.name
+        site => site.historicalPeriod === era.name.en
     );
 
     // formatYear removed
@@ -47,7 +50,7 @@ export default function EraDetailsPage() {
                 <div className="absolute inset-0">
                     <img
                         src={era.imageUrl}
-                        alt={era.name}
+                        alt={era.name[currentLocale]}
                         className="w-full h-full object-cover"
                     />
                     <div className={`absolute inset-0 bg-gradient-to-br ${era.color.primary} opacity-90`}></div>
@@ -74,13 +77,13 @@ export default function EraDetailsPage() {
                             </div>
 
                             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-                                {t('hero.title', { eraName: era.name })}
+                                {t('hero.title', { eraName: era.name[currentLocale] })}
                             </h1>
 
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm">
                                     <Calendar size={16} />
-                                    <span className="font-semibold">{era.period}</span>
+                                    <span className="font-semibold">{era.period[currentLocale]}</span>
                                 </div>
                                 <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm">
                                     <Clock size={16} />
@@ -95,7 +98,7 @@ export default function EraDetailsPage() {
                             </div>
 
                             <p className="text-base md:text-lg text-white/95 leading-relaxed max-w-3xl">
-                                {era.fullDescription}
+                                {era.fullDescription[currentLocale]}
                             </p>
                         </div>
                     </div>
@@ -116,7 +119,7 @@ export default function EraDetailsPage() {
                                 <h2 className="text-base sm:text-lg font-semibold text-theme-text">{t('sections.historicalContext.title')}</h2>
                             </div>
                             <p className="text-theme-text/80 leading-relaxed">
-                                {era.historicalContext}
+                                {era.historicalContext[currentLocale]}
                             </p>
                         </div>
 
@@ -129,7 +132,7 @@ export default function EraDetailsPage() {
                                 <h2 className="text-base sm:text-lg font-semibold text-theme-text">{t('sections.culturalSignificance.title')}</h2>
                             </div>
                             <p className="text-theme-text/80 leading-relaxed">
-                                {era.culturalSignificance}
+                                {era.culturalSignificance[currentLocale]}
                             </p>
                         </div>
 
@@ -142,7 +145,7 @@ export default function EraDetailsPage() {
                                 <h2 className="text-base sm:text-lg font-semibold text-theme-text">{t('sections.architecturalStyle.title')}</h2>
                             </div>
                             <p className="text-theme-text/80 leading-relaxed">
-                                {era.architecturalStyle}
+                                {era.architecturalStyle[currentLocale]}
                             </p>
                         </div>
 
@@ -155,7 +158,7 @@ export default function EraDetailsPage() {
                                 <h2 className="text-base sm:text-lg font-semibold text-theme-text">{t('sections.religiousBeliefs.title')}</h2>
                             </div>
                             <p className="text-theme-text/80 leading-relaxed">
-                                {era.religiousBeliefs}
+                                {era.religiousBeliefs[currentLocale]}
                             </p>
                         </div>
                     </div>
@@ -171,7 +174,7 @@ export default function EraDetailsPage() {
                                         <div className="p-1 bg-theme-primary rounded-md mt-0.5">
                                             <div className="w-2 h-2 bg-white rounded-full"></div>
                                         </div>
-                                        <span className="text-sm text-theme-text/80">{characteristic}</span>
+                                        <span className="text-sm text-theme-text/80">{characteristic[currentLocale]}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -184,7 +187,7 @@ export default function EraDetailsPage() {
                                 {era.notableSites.map((site, index) => (
                                     <li key={index} className="flex items-start gap-3">
                                         <MapPin size={16} className={`text-theme-primary mt-0.5 flex-shrink-0`} />
-                                        <span className="text-sm text-theme-text/80">{site}</span>
+                                        <span className="text-sm text-theme-text/80">{site[currentLocale]}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -197,7 +200,7 @@ export default function EraDetailsPage() {
                     <div>
                         <div className="mb-8">
                             <h2 className="text-2xl sm:text-3xl font-semibold text-theme-text mb-3">
-                                {t('sections.archaeologicalSites.title', { eraName: era.name })}
+                                {t('sections.archaeologicalSites.title', { eraName: era.name[currentLocale] })}
                             </h2>
                             <p className="text-theme-text/70">
                                 {t('sections.archaeologicalSites.description', { count: eraSites.length })}
@@ -214,21 +217,21 @@ export default function EraDetailsPage() {
                                     <div className="relative h-48 overflow-hidden">
                                         <img
                                             src={site.thumbnailUrl}
-                                            alt={site.name.english}
+                                            alt={site.name[currentLocale]}
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                         <div className="absolute bottom-3 left-3 right-3">
-                                            <h3 className="text-white font-semibold mb-1">{site.name.english}</h3>
+                                            <h3 className="text-white font-semibold mb-1">{site.name[currentLocale]}</h3>
                                             <p className="text-white/80 text-xs flex items-center gap-1">
                                                 <MapPin size={12} />
-                                                {site.location.city}, {site.location.governorate}
+                                                {site.location.city[currentLocale]}, {site.location.governorate[currentLocale]}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="p-4">
                                         <p className="text-theme-text/70 text-sm line-clamp-2">
-                                            {site.description.substring(0, 100)}...
+                                            {site.description[currentLocale].substring(0, 100)}...
                                         </p>
                                     </div>
                                 </div>
@@ -241,7 +244,7 @@ export default function EraDetailsPage() {
                                     onClick={() => router.push('/sites')}
                                     className="inline-flex items-center gap-2 bg-theme-primary hover:bg-theme-secondary text-white px-6 py-3 rounded-lg transition-colors"
                                 >
-                                    {t('sections.archaeologicalSites.viewAllButton', { eraName: era.name })}
+                                    {t('sections.archaeologicalSites.viewAllButton', { eraName: era.name[currentLocale] })}
                                     <ArrowUpRight size={18} />
                                 </button>
                             </div>
@@ -257,7 +260,7 @@ export default function EraDetailsPage() {
                                 {t('sections.dynasties.title')}
                             </h2>
                             <p className="text-theme-text/70">
-                                {t('sections.dynasties.description', { eraName: era.name })}
+                                {t('sections.dynasties.description', { eraName: era.name[currentLocale] })}
                             </p>
                         </div>
 
@@ -272,23 +275,23 @@ export default function EraDetailsPage() {
                                         <div className="relative h-64 lg:h-auto overflow-hidden">
                                             <img
                                                 src={dynasty.imageUrl}
-                                                alt={dynasty.name}
+                                                alt={dynasty.name[currentLocale]}
                                                 className="w-full h-full object-cover"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                                             <div className="absolute bottom-4 left-4 right-4">
                                                 <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-theme-primary rounded-full text-white text-sm font-semibold mb-2">
                                                     <Calendar size={14} />
-                                                    <span>{dynasty.period}</span>
+                                                    <span>{dynasty.period[currentLocale]}</span>
                                                 </div>
-                                                <h3 className="text-white text-lg sm:text-xl font-bold">{dynasty.name}</h3>
+                                                <h3 className="text-white text-lg sm:text-xl font-bold">{dynasty.name[currentLocale]}</h3>
                                             </div>
                                         </div>
 
                                         {/* Content */}
                                         <div className="p-6 lg:p-8">
                                             <p className="text-theme-text/80 leading-relaxed mb-6">
-                                                {dynasty.description}
+                                                {dynasty.description[currentLocale]}
                                             </p>
 
                                             {/* Notable Rulers */}
@@ -298,7 +301,7 @@ export default function EraDetailsPage() {
                                                         <div className="p-2 bg-theme-primary rounded-lg">
                                                             <Sparkles className="text-white" size={18} />
                                                         </div>
-                                                        Notable Rulers
+                                                        {t("hero.notableRulers")}
                                                     </h4>
                                                     <div className="flex flex-wrap gap-2">
                                                         {dynasty.notableRulers.map((ruler, idx) => (
@@ -306,7 +309,7 @@ export default function EraDetailsPage() {
                                                                 key={idx}
                                                                 className={`px-3 py-1.5 ${era.color.secondary} border ${era.color.badge.split(' ').slice(-1)[0]} rounded-full text-sm text-theme-text`}
                                                             >
-                                                                {ruler}
+                                                                {ruler[currentLocale]}
                                                             </span>
                                                         ))}
                                                     </div>
@@ -320,7 +323,7 @@ export default function EraDetailsPage() {
                                                         <div className="p-2 bg-theme-primary rounded-lg">
                                                             <Building2 className="text-white" size={18} />
                                                         </div>
-                                                        Key Achievements
+                                                        {t("hero.keyAchievements")}
                                                     </h4>
                                                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                                         {dynasty.keyAchievements.map((achievement, idx) => (
@@ -328,7 +331,7 @@ export default function EraDetailsPage() {
                                                                 <div className="p-0.5 bg-theme-primary rounded-full mt-1.5 flex-shrink-0">
                                                                     <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                                                                 </div>
-                                                                <span>{achievement}</span>
+                                                                <span>{achievement[currentLocale]}</span>
                                                             </li>
                                                         ))}
                                                     </ul>

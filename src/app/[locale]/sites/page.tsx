@@ -347,7 +347,7 @@ export default function SitesPage() {
 
                     {/* Pagination */}
                     {totalPages > 1 && (
-                        <div className="mt-12 pt-8 border-t border-theme-border">
+                        <div className="mt-12 pt-8 border-t border-theme-border Pagination">
                             <div className="flex flex-col items-center gap-6">
                                 {/* Page Info */}
                                 <div className="text-center">
@@ -356,7 +356,7 @@ export default function SitesPage() {
                                             start: startIndex + 1,
                                             end: Math.min(endIndex, totalResults),
                                             total: totalResults,
-                                            span: (chunks) => <span className="font-semibold text-theme-primary">{chunks}</span>
+                                            // span: (chunks) => <span className="font-semibold text-theme-primary">{chunks}</span>
                                         })}
                                     </span>
                                 </div>

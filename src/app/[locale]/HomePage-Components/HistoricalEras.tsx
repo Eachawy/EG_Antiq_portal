@@ -54,7 +54,7 @@ export function HistoricalEras() {
                                 {/* Era Badge */}
                                 <div className="absolute top-3 sm:top-4 right-3 sm:right-4 transform transition-all duration-300 group-hover:scale-110">
                                     <span className={`px-2 sm:px-3 py-1 rounded-full text-xs border backdrop-blur-md shadow-lg ${era.color.badge}`}>
-                                        {era.name[currentLocale]} {t("era")}
+                                        {t("era")} {era.name[currentLocale]}
                                     </span>
                                 </div>
 
@@ -67,11 +67,11 @@ export function HistoricalEras() {
                                     <div className="flex flex-col gap-2 text-white text-xs sm:text-sm">
                                         <div className="flex items-center gap-1.5 transition-colors duration-200">
                                             <Calendar size={14} className="flex-shrink-0" aria-hidden="true" />
-                                            <span className="font-semibold">{era.period}</span>
+                                            <span className="font-semibold">{era.period[currentLocale]}</span>
                                         </div>
                                         <div className="flex items-start gap-1.5 transition-colors duration-200">
                                             <Clock size={14} className="flex-shrink-0 mt-0.5" aria-hidden="true" />
-                                            <span className="line-clamp-2 text-white/90">{era.shortDescription}</span>
+                                            <span className="line-clamp-2 text-white/90">{era.shortDescription[currentLocale]}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -83,14 +83,14 @@ export function HistoricalEras() {
                             {/* Key Features Preview */}
                             <div className="px-1 mb-3">
                                 <p className="text-theme-text/70 text-xs sm:text-sm leading-relaxed line-clamp-2">
-                                    {era.keyCharacteristics.slice(0, 2).join(' • ')}
+                                    {era.keyCharacteristics.slice(0, 2).map(c => c[currentLocale]).join(' • ')}
                                 </p>
                             </div>
 
                             {/* View Details Link */}
                             <button
                                 className="text-theme-primary group-hover:text-theme-secondary transition-all duration-300 text-xs sm:text-sm flex items-center gap-2 hover:gap-3 focus:outline-none focus:ring-2 focus:ring-theme-primary focus:ring-offset-2 focus:ring-offset-theme-bg rounded-md px-2 py-1"
-                                aria-label={`Learn more about ${era.name} era`}
+                                aria-label={`Learn more about ${era.name[currentLocale]} era`}
                             >
                                 <span>{t("exploreButton", { eraName: era.name[currentLocale] })}</span>
                                 <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />

@@ -12,6 +12,9 @@ import { LoginModal } from '@/components/auth/LoginModal';
 import { monumentEndpoints, eraEndpoints, dynastyEndpoints, monumentTypeEndpoints } from '@/lib/api/endpoints';
 import { Monument, Era, Dynasty, MonumentType } from '@/lib/api/types/monuments.dto';
 
+import { useParams } from 'next/navigation';
+import { type Locale } from '@/i18n/config';
+import { formatDate } from '@/lib/utils/utils';
 // Transform Monument API data to Site interface for map component
 interface Site {
     id: string;
@@ -85,9 +88,11 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 export default function InteractiveMapPage() {
+    const params = useParams();
+    const currentLocale = (params.locale as Locale) || 'en';
     const tMap = useTranslations('map');
     const tSites = useTranslations('sites');
-    const tCommon = useTranslations('common');
+    const tCommon = useTranslations('sites.common');
     const router = useRouter();
     const mapRef = useRef<OpenLayersMapRef>(null);
     const { isAuthenticated } = useAuth();
@@ -300,7 +305,7 @@ export default function InteractiveMapPage() {
     // Generate site type options dynamically from API monument types
     const siteTypes = useMemo(() => {
         const types = [
-            { value: 'all', label: tSites('filters.allTypes'), icon: Map, id: null }
+            { value: 'all', label: tSites('filters.allTypes'), icon: Map, id: 0 }
         ];
 
         monumentTypes.forEach((type) => {
@@ -337,14 +342,6 @@ export default function InteractiveMapPage() {
             })
             .map(transformMonumentToSite);
     }, [monuments]);
-
-    const formatDate = useCallback((year: number) => {
-        if (year < 0) {
-            return `${Math.abs(year)} ${tCommon('bc')}`;
-        } else {
-            return `${year} ${tCommon('ad')}`;
-        }
-    }, [tCommon]);
 
     const getPeriodColor = useCallback((period: string) => {
         switch (period) {
@@ -637,6 +634,7 @@ export default function InteractiveMapPage() {
                                     ref={mapRef}
                                     sites={filteredSites}
                                     onSiteClick={handleSiteClick}
+                                    currentLocale={currentLocale}
                                 />
                             )}
                         </div>
@@ -700,7 +698,7 @@ export default function InteractiveMapPage() {
                                                     className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${getPeriodColor(site.historicalPeriod)}`}
                                                 ></div>
                                                 <h4 className="text-theme-text group-hover:text-theme-primary transition-colors text-sm line-clamp-2">
-                                                    {site.name.english}
+                                                    {site.name[currentLocale === 'en' ? 'english' : 'arabic']}
                                                 </h4>
                                             </div>
                                             <p className="text-theme-muted text-xs flex items-center gap-1 mb-1">
@@ -708,7 +706,7 @@ export default function InteractiveMapPage() {
                                                 {site.location.city}
                                             </p>
                                             <p className="text-theme-muted/70 text-xs">
-                                                {formatDate(site.dateRange.start)} – {formatDate(site.dateRange.end)}
+                                                {formatDate(site.dateRange.start, tCommon)} – {formatDate(site.dateRange.end, tCommon)}
                                             </p>
                                         </div>
                                     </button>
