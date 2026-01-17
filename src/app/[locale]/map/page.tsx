@@ -4,14 +4,35 @@
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { MapPin, Filter, Landmark, Church, Mountain, Pyramid, Sparkles, Map, Moon, GraduationCap, Crown, Castle, ShoppingBag, DoorOpen, House, Droplet, Bath, Heart, Navigation } from 'lucide-react';
-import { useState, useMemo, useRef } from 'react';
-import { archaeologicalSites, dynastiesByPeriod } from '../about/data/sitesData';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { OpenLayersMap, OpenLayersMapRef } from './components/OpenLayersMap';
 import { Button } from 'primereact/button';
 // import { Toast } from 'primereact/toast';
 import * as Slider from '@radix-ui/react-slider';
 import { useAuth } from '@/components/auth/AuthContext';
 import { LoginModal } from '@/components/auth/LoginModal';
+import { monumentEndpoints, eraEndpoints, dynastyEndpoints, monumentTypeEndpoints } from '@/lib/api/endpoints';
+import { Monument, Era, Dynasty, MonumentType } from '@/lib/api/types/monuments.dto';
+
+// Transform Monument API data to Site interface for map component
+interface Site {
+    id: string;
+    name: { english: string; arabic: string };
+    location: {
+        city: string;
+        governorate: string;
+        coordinates: { lat: number; lng: number };
+    };
+    historicalPeriod: string;
+    dynasty: string;
+    dateRange: {
+        start: number;
+        end: number;
+    };
+    description: string;
+    thumbnailUrl: string;
+    imageUrl: string;
+}
 
 export default function InteractiveMapPage() {
     const tMap = useTranslations('map');
@@ -21,6 +42,16 @@ export default function InteractiveMapPage() {
     const mapRef = useRef<OpenLayersMapRef>(null);
     const { isAuthenticated } = useAuth();
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+    // API data state
+    const [monuments, setMonuments] = useState<Monument[]>([]);
+    const [eras, setEras] = useState<Era[]>([]);
+    const [dynasties, setDynasties] = useState<Dynasty[]>([]);
+    const [monumentTypes, setMonumentTypes] = useState<MonumentType[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // Filter state
     const [selectedPeriod, setSelectedPeriod] = useState('all');
     const [selectedDynasty, setSelectedDynasty] = useState('all');
     const [startDate, setStartDate] = useState<number>(-3100);
@@ -29,11 +60,17 @@ export default function InteractiveMapPage() {
     const [hoveredSite, setHoveredSite] = useState<string | null>(null);
     const [showFilters, setShowFilters] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
-    const [favoriteSites, setFavoriteSites] = useState<string[]>(() => {
-        // Load favorites from localStorage
-        const saved = localStorage.getItem('favoriteSites');
-        return saved ? JSON.parse(saved) : [];
-    });
+    const [favoriteSites, setFavoriteSites] = useState<string[]>([]);
+
+    // Load favorites from localStorage on mount (client-side only)
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('favoriteSites');
+            if (saved) {
+                setFavoriteSites(JSON.parse(saved));
+            }
+        }
+    }, []);
 
     // Toggle favorite
     const toggleFavorite = (siteId: string, e: React.MouseEvent) => {
@@ -69,58 +106,189 @@ export default function InteractiveMapPage() {
         }
     };
 
-    // Site type options with icons
-    const siteTypes = [
-        { value: 'all', label: tSites('filters.allTypes'), icon: Map },
-        { value: 'capital-cities', label: tSites('filters.types.capital-cities'), icon: Landmark },
-        { value: 'temples', label: tSites('filters.types.temples'), icon: Church },
-        { value: 'cemeteries', label: tSites('filters.types.cemeteries'), icon: Mountain },
-        { value: 'pyramids', label: tSites('filters.types.pyramids'), icon: Pyramid },
-        { value: 'obelisks', label: tSites('filters.types.obelisks'), icon: Sparkles },
-        { value: 'areas', label: tSites('filters.types.areas'), icon: Map },
-        { value: 'churches', label: tSites('filters.types.churches'), icon: Church },
-        { value: 'masjids', label: tSites('filters.types.masjids'), icon: Moon },
-        { value: 'schools', label: tSites('filters.types.schools'), icon: GraduationCap },
-        { value: 'palaces', label: tSites('filters.types.palaces'), icon: Crown },
-        { value: 'castles', label: tSites('filters.types.castles'), icon: Castle },
-        { value: 'markets', label: tSites('filters.types.markets'), icon: ShoppingBag },
-        { value: 'doors', label: tSites('filters.types.doors'), icon: DoorOpen },
-        { value: 'houses', label: tSites('filters.types.houses'), icon: House },
-        { value: 'sabil', label: tSites('filters.types.sabil'), icon: Droplet },
-        { value: 'hammam', label: tSites('filters.types.hammam'), icon: Bath },
-        { value: 'heart', label: tSites('filters.types.heart'), icon: Heart },
-    ];
+    // Fetch reference data on mount
+    useEffect(() => {
+        const fetchReferenceData = async () => {
+            try {
+                setLoading(true);
+                const [erasData, dynastiesData, typesData] = await Promise.all([
+                    eraEndpoints.getAll(),
+                    dynastyEndpoints.getAll(),
+                    monumentTypeEndpoints.getAll(),
+                ]);
+                setEras(erasData);
+                setDynasties(dynastiesData);
+                setMonumentTypes(typesData);
+            } catch (err) {
+                console.error('Error fetching reference data:', err);
+                setError('Failed to load filter options');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchReferenceData();
+    }, []);
+
+    // Fetch monuments when filters change
+    useEffect(() => {
+        const fetchMonuments = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                // Build filter parameters
+                const filters: any = {
+                    page: 1,
+                    limit: 1000, // Get all monuments for map view
+                };
+
+                // Map selected period to era IDs
+                if (selectedPeriod !== 'all') {
+                    const era = eras.find(e => e.nameEn === selectedPeriod);
+                    if (era) {
+                        filters.eraIds = [era.id];
+                    }
+                }
+
+                // Map selected dynasty to dynasty IDs
+                if (selectedDynasty !== 'all') {
+                    const dynasty = dynasties.find(d => d.nameEn === selectedDynasty);
+                    if (dynasty) {
+                        filters.dynastyIds = [dynasty.id];
+                    }
+                }
+
+                // Map selected site type to monument type IDs
+                if (selectedSiteType !== 'all') {
+                    const typeId = parseInt(selectedSiteType);
+                    if (!isNaN(typeId)) {
+                        filters.monumentTypeIds = [typeId];
+                    }
+                }
+
+                // Add date range filters (convert years to string format)
+                if (startDate !== -3100) {
+                    filters.startDateFrom = startDate.toString();
+                }
+                if (endDate !== 2025) {
+                    filters.startDateTo = endDate.toString();
+                }
+
+                const response = await monumentEndpoints.search(filters);
+                setMonuments(response.data);
+            } catch (err) {
+                console.error('Error fetching monuments:', err);
+                setError('Failed to load monuments');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        // Only fetch if reference data is loaded
+        if (eras.length > 0 && dynasties.length > 0 && monumentTypes.length > 0) {
+            fetchMonuments();
+        }
+    }, [selectedPeriod, selectedDynasty, selectedSiteType, startDate, endDate, eras, dynasties, monumentTypes]);
+
+    // Transform Monument to Site interface
+    const transformMonumentToSite = (monument: Monument): Site => {
+        const lat = parseFloat(monument.lat || monument.locationLat || '0');
+        const lng = parseFloat(monument.lng || monument.locationLong || '0');
+
+        // Parse dates
+        const parseYear = (dateStr?: string): number => {
+            if (!dateStr) return 0;
+            const year = parseInt(dateStr);
+            return isNaN(year) ? 0 : year;
+        };
+
+        return {
+            id: monument.id.toString(),
+            name: {
+                english: monument.monumentNameEn,
+                arabic: monument.monumentNameAr,
+            },
+            location: {
+                city: monument.locationDescriptionEn || 'Egypt',
+                governorate: monument.locationDescriptionAr || '',
+                coordinates: { lat, lng },
+            },
+            historicalPeriod: monument.era?.nameEn || 'Unknown',
+            dynasty: monument.dynasty?.nameEn || 'Unknown',
+            dateRange: {
+                start: parseYear(monument.startDate),
+                end: parseYear(monument.endDate),
+            },
+            description: monument.monumentBiographyEn || '',
+            thumbnailUrl: monument.image || 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400',
+            imageUrl: monument.image || 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400',
+        };
+    };
+
+    // Transform monuments to sites for the map
+    const filteredSites = useMemo(() => {
+        return monuments
+            .filter(m => {
+                // Only include monuments with valid coordinates
+                const lat = parseFloat(m.lat || m.locationLat || '0');
+                const lng = parseFloat(m.lng || m.locationLong || '0');
+                return lat !== 0 && lng !== 0;
+            })
+            .map(transformMonumentToSite);
+    }, [monuments]);
+
+    // Helper function to get icon based on monument type name
+    const getIconForType = (typeName: string) => {
+        const lowerName = typeName.toLowerCase();
+        if (lowerName.includes('temple')) return Church;
+        if (lowerName.includes('pyramid')) return Pyramid;
+        if (lowerName.includes('cemetery') || lowerName.includes('tomb')) return Mountain;
+        if (lowerName.includes('obelisk')) return Sparkles;
+        if (lowerName.includes('mosque') || lowerName.includes('masjid')) return Moon;
+        if (lowerName.includes('church')) return Church;
+        if (lowerName.includes('school')) return GraduationCap;
+        if (lowerName.includes('palace')) return Crown;
+        if (lowerName.includes('castle') || lowerName.includes('fort')) return Castle;
+        if (lowerName.includes('market') || lowerName.includes('bazaar')) return ShoppingBag;
+        if (lowerName.includes('door') || lowerName.includes('gate')) return DoorOpen;
+        if (lowerName.includes('house') || lowerName.includes('villa')) return House;
+        if (lowerName.includes('sabil') || lowerName.includes('fountain')) return Droplet;
+        if (lowerName.includes('hammam') || lowerName.includes('bath')) return Bath;
+        if (lowerName.includes('capital') || lowerName.includes('city')) return Landmark;
+        return MapPin; // Default icon
+    };
+
+    // Generate site type options dynamically from API monument types
+    const siteTypes = useMemo(() => {
+        const types = [
+            { value: 'all', label: tSites('filters.allTypes'), icon: Map, id: null }
+        ];
+
+        monumentTypes.forEach((type) => {
+            types.push({
+                value: type.id.toString(),
+                label: type.nameEn,
+                icon: getIconForType(type.nameEn),
+                id: type.id
+            });
+        });
+
+        return types;
+    }, [monumentTypes, tSites]);
 
     // Get available dynasties based on selected period
     const availableDynasties = useMemo(() => {
         if (selectedPeriod === 'all') {
-            // Return all dynasties from all periods
-            return Object.values(dynastiesByPeriod).flat();
+            return dynasties;
         }
-        return dynastiesByPeriod[selectedPeriod] || [];
-    }, [selectedPeriod]);
-
-    const filteredSites = useMemo(() => {
-        return archaeologicalSites.filter((site: { historicalPeriod: string; dynasty: string; dateRange: { start: number; end: number; }; }) => {
-            if (selectedPeriod !== 'all' && site.historicalPeriod !== selectedPeriod) {
-                return false;
-            }
-            if (selectedDynasty !== 'all' && site.dynasty !== selectedDynasty) {
-                return false;
-            }
-            // Site type filtering (skip if site doesn't have types field)
-            if (selectedSiteType !== 'all' && (site as any).types) {
-                if (!(site as any).types.includes(selectedSiteType)) {
-                    return false;
-                }
-            }
-            // Date range filtering - check if site's date range overlaps with selected range
-            if (site.dateRange.start > endDate || site.dateRange.end < startDate) {
-                return false;
-            }
-            return true;
-        });
-    }, [selectedPeriod, selectedDynasty, selectedSiteType, startDate, endDate]);
+        // Filter dynasties by selected era
+        const era = eras.find(e => e.nameEn === selectedPeriod);
+        if (era) {
+            return dynasties.filter(d => d.eraId === era.id);
+        }
+        return [];
+    }, [selectedPeriod, dynasties, eras]);
 
     // Reset dynasty filter when period changes
     const handlePeriodChange = (period: string) => {
@@ -195,7 +363,7 @@ export default function InteractiveMapPage() {
                             >
                                 <Filter size={18} className="text-theme-primary" />
                                 <span className="text-theme-text font-medium text-sm md:text-base">{tMap('buttons.filters')}</span>
-                                {!showFilters && filteredSites.length < archaeologicalSites.length && (
+                                {!showFilters && (selectedPeriod !== 'all' || selectedDynasty !== 'all' || selectedSiteType !== 'all' || startDate !== -3100 || endDate !== 2025) && (
                                     <span className="ml-1 px-2 py-0.5 bg-theme-primary text-white rounded-full text-xs">
                                         {tMap('buttons.active')}
                                     </span>
@@ -254,13 +422,14 @@ export default function InteractiveMapPage() {
                                                 value={selectedPeriod}
                                                 onChange={(e) => handlePeriodChange(e.target.value)}
                                                 className="w-full bg-theme-bg border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:border-theme-primary transition-colors"
+                                                disabled={loading}
                                             >
                                                 <option value="all">{tMap('filters.allPeriods')}</option>
-                                                <option value="Ancient Egyptian">Ancient Egyptian (3100 BC – 332 BC)</option>
-                                                <option value="Ptolemaic">Ptolemaic (332 BC – 30 BC)</option>
-                                                <option value="Roman">Roman (30 BC – 395 AD)</option>
-                                                <option value="Byzantine">Byzantine (395 AD – 641 AD)</option>
-                                                <option value="Islamic">Islamic (641 AD – Present)</option>
+                                                {eras.map((era) => (
+                                                    <option key={era.id} value={era.nameEn}>
+                                                        {era.nameEn} {era.fromYear && era.toYear ? `(${era.fromYear} – ${era.toYear})` : ''}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -270,11 +439,12 @@ export default function InteractiveMapPage() {
                                                 value={selectedDynasty}
                                                 onChange={(e) => setSelectedDynasty(e.target.value)}
                                                 className="w-full bg-theme-bg border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:border-theme-primary transition-colors"
+                                                disabled={loading}
                                             >
                                                 <option value="all">{tMap('filters.allDynasties')}</option>
-                                                {availableDynasties.map((dynasty: any) => (
-                                                    <option key={dynasty} value={dynasty}>
-                                                        {dynasty}
+                                                {availableDynasties.map((dynasty) => (
+                                                    <option key={dynasty.id} value={dynasty.nameEn}>
+                                                        {dynasty.nameEn} {dynasty.fromYear && dynasty.toYear ? `(${dynasty.fromYear} – ${dynasty.toYear})` : ''}
                                                     </option>
                                                 ))}
                                             </select>
@@ -346,7 +516,7 @@ export default function InteractiveMapPage() {
                                 </div>
 
                                 <div className="mt-6 pt-6 border-t border-gray-200 text-sm text-theme-muted">
-                                    {tMap('filters.showing', { count: filteredSites.length, total: archaeologicalSites.length })}
+                                    {loading ? 'Loading monuments...' : `Showing ${filteredSites.length} monument${filteredSites.length !== 1 ? 's' : ''}`}
                                 </div>
                             </div>
                         )}
@@ -380,11 +550,34 @@ export default function InteractiveMapPage() {
 
                         {/* OpenLayers Map */}
                         <div className="w-full h-full relative">
-                            <OpenLayersMap
-                                ref={mapRef}
-                                sites={filteredSites}
-                                onSiteClick={(siteId: any) => router.push(`/sites/${siteId}`)}
-                            />
+                            {error ? (
+                                <div className="flex items-center justify-center h-full bg-theme-accent">
+                                    <div className="text-center p-6">
+                                        <div className="text-red-500 text-5xl mb-4">⚠️</div>
+                                        <h3 className="text-theme-text text-xl font-semibold mb-2">Error Loading Map</h3>
+                                        <p className="text-theme-muted">{error}</p>
+                                        <button
+                                            onClick={() => window.location.reload()}
+                                            className="mt-4 px-6 py-2 bg-theme-primary text-white rounded-lg hover:bg-theme-primary/90 transition-colors"
+                                        >
+                                            Reload Page
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : loading ? (
+                                <div className="flex items-center justify-center h-full bg-theme-accent">
+                                    <div className="text-center">
+                                        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-theme-primary mx-auto mb-4"></div>
+                                        <p className="text-theme-muted">Loading monuments...</p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <OpenLayersMap
+                                    ref={mapRef}
+                                    sites={filteredSites}
+                                    onSiteClick={(siteId: any) => router.push(`/sites/${siteId}`)}
+                                />
+                            )}
                         </div>
                     </div>
 
