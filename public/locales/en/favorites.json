@@ -1,0 +1,22 @@
+{
+    "hero": {
+        "title": "My Favorite Sites",
+        "subtitle": "Your collection of favorite archaeological sites in Ancient Egypt"
+    },
+    "search": "Search your favorites...",
+    "stats": {
+        "total": "Total Favorites",
+        "filtered": "Filtered Results",
+        "periods": "Periods"
+    },
+    "actions": {
+        "view": "View Details",
+        "explore": "Explore Sites"
+    },
+    "empty": {
+        "title": "No Favorites Yet",
+        "desc": "Start exploring sites and add them to your favorites",
+        "noResults": "No Results Found",
+        "noResultsDesc": "Try adjusting your search terms"
+    }
+}

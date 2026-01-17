@@ -9,6 +9,7 @@ import Footer from '@/components/layout/Footer';
 import { ThemeProvider } from '@/components/common/ThemeContext';
 import { AuthProvider } from '@/components/auth/AuthContext';
 import { FavoriteProvider } from '@/components/auth/FavoriteContext';
+import { CartProvider } from '@/components/auth/CartContext';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -42,11 +43,13 @@ export default async function LocaleLayout({
           <AuthProvider>
             <NextIntlClientProvider messages={messages}>
               <FavoriteProvider>
-                <div className="min-h-screen bg-theme-bg transition-colors duration-300">
-                  <Header />
-                  <main className="flex-1">{children}</main>
-                  <Footer />
-                </div>
+                <CartProvider>
+                  <div className="min-h-screen bg-theme-bg transition-colors duration-300">
+                    <Header />
+                    <main className="flex-1">{children}</main>
+                    <Footer />
+                  </div>
+                </CartProvider>
               </FavoriteProvider>
             </NextIntlClientProvider>
           </AuthProvider>

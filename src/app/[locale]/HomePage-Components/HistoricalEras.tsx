@@ -1,12 +1,16 @@
 'use client';
 
 import { useRouter } from '@/i18n/routing';
+import { useParams } from 'next/navigation';
+import { type Locale } from '@/i18n/config';
 import { Calendar, ArrowRight, Clock } from 'lucide-react';
 import { eras, type Era } from './data/erasData';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 
 export function HistoricalEras() {
+    const params = useParams();
+    const currentLocale = (params.locale as Locale) || 'en';
     const router = useRouter();
     const t = useTranslations("homepage.historicalEras");
 
@@ -39,7 +43,7 @@ export function HistoricalEras() {
                                 {/* Image */}
                                 <Image
                                     src={era.imageUrl}
-                                    alt={era.name}
+                                    alt={era.name[currentLocale]}
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-110 group-focus-within:scale-110"
                                 />
@@ -50,14 +54,14 @@ export function HistoricalEras() {
                                 {/* Era Badge */}
                                 <div className="absolute top-3 sm:top-4 right-3 sm:right-4 transform transition-all duration-300 group-hover:scale-110">
                                     <span className={`px-2 sm:px-3 py-1 rounded-full text-xs border backdrop-blur-md shadow-lg ${era.color.badge}`}>
-                                        {era.name} Era
+                                        {era.name[currentLocale]} {t("era")}
                                     </span>
                                 </div>
 
                                 {/* Content Overlay */}
                                 <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 transform transition-all duration-500 group-hover:translate-y-0">
                                     <h3 className="text-white mb-3 group-hover:text-theme-primary transition-colors duration-300 text-xl sm:text-2xl font-bold">
-                                        {era.name}
+                                        {era.name[currentLocale]}
                                     </h3>
 
                                     <div className="flex flex-col gap-2 text-white text-xs sm:text-sm">
@@ -88,7 +92,7 @@ export function HistoricalEras() {
                                 className="text-theme-primary group-hover:text-theme-secondary transition-all duration-300 text-xs sm:text-sm flex items-center gap-2 hover:gap-3 focus:outline-none focus:ring-2 focus:ring-theme-primary focus:ring-offset-2 focus:ring-offset-theme-bg rounded-md px-2 py-1"
                                 aria-label={`Learn more about ${era.name} era`}
                             >
-                                <span>{t("exploreButton", { eraName: era.name })}</span>
+                                <span>{t("exploreButton", { eraName: era.name[currentLocale] })}</span>
                                 <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
                             </button>
                         </div>

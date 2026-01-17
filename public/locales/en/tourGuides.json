@@ -1,0 +1,61 @@
+{
+    "hero": {
+        "badge": "Certified Experts",
+        "title": "Expert Archaeological Tour Guides",
+        "subtitle": "Connect with certified Egyptologists and experienced guides for an authentic journey through ancient Egypt",
+        "stats": {
+            "guides": "Expert Guides",
+            "languages": "Languages",
+            "rating": "Average Rating",
+            "tours": "Tours Conducted"
+        }
+    },
+    "filters": {
+        "title": "Filters",
+        "subtitle": "Refine your search",
+        "searchPlaceholder": "Search by name, specialization, or description...",
+        "specialization": "Specialization",
+        "language": "Language",
+        "minRating": "Minimum Rating",
+        "any": "Any",
+        "reset": "Reset"
+    },
+    "list": {
+        "showing": "Showing {count} of {total} guides",
+        "noResults": "No tour guides match your criteria",
+        "reset": "Reset filters",
+        "viewProfile": "View Full Profile"
+    },
+    "details": {
+        "back": "Back to Tour Guides",
+        "verified": "Verified",
+        "yearsExp": "Years Experience",
+        "perHour": "Per Hour",
+        "languages": "Languages",
+        "about": "About {name}",
+        "specializations": "Specializations",
+        "areas": "Areas Covered",
+        "highlights": "Professional Highlights",
+        "tours": "Available Tours",
+        "reviews": "Client Reviews ({count})",
+        "writeReview": "Write Review",
+        "education": "Education",
+        "certifications": "Certifications",
+        "contact": "Contact Information",
+        "book": "Book This Guide",
+        "responseTime": "Response Time: Within 24 hours",
+        "cancellation": "Cancellation: 48 hours notice",
+        "groupSize": "Group Size: 1-15 people"
+    },
+    "review": {
+        "title": "Leave a Review",
+        "subtitle": "Share your experience with {name}",
+        "ratingQuestion": "How would you rate your experience?",
+        "tourQuestion": "Which tour did you take?",
+        "commentQuestion": "Share your experience",
+        "placeholder": "Tell us about your tour experience...",
+        "submit": "Submit Review",
+        "cancel": "Cancel",
+        "selectTour": "Select a tour"
+    }
+}

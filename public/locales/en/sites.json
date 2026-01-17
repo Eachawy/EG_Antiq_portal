@@ -5,7 +5,7 @@
         "description": "Browse through Egypt's most significant archaeological sites. Use advanced filters to find exactly what you're looking for."
     },
     "search": {
-        "found": "Found <strong>{count}</strong> site{s, plural, one {} other {s}}",
+        "found": "Found {count} site{total}",
         "saveSearch": "Save Search",
         "noSites": {
             "title": "No sites found",
@@ -32,6 +32,7 @@
         "placeholder": "Search sites...",
         "period": "Period",
         "dynasty": "Dynasty",
+        "type": "Type",
         "dateRange": "Date Range",
         "selectRange": "Select range",
         "siteType": "Site Type",

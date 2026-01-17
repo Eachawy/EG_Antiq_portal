@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useMemo, useRef } from 'react';
-import { archaeologicalSites } from '../about/data/sitesData';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { AdvancedSearch, SearchParams } from './components/AdvancedSearch';
 import { SiteCardNew } from './components/SiteCardNew';
 import { Grid3x3, List, ChevronLeft, ChevronRight, Save, Check, X } from 'lucide-react';
@@ -12,12 +11,19 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
+import { type Locale } from '@/i18n/config';
+import { monumentEndpoints, eraEndpoints, dynastyEndpoints, monumentTypeEndpoints, savedSearchEndpoints } from '@/lib/api/endpoints';
+import { Monument, Era, Dynasty, MonumentType } from '@/lib/api/types/monuments.dto';
+import { mapMonumentToSite } from '@/lib/utils/monument-mapper';
 
 
 export default function SitesPage() {
     const tHero = useTranslations('sites.hero');
     const tSearch = useTranslations('sites.search');
-    // const t = useTranslations('header');
+    const params = useParams();
+    const currentLocale = (params.locale as Locale) || 'en';
+    const locale = params.locale as 'en' | 'ar';
     const { isAuthenticated } = useAuth();
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [searchParams, setSearchParams] = useState<SearchParams>({
@@ -34,117 +40,163 @@ export default function SitesPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
 
-    const filteredSites = useMemo(() => {
-        return archaeologicalSites.filter((site) => {
-            // Search query filter
-            if (
-                searchParams.query &&
-                !site.name.english.toLowerCase().includes(searchParams.query.toLowerCase()) &&
-                !site.name.arabic.includes(searchParams.query)
-            ) {
-                return false;
+    // API state
+    const [monuments, setMonuments] = useState<Monument[]>([]);
+    const [eras, setEras] = useState<Era[]>([]);
+    const [dynasties, setDynasties] = useState<Dynasty[]>([]);
+    const [monumentTypes, setMonumentTypes] = useState<MonumentType[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalResults, setTotalResults] = useState(0);
+
+    // Fetch reference data on mount
+    useEffect(() => {
+        const fetchEras = async () => {
+            try {
+                const data = await eraEndpoints.getAll();
+                setEras(data);
+            } catch (err) {
+                console.error('Failed to fetch eras:', err);
             }
+        };
+        fetchEras();
+    }, []);
 
-            // Period filter
-            if (searchParams.period !== 'all' && site.historicalPeriod !== searchParams.period) {
-                return false;
+    useEffect(() => {
+        const fetchDynasties = async () => {
+            try {
+                const data = await dynastyEndpoints.getAll();
+                setDynasties(data);
+            } catch (err) {
+                console.error('Failed to fetch dynasties:', err);
             }
+        };
+        fetchDynasties();
+    }, []);
 
-            // Dynasty filter
-            if (searchParams.dynasty !== 'all' && site.dynasty !== searchParams.dynasty) {
-                return false;
+    useEffect(() => {
+        const fetchMonumentTypes = async () => {
+            try {
+                const data = await monumentTypeEndpoints.getAll();
+                setMonumentTypes(data);
+            } catch (err) {
+                console.error('Failed to fetch monument types:', err);
             }
+        };
+        fetchMonumentTypes();
+    }, []);
 
-            // Date range filter
-            if (searchParams.startDate && searchParams.endDate) {
-                const start = parseInt(searchParams.startDate);
-                const end = parseInt(searchParams.endDate);
-                const siteOverlaps =
-                    (site.dateRange.start >= start && site.dateRange.start <= end) ||
-                    (site.dateRange.end >= start && site.dateRange.end <= end) ||
-                    (site.dateRange.start <= start && site.dateRange.end >= end);
+    // Fetch monuments with search/pagination
+    useEffect(() => {
+        const fetchMonuments = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const hasFilters =
+                    searchParams.query ||
+                    searchParams.period !== 'all' ||
+                    searchParams.dynasty !== 'all' ||
+                    searchParams.startDate ||
+                    searchParams.endDate ||
+                    searchParams.siteType !== 'all';
 
-                if (!siteOverlaps) {
-                    return false;
+                let result;
+                if (hasFilters) {
+                    result = await monumentEndpoints.search({
+                        keyword: searchParams.query || undefined,
+                        eraIds: searchParams.period !== 'all' ? [parseInt(searchParams.period)] : undefined,
+                        dynastyIds: searchParams.dynasty !== 'all' ? [parseInt(searchParams.dynasty)] : undefined,
+                        monumentTypeIds: searchParams.siteType !== 'all' ? [parseInt(searchParams.siteType)] : undefined,
+                        startDateFrom: searchParams.startDate || undefined,
+                        startDateTo: searchParams.endDate || undefined,
+                        page: currentPage,
+                        limit: itemsPerPage,
+                    });
+                } else {
+                    result = await monumentEndpoints.getAll(currentPage, itemsPerPage);
                 }
+
+                setMonuments(result.data || []);
+                setTotalResults(result.pagination?.total || 0);
+                setTotalPages(result.pagination?.totalPages || 0);
+            } catch (err: any) {
+                setError(err.message || 'Failed to load monuments');
+                console.error('Failed to fetch monuments:', err);
+            } finally {
+                setLoading(false);
             }
+        };
 
-            // Duration filter
-            if (searchParams.minDuration || searchParams.maxDuration) {
-                const duration = Math.abs(site.dateRange.end - site.dateRange.start);
-                if (searchParams.minDuration && duration < parseInt(searchParams.minDuration)) {
-                    return false;
-                }
-                if (searchParams.maxDuration && duration > parseInt(searchParams.maxDuration)) {
-                    return false;
-                }
-            }
-
-            return true;
-        });
-    }, [searchParams]);
-
-    // Pagination calculations
-    const totalPages = Math.ceil(filteredSites.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedSites = filteredSites.slice(startIndex, endIndex);
+        fetchMonuments();
+    }, [searchParams, currentPage]);
 
     // Reset to page 1 when search params change
-    useMemo(() => {
+    useEffect(() => {
         setCurrentPage(1);
     }, [searchParams]);
+
+    // Map monuments to sites for backward compatibility
+    const mappedSites = useMemo(() => {
+        if (!monuments || !Array.isArray(monuments)) return [];
+        return monuments.map((monument) => mapMonumentToSite(monument, locale));
+    }, [monuments, locale]);
+
+    // Pagination calculations
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
 
     // Save search functionality
     const [saveSearchDialogVisible, setSaveSearchDialogVisible] = useState(false);
     const [searchName, setSearchName] = useState('');
     const toastRef = useRef<Toast>(null);
 
-    const handleSaveSearch = () => {
+    const handleSaveSearch = async () => {
         if (!searchName.trim()) {
             toastRef.current?.show({
                 severity: 'warn',
-                summary: tSearch('saveDialog.title'), // reusing title as summary for now
+                summary: tSearch('saveDialog.title'),
                 detail: tSearch('saveDialog.nameRequired'),
                 life: 3000,
             });
             return;
         }
 
-        // Create saved search object
-        const savedSearch = {
-            id: Date.now().toString(),
-            name: searchName,
-            query: searchParams.query,
-            filters: {
-                period: searchParams.period !== 'all' ? searchParams.period : undefined,
-                dynasty: searchParams.dynasty !== 'all' ? searchParams.dynasty : undefined,
-                startDate: searchParams.startDate || undefined,
-                endDate: searchParams.endDate || undefined,
-                siteType: searchParams.siteType !== 'all' ? searchParams.siteType : undefined,
-            },
-            createdAt: new Date().toISOString(),
-            resultsCount: filteredSites.length,
-        };
+        if (!isAuthenticated) {
+            setIsLoginModalOpen(true);
+            return;
+        }
 
-        // Get existing saved searches from localStorage
-        const existingSavedSearches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
+        try {
+            await savedSearchEndpoints.create({
+                name: searchName,
+                searchCriteria: {
+                    keyword: searchParams.query || undefined,
+                    eraIds: searchParams.period !== 'all' ? [parseInt(searchParams.period)] : undefined,
+                    dynastyIds: searchParams.dynasty !== 'all' ? [parseInt(searchParams.dynasty)] : undefined,
+                    monumentTypeIds: searchParams.siteType !== 'all' ? [parseInt(searchParams.siteType)] : undefined,
+                    startDateFrom: searchParams.startDate || undefined,
+                    startDateTo: searchParams.endDate || undefined,
+                },
+            });
 
-        // Add new search
-        existingSavedSearches.push(savedSearch);
+            toastRef.current?.show({
+                severity: 'success',
+                summary: tSearch('saveDialog.title'),
+                detail: tSearch('saveDialog.success', { name: searchName }),
+                life: 3000,
+            });
 
-        // Save to localStorage
-        localStorage.setItem('savedSearches', JSON.stringify(existingSavedSearches));
-
-        toastRef.current?.show({
-            severity: 'success',
-            summary: tSearch('saveDialog.title'),
-            detail: tSearch('saveDialog.success', { name: searchName }),
-            life: 3000,
-        });
-
-        setSaveSearchDialogVisible(false);
-        setSearchName('');
+            setSaveSearchDialogVisible(false);
+            setSearchName('');
+        } catch (err: any) {
+            toastRef.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.message || 'Failed to save search',
+                life: 3000,
+            });
+        }
     };
 
     const hasActiveFilters = () => {
@@ -157,6 +209,37 @@ export default function SitesPage() {
             searchParams.siteType !== 'all'
         );
     };
+
+    // Loading state
+    if (loading && monuments.length === 0) {
+        return (
+            <div className="min-h-screen bg-theme-bg flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-theme-primary mx-auto mb-4"></div>
+                    <p className="text-theme-text">Loading monuments...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Error state
+    if (error && monuments.length === 0) {
+        return (
+            <div className="min-h-screen bg-theme-bg flex items-center justify-center">
+                <div className="text-center max-w-md mx-auto px-6">
+                    <div className="text-red-500 text-6xl mb-4">⚠️</div>
+                    <h3 className="text-theme-text text-xl mb-2">Error Loading Monuments</h3>
+                    <p className="text-theme-text/70 mb-4">{error}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="bg-theme-primary text-white px-6 py-2 rounded-lg hover:bg-theme-primary/90 transition-colors"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-theme-bg">
@@ -185,7 +268,7 @@ export default function SitesPage() {
                 <div className="container mx-auto px-6 md:px-12 max-w-7xl">
                     {/* Advanced Search */}
                     <div className="mb-12">
-                        <AdvancedSearch onSearch={setSearchParams} />
+                        <AdvancedSearch onSearch={setSearchParams} eras={eras} dynasties={dynasties} monumentTypes={monumentTypes} />
                     </div>
 
                     {/* View Mode Toggle & Results Count */}
@@ -193,10 +276,11 @@ export default function SitesPage() {
                         <div className="text-theme-text">
                             <span className="text-lg">
                                 {tSearch.rich('found', {
-                                    count: filteredSites.length,
-                                    strong: (chunks) => <strong>{chunks}</strong>
+                                    count: totalResults,
+                                    total: totalResults === 1 ? '' : 's'
                                 })}
                             </span>
+                            {loading && <span className="ml-2 text-sm text-theme-muted">(Loading...)</span>}
                         </div>
                         <div className="flex gap-2 items-center">
                             {/* Save Search Button */}
@@ -243,14 +327,14 @@ export default function SitesPage() {
                     </div>
 
                     {/* Sites Grid/List */}
-                    {filteredSites.length > 0 ? (
+                    {mappedSites.length > 0 ? (
                         <div
                             className={
                                 viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8' : 'flex flex-col gap-6'
                             }
                         >
-                            {paginatedSites.map((site) => (
-                                <SiteCardNew key={site.id} site={site} />
+                            {mappedSites.map((site) => (
+                                <SiteCardNew key={site.id} locale={currentLocale} site={site} />
                             ))}
                         </div>
                     ) : (
@@ -270,8 +354,8 @@ export default function SitesPage() {
                                     <span className="text-theme-muted text-sm">
                                         {tSearch.rich('pagination.showing', {
                                             start: startIndex + 1,
-                                            end: Math.min(endIndex, filteredSites.length),
-                                            total: filteredSites.length,
+                                            end: Math.min(endIndex, totalResults),
+                                            total: totalResults,
                                             span: (chunks) => <span className="font-semibold text-theme-primary">{chunks}</span>
                                         })}
                                     </span>

@@ -1,11 +1,15 @@
 import { useState, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 import { Search, SlidersHorizontal, X, Landmark, Church, Mountain, Pyramid, Sparkles, Map, Moon, GraduationCap, Crown, Castle, ShoppingBag, DoorOpen, House, Droplet, Bath } from 'lucide-react';
-import { dynastiesByPeriod } from '../../about/data/sitesData';
 import * as Slider from '@radix-ui/react-slider';
+import { Era, Dynasty, MonumentType } from '@/lib/api/types/monuments.dto';
 
 interface AdvancedSearchProps {
   onSearch: (params: SearchParams) => void;
+  eras: Era[];
+  dynasties: Dynasty[];
+  monumentTypes: MonumentType[];
 }
 
 export interface SearchParams {
@@ -19,9 +23,11 @@ export interface SearchParams {
   maxDuration: string;
 }
 
-export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
+export function AdvancedSearch({ onSearch, eras, dynasties, monumentTypes }: AdvancedSearchProps) {
   const t = useTranslations('sites.filters');
   const tCommon = useTranslations('sites.common');
+  const params = useParams();
+  const locale = params.locale as 'en' | 'ar';
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [searchParams, setSearchParams] = useState<SearchParams>({
     query: '',
@@ -34,34 +40,46 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
     maxDuration: '',
   });
 
-  // Site type options with icons
-  const siteTypes = [
-    { value: 'all', label: t('allTypes'), icon: Map },
-    { value: 'capital-cities', label: t('types.capital-cities'), icon: Landmark },
-    { value: 'temples', label: t('types.temples'), icon: Church },
-    { value: 'cemeteries', label: t('types.cemeteries'), icon: Mountain },
-    { value: 'pyramids', label: t('types.pyramids'), icon: Pyramid },
-    { value: 'obelisks', label: t('types.obelisks'), icon: Sparkles },
-    { value: 'areas', label: t('types.areas'), icon: Map },
-    { value: 'churches', label: t('types.churches'), icon: Church },
-    { value: 'masjids', label: t('types.masjids'), icon: Moon },
-    { value: 'schools', label: t('types.schools'), icon: GraduationCap },
-    { value: 'palaces', label: t('types.palaces'), icon: Crown },
-    { value: 'castles', label: t('types.castles'), icon: Castle },
-    { value: 'markets', label: t('types.markets'), icon: ShoppingBag },
-    { value: 'doors', label: t('types.doors'), icon: DoorOpen },
-    { value: 'houses', label: t('types.houses'), icon: House },
-    { value: 'sabil', label: t('types.sabil'), icon: Droplet },
-    { value: 'hammam', label: t('types.hammam'), icon: Bath },
-  ];
+  // Icon mapping for different monument types (fallback to default icon)
+  const getIconForType = (typeNameEn: string) => {
+    const lowerName = typeNameEn.toLowerCase();
+    if (lowerName.includes('capital') || lowerName.includes('city')) return Landmark;
+    if (lowerName.includes('temple')) return Church;
+    if (lowerName.includes('cemetery') || lowerName.includes('necropolis')) return Mountain;
+    if (lowerName.includes('pyramid')) return Pyramid;
+    if (lowerName.includes('obelisk')) return Sparkles;
+    if (lowerName.includes('church')) return Church;
+    if (lowerName.includes('mosque') || lowerName.includes('masjid')) return Moon;
+    if (lowerName.includes('school')) return GraduationCap;
+    if (lowerName.includes('palace')) return Crown;
+    if (lowerName.includes('castle') || lowerName.includes('fort')) return Castle;
+    if (lowerName.includes('market') || lowerName.includes('bazaar')) return ShoppingBag;
+    if (lowerName.includes('door') || lowerName.includes('gate')) return DoorOpen;
+    if (lowerName.includes('house') || lowerName.includes('dwelling')) return House;
+    if (lowerName.includes('sabil') || lowerName.includes('fountain')) return Droplet;
+    if (lowerName.includes('hammam') || lowerName.includes('bath')) return Bath;
+    return Map; // Default icon
+  };
 
-  // Get available dynasties based on selected period
+  // Build site types from API data
+  const siteTypes = useMemo(() => {
+    return [
+      { value: 'all', label: t('allTypes'), icon: Map },
+      ...monumentTypes.map(type => ({
+        value: type.id.toString(),
+        label: locale === 'ar' ? type.nameAr : type.nameEn,
+        icon: getIconForType(type.nameEn),
+      }))
+    ];
+  }, [monumentTypes, locale, t]);
+
+  // Get available dynasties based on selected era
   const availableDynasties = useMemo(() => {
     if (searchParams.period === 'all') {
-      return Object.values(dynastiesByPeriod).flat();
+      return dynasties;
     }
-    return dynastiesByPeriod[searchParams.period] || [];
-  }, [searchParams.period]);
+    return dynasties.filter((dynasty) => dynasty.eraId === parseInt(searchParams.period));
+  }, [searchParams.period, dynasties]);
 
   const handleSearch = () => {
     onSearch(searchParams);
@@ -127,11 +145,12 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
                 className="w-full bg-theme-card border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:ring-2 focus:ring-theme-primary"
               >
                 <option value="all">{t('allPeriods')}</option>
-                <option value="Ancient Egyptian">Ancient Egyptian (3100 BC – 332 BC)</option>
-                <option value="Ptolemaic">Ptolemaic (332 BC – 30 BC)</option>
-                <option value="Roman">Roman (30 BC – 395 AD)</option>
-                <option value="Byzantine">Byzantine (395 AD – 641 AD)</option>
-                <option value="Islamic">Islamic (641 AD – Present)</option>
+                {eras.map((era) => (
+                  <option key={era.id} value={era.id.toString()}>
+                    {locale === 'ar' ? era.nameAr : era.nameEn}
+                    {era.fromYear && era.toYear && ` (${era.fromYear} – ${era.toYear})`}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -141,11 +160,13 @@ export function AdvancedSearch({ onSearch }: AdvancedSearchProps) {
                 value={searchParams.dynasty}
                 onChange={(e) => setSearchParams({ ...searchParams, dynasty: e.target.value })}
                 className="w-full bg-theme-bg border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:border-theme-primary transition-colors"
+                disabled={!availableDynasties.length}
               >
                 <option value="all">{t('allDynasties')}</option>
                 {availableDynasties.map((dynasty) => (
-                  <option key={dynasty} value={dynasty}>
-                    {dynasty}
+                  <option key={dynasty.id} value={dynasty.id.toString()}>
+                    {locale === 'ar' ? dynasty.nameAr : dynasty.nameEn}
+                    {dynasty.fromYear && dynasty.toYear && ` (${dynasty.fromYear} – ${dynasty.toYear})`}
                   </option>
                 ))}
               </select>

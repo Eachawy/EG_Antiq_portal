@@ -1,0 +1,27 @@
+{
+    "hero": {
+        "title": "Browsing History",
+        "subtitle": "Track your exploration journey through Ancient Egyptian archaeological sites"
+    },
+    "search": "Search your history...",
+    "stats": {
+        "visited": "Sites Visited",
+        "time": "Total Time Spent",
+        "periods": "Periods Explored"
+    },
+    "actions": {
+        "clear": "Clear All History",
+        "visit": "Visit Again",
+        "explore": "Explore Sites"
+    },
+    "empty": {
+        "title": "No History Yet",
+        "desc": "Start exploring archaeological sites to build your history",
+        "noResults": "No Results Found",
+        "noResultsDesc": "Try adjusting your search terms"
+    },
+    "time": {
+        "hoursAgo": "{count} hours ago",
+        "yesterday": "Yesterday"
+    }
+}

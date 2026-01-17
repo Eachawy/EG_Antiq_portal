@@ -10,7 +10,7 @@ export interface Dynasty {
 
 export interface Era {
   id: string;
-  name: string;
+  name: { en: string, ar: string };
   period: string;
   shortDescription: string;
   fullDescription: string;
@@ -36,7 +36,7 @@ export interface Era {
 export const eras: Era[] = [
   {
     id: 'pharaonic',
-    name: 'Ancient Egyptian',
+    name: { en: 'Ancient Egyptian', ar: 'المصريون القدماء' },
     period: '3100 BC - 332 BC',
     shortDescription: 'The age of the pharaohs, pyramids, and hieroglyphs. Ancient Egypt\'s most iconic period spanning over 3000 years.',
     fullDescription: 'The Ancient Egyptian era represents the zenith of ancient Egyptian civilization, characterized by powerful dynasties, monumental architecture, and sophisticated religious beliefs. This period witnessed the construction of the Great Pyramids, the establishment of complex bureaucratic systems, and the development of hieroglyphic writing. The pharaohs were considered divine rulers, mediating between gods and humans, and their legacy continues to fascinate the world today.',
@@ -102,7 +102,7 @@ export const eras: Era[] = [
   },
   {
     id: 'ptolemaic',
-    name: 'Ptolemaic',
+    name: { en: 'Ptolemaic', ar: 'البطالمة' },
     period: '332 BC - 30 BC',
     shortDescription: 'The Hellenistic period when Greek rulers governed Egypt, blending Greek and Egyptian cultures in unprecedented ways.',
     fullDescription: 'The Ptolemaic period began with Alexander the Great\'s conquest and continued under the Macedonian Greek dynasty founded by Ptolemy I. This era witnessed a unique fusion of Greek and Egyptian traditions, with the Ptolemies adopting pharaonic titles and customs while introducing Hellenistic culture. The period is famous for the Library of Alexandria, the Lighthouse of Alexandria (one of the Seven Wonders), and ended with Cleopatra VII, the last pharaoh of Egypt.',
@@ -150,7 +150,7 @@ export const eras: Era[] = [
   },
   {
     id: 'roman',
-    name: 'Roman',
+    name: { en: 'Roman', ar: 'الرومانية' },
     period: '30 BC - 395 AD',
     shortDescription: 'Egypt as a vital province of the Roman Empire, serving as the breadbasket and maintaining ancient traditions under Roman rule.',
     fullDescription: 'Following Cleopatra\'s defeat, Egypt became a special province under direct control of the Roman emperor. As Rome\'s primary grain supplier, Egypt held strategic importance. While Roman culture and administration dominated urban centers, traditional Egyptian religious practices and temples continued to thrive. This period saw the construction of new temples in Egyptian style, the rise of Christianity, and the continuation of mummification practices alongside Roman burial customs.',
@@ -216,7 +216,7 @@ export const eras: Era[] = [
   },
   {
     id: 'byzantine',
-    name: 'Byzantine',
+    name: { en: 'Byzantine', ar: 'البيزنطية' },
     period: '395 AD - 641 AD',
     shortDescription: 'Christian Egypt under Eastern Roman rule, marked by magnificent Coptic art and monastic traditions.',
     fullDescription: 'The Byzantine period in Egypt represents the Christian phase of Roman rule, characterized by the dominance of the Coptic Orthodox Church and the flourishing of Christian monasticism. Egypt was a vital province of the Byzantine Empire, contributing significantly to Christian theology through the School of Alexandria. This era witnessed the construction of numerous churches and monasteries, the development of Coptic art and literature, and theological controversies that shaped Christian doctrine. The period ended with the Arab Islamic conquest in 641 AD.',
@@ -273,7 +273,7 @@ export const eras: Era[] = [
   },
   {
     id: 'islamic',
-    name: 'Islamic',
+    name: { en: 'Islamic', ar: 'الإسلامية' },
     period: '641 AD - Present',
     shortDescription: 'Egypt\'s transformation under Islamic rule, creating magnificent mosques and establishing Cairo as a great Islamic capital.',
     fullDescription: 'The Islamic period began with the Arab conquest in 641 AD and continues to the present day. This era witnessed Egypt\'s transformation into a major center of Islamic civilization, culture, and learning. The founding of Cairo in 969 AD, the establishment of Al-Azhar University, and the construction of magnificent mosques and madrasas marked this period. Islamic Egypt saw various dynasties including the Umayyads, Abbasids, Fatimids, Ayyubids, Mamluks, and Ottomans, each contributing to Egypt\'s rich Islamic heritage.',
@@ -373,7 +373,7 @@ export const getEraById = (id: string): Era | undefined => {
 };
 
 export const getEraColor = (eraName: string) => {
-  const era = eras.find(e => e.name === eraName);
+  const era = eras.find(e => e.name.en === eraName);
   return era ? era.color : {
     primary: 'from-gray-500 to-gray-600',
     secondary: 'bg-gray-500/20',

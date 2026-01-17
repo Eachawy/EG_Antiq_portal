@@ -1,0 +1,47 @@
+{
+    "title": "Ancient Egypt Book Collection",
+    "subtitle": "Explore our curated selection of scholarly works, historical guides, and archaeological studies",
+    "filters": {
+        "title": "Filters",
+        "search": "Search Books",
+        "placeholder": "Search by title, author, or ISBN...",
+        "period": "Historical Period",
+        "category": "Category",
+        "audience": "Target Audience",
+        "language": "Language",
+        "format": "Format",
+        "all": "All",
+        "price": "Price Range",
+        "reset": "Reset Filters"
+    },
+    "list": {
+        "showing": "Showing {count} books",
+        "available": "Available Books",
+        "noResults": "No books found matching your criteria",
+        "tryAdjusting": "Try adjusting your filters or search term",
+        "reset": "Reset Filters"
+    },
+    "card": {
+        "addToCart": "Add to Cart",
+        "added": "Added",
+        "pages": "pages",
+        "published": "Published"
+    },
+    "cart": {
+        "title": "Shopping Cart",
+        "empty": "Your cart is empty",
+        "emptyDesc": "Discover our collection of scholarly works and add some books to get started!",
+        "unitPrice": "Unit Price",
+        "quantity": "Quantity",
+        "subtotal": "Subtotal",
+        "summary": "Order Summary",
+        "shipping": "Shipping",
+        "free": "FREE",
+        "tax": "Tax (est. 10%)",
+        "total": "Total",
+        "checkout": "Proceed to Checkout",
+        "clear": "Clear Cart",
+        "freeShipping": "Free Shipping Included",
+        "cleanCart": "Clear Cart"
+    }
+}

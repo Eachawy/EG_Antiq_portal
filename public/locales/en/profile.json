@@ -1,0 +1,43 @@
+{
+    "nav": {
+        "profile": "Profile",
+        "favorites": "Favorites",
+        "savedSearches": "Saved Searches",
+        "history": "History",
+        "settings": "Settings",
+        "logout": "Logout"
+    },
+    "sidebar": {
+        "memberSince": "Member Since",
+        "status": "Status",
+        "active": "Active",
+        "account": "{provider} Account"
+    },
+    "info": {
+        "title": "Profile Information",
+        "edit": "Edit Profile",
+        "save": "Save",
+        "cancel": "Cancel",
+        "name": "Full Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "phonePlaceholder": "Add phone number",
+        "location": "Location",
+        "locationPlaceholder": "Add your location",
+        "bio": "Bio",
+        "bioPlaceholder": "Tell us about yourself",
+        "noBio": "No bio added yet",
+        "notProvided": "Not provided"
+    },
+    "activity": {
+        "title": "Recent Activity",
+        "empty": "No recent activity",
+        "desc": "Start exploring archaeological sites to see your activity here"
+    },
+    "preferences": {
+        "title": "Preferences",
+        "email": "Email Notifications",
+        "newsletter": "Newsletter Subscription",
+        "updates": "Site Updates"
+    }
+}

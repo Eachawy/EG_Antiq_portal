@@ -202,7 +202,7 @@ export default function Header() {
                       </button>
                       <button
                         onClick={() => {
-                          router.push('/hisettingsstory');
+                          router.push('/settings');
                           setIsUserMenuOpen(false);
                         }}
                         className="text-theme-text hover:text-theme-primary hover:bg-theme-accent/50 flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-all duration-200"

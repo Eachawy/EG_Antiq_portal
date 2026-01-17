@@ -1,0 +1,22 @@
+{
+    "hero": {
+        "title": "Saved Searches",
+        "subtitle": "Quick access to your frequently used search queries and filters"
+    },
+    "search": "Search your saved searches...",
+    "stats": {
+        "saved": "Saved Searches",
+        "results": "Total Results"
+    },
+    "card": {
+        "results": "results",
+        "run": "Run Search"
+    },
+    "empty": {
+        "title": "No Saved Searches Yet",
+        "desc": "Save your search queries for quick access later",
+        "noResults": "No Results Found",
+        "noResultsDesc": "Try adjusting your search terms",
+        "explore": "Explore Sites"
+    }
+}
