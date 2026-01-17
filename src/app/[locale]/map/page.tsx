@@ -1,13 +1,11 @@
 'use client';
 
-
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { MapPin, Filter, Landmark, Church, Mountain, Pyramid, Sparkles, Map, Moon, GraduationCap, Crown, Castle, ShoppingBag, DoorOpen, House, Droplet, Bath, Heart, Navigation } from 'lucide-react';
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { OpenLayersMap, OpenLayersMapRef } from './components/OpenLayersMap';
 import { Button } from 'primereact/button';
-// import { Toast } from 'primereact/toast';
 import * as Slider from '@radix-ui/react-slider';
 import { useAuth } from '@/components/auth/AuthContext';
 import { LoginModal } from '@/components/auth/LoginModal';
@@ -34,6 +32,58 @@ interface Site {
     imageUrl: string;
 }
 
+// Helper to parse year from string
+const parseYear = (dateStr?: string): number => {
+    if (!dateStr) return 0;
+    const year = parseInt(dateStr);
+    return isNaN(year) ? 0 : year;
+};
+
+// Transform monument to site (memoized outside component)
+const transformMonumentToSite = (monument: Monument): Site => {
+    const lat = parseFloat(monument.lat || monument.locationLat || '0');
+    const lng = parseFloat(monument.lng || monument.locationLong || '0');
+
+    return {
+        id: monument.id.toString(),
+        name: {
+            english: monument.monumentNameEn,
+            arabic: monument.monumentNameAr,
+        },
+        location: {
+            city: monument.locationDescriptionEn || 'Egypt',
+            governorate: monument.locationDescriptionAr || '',
+            coordinates: { lat, lng },
+        },
+        historicalPeriod: monument.era?.nameEn || 'Unknown',
+        dynasty: monument.dynasty?.nameEn || 'Unknown',
+        dateRange: {
+            start: parseYear(monument.startDate),
+            end: parseYear(monument.endDate),
+        },
+        description: monument.monumentBiographyEn || '',
+        thumbnailUrl: monument.image || 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400',
+        imageUrl: monument.image || 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400',
+    };
+};
+
+// Debounce hook
+function useDebounce<T>(value: T, delay: number): T {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+}
+
 export default function InteractiveMapPage() {
     const tMap = useTranslations('map');
     const tSites = useTranslations('sites');
@@ -51,12 +101,20 @@ export default function InteractiveMapPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Filter state
-    const [selectedPeriod, setSelectedPeriod] = useState('all');
-    const [selectedDynasty, setSelectedDynasty] = useState('all');
-    const [startDate, setStartDate] = useState<number>(-3100);
-    const [endDate, setEndDate] = useState<number>(2025);
-    const [selectedSiteType, setSelectedSiteType] = useState('all');
+    // Draft filter state (UI inputs - not applied until user clicks "Apply")
+    const [draftPeriod, setDraftPeriod] = useState('all');
+    const [draftDynasty, setDraftDynasty] = useState('all');
+    const [draftStartDate, setDraftStartDate] = useState<number>(-3100);
+    const [draftEndDate, setDraftEndDate] = useState<number>(2025);
+    const [draftSiteType, setDraftSiteType] = useState('all');
+
+    // Applied filter state (used for API calls)
+    const [appliedPeriod, setAppliedPeriod] = useState('all');
+    const [appliedDynasty, setAppliedDynasty] = useState('all');
+    const [appliedStartDate, setAppliedStartDate] = useState<number>(-3100);
+    const [appliedEndDate, setAppliedEndDate] = useState<number>(2025);
+    const [appliedSiteType, setAppliedSiteType] = useState('all');
+
     const [hoveredSite, setHoveredSite] = useState<string | null>(null);
     const [showFilters, setShowFilters] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
@@ -72,9 +130,9 @@ export default function InteractiveMapPage() {
         }
     }, []);
 
-    // Toggle favorite
-    const toggleFavorite = (siteId: string, e: React.MouseEvent) => {
-        e.stopPropagation(); // Prevent navigation when clicking favorite
+    // Memoized callbacks
+    const toggleFavorite = useCallback((siteId: string, e: React.MouseEvent) => {
+        e.stopPropagation();
 
         if (!isAuthenticated) {
             setIsLoginModalOpen(true);
@@ -85,26 +143,51 @@ export default function InteractiveMapPage() {
             const newFavorites = prev.includes(siteId)
                 ? prev.filter((id) => id !== siteId)
                 : [...prev, siteId];
-            // Save to localStorage
             localStorage.setItem('favoriteSites', JSON.stringify(newFavorites));
-
-            // Show toast notification
-            // if (prev.includes(siteId)) {
-            //     Toast.success('Removed from favorites');
-            // } else {
-            //     Toast.success('Added to favorites');
-            // }
-
             return newFavorites;
         });
-    };
+    }, [isAuthenticated]);
 
-    // Handle location button click
-    const handleFindMyLocation = () => {
+    const handleFindMyLocation = useCallback(() => {
         if (mapRef.current) {
             mapRef.current.getCurrentLocation();
         }
-    };
+    }, []);
+
+    const handleResetFilters = useCallback(() => {
+        // Reset draft filters to defaults
+        setDraftPeriod('all');
+        setDraftDynasty('all');
+        setDraftSiteType('all');
+        setDraftStartDate(-3100);
+        setDraftEndDate(2025);
+
+        // Apply the defaults immediately (this will trigger API call)
+        setAppliedPeriod('all');
+        setAppliedDynasty('all');
+        setAppliedSiteType('all');
+        setAppliedStartDate(-3100);
+        setAppliedEndDate(2025);
+    }, []);
+
+    const handleApplyFilters = useCallback(() => {
+        // Apply draft filters to actual filter state
+        setAppliedPeriod(draftPeriod);
+        setAppliedDynasty(draftDynasty);
+        setAppliedSiteType(draftSiteType);
+        setAppliedStartDate(draftStartDate);
+        setAppliedEndDate(draftEndDate);
+        setShowFilters(false);
+    }, [draftPeriod, draftDynasty, draftSiteType, draftStartDate, draftEndDate]);
+
+    const handlePeriodChange = useCallback((period: string) => {
+        setDraftPeriod(period);
+        setDraftDynasty('all'); // Reset dynasty when period changes
+    }, []);
+
+    const handleSiteClick = useCallback((siteId: string) => {
+        router.push(`/sites/${siteId}`);
+    }, [router]);
 
     // Fetch reference data on mount
     useEffect(() => {
@@ -130,49 +213,54 @@ export default function InteractiveMapPage() {
         fetchReferenceData();
     }, []);
 
-    // Fetch monuments when filters change
+    // Fetch monuments when APPLIED filters change (only when user clicks "Apply Filters")
     useEffect(() => {
+        // Don't fetch until reference data is loaded
+        if (eras.length === 0 || dynasties.length === 0 || monumentTypes.length === 0) {
+            return;
+        }
+
         const fetchMonuments = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                // Build filter parameters
+                // Build filter parameters using APPLIED filters
                 const filters: any = {
                     page: 1,
-                    limit: 1000, // Get all monuments for map view
+                    limit: 1000,
                 };
 
-                // Map selected period to era IDs
-                if (selectedPeriod !== 'all') {
-                    const era = eras.find(e => e.nameEn === selectedPeriod);
+                // Map applied period to era IDs
+                if (appliedPeriod !== 'all') {
+                    const era = eras.find(e => e.nameEn === appliedPeriod);
                     if (era) {
                         filters.eraIds = [era.id];
                     }
                 }
 
-                // Map selected dynasty to dynasty IDs
-                if (selectedDynasty !== 'all') {
-                    const dynasty = dynasties.find(d => d.nameEn === selectedDynasty);
+                // Map applied dynasty to dynasty IDs
+                if (appliedDynasty !== 'all') {
+                    const dynasty = dynasties.find(d => d.nameEn === appliedDynasty);
                     if (dynasty) {
                         filters.dynastyIds = [dynasty.id];
                     }
                 }
 
-                // Map selected site type to monument type IDs
-                if (selectedSiteType !== 'all') {
-                    const typeId = parseInt(selectedSiteType);
+                // Map applied site type to monument type IDs
+                if (appliedSiteType !== 'all') {
+                    const typeId = parseInt(appliedSiteType);
                     if (!isNaN(typeId)) {
                         filters.monumentTypeIds = [typeId];
                     }
                 }
 
-                // Add date range filters (convert years to string format)
-                if (startDate !== -3100) {
-                    filters.startDateFrom = startDate.toString();
+                // Add date range filters
+                if (appliedStartDate !== -3100) {
+                    filters.startDateFrom = appliedStartDate.toString();
                 }
-                if (endDate !== 2025) {
-                    filters.startDateTo = endDate.toString();
+                if (appliedEndDate !== 2025) {
+                    filters.startDateTo = appliedEndDate.toString();
                 }
 
                 const response = await monumentEndpoints.search(filters);
@@ -185,61 +273,11 @@ export default function InteractiveMapPage() {
             }
         };
 
-        // Only fetch if reference data is loaded
-        if (eras.length > 0 && dynasties.length > 0 && monumentTypes.length > 0) {
-            fetchMonuments();
-        }
-    }, [selectedPeriod, selectedDynasty, selectedSiteType, startDate, endDate, eras, dynasties, monumentTypes]);
-
-    // Transform Monument to Site interface
-    const transformMonumentToSite = (monument: Monument): Site => {
-        const lat = parseFloat(monument.lat || monument.locationLat || '0');
-        const lng = parseFloat(monument.lng || monument.locationLong || '0');
-
-        // Parse dates
-        const parseYear = (dateStr?: string): number => {
-            if (!dateStr) return 0;
-            const year = parseInt(dateStr);
-            return isNaN(year) ? 0 : year;
-        };
-
-        return {
-            id: monument.id.toString(),
-            name: {
-                english: monument.monumentNameEn,
-                arabic: monument.monumentNameAr,
-            },
-            location: {
-                city: monument.locationDescriptionEn || 'Egypt',
-                governorate: monument.locationDescriptionAr || '',
-                coordinates: { lat, lng },
-            },
-            historicalPeriod: monument.era?.nameEn || 'Unknown',
-            dynasty: monument.dynasty?.nameEn || 'Unknown',
-            dateRange: {
-                start: parseYear(monument.startDate),
-                end: parseYear(monument.endDate),
-            },
-            description: monument.monumentBiographyEn || '',
-            thumbnailUrl: monument.image || 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400',
-            imageUrl: monument.image || 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400',
-        };
-    };
-
-    // Transform monuments to sites for the map
-    const filteredSites = useMemo(() => {
-        return monuments
-            .filter(m => {
-                // Only include monuments with valid coordinates
-                const lat = parseFloat(m.lat || m.locationLat || '0');
-                const lng = parseFloat(m.lng || m.locationLong || '0');
-                return lat !== 0 && lng !== 0;
-            })
-            .map(transformMonumentToSite);
-    }, [monuments]);
+        fetchMonuments();
+    }, [appliedPeriod, appliedDynasty, appliedSiteType, appliedStartDate, appliedEndDate, eras, dynasties, monumentTypes]);
 
     // Helper function to get icon based on monument type name
-    const getIconForType = (typeName: string) => {
+    const getIconForType = useCallback((typeName: string) => {
         const lowerName = typeName.toLowerCase();
         if (lowerName.includes('temple')) return Church;
         if (lowerName.includes('pyramid')) return Pyramid;
@@ -256,8 +294,8 @@ export default function InteractiveMapPage() {
         if (lowerName.includes('sabil') || lowerName.includes('fountain')) return Droplet;
         if (lowerName.includes('hammam') || lowerName.includes('bath')) return Bath;
         if (lowerName.includes('capital') || lowerName.includes('city')) return Landmark;
-        return MapPin; // Default icon
-    };
+        return MapPin;
+    }, []);
 
     // Generate site type options dynamically from API monument types
     const siteTypes = useMemo(() => {
@@ -275,36 +313,40 @@ export default function InteractiveMapPage() {
         });
 
         return types;
-    }, [monumentTypes, tSites]);
+    }, [monumentTypes, tSites, getIconForType]);
 
-    // Get available dynasties based on selected period
+    // Get available dynasties based on draft period (UI selection)
     const availableDynasties = useMemo(() => {
-        if (selectedPeriod === 'all') {
+        if (draftPeriod === 'all') {
             return dynasties;
         }
-        // Filter dynasties by selected era
-        const era = eras.find(e => e.nameEn === selectedPeriod);
+        const era = eras.find(e => e.nameEn === draftPeriod);
         if (era) {
             return dynasties.filter(d => d.eraId === era.id);
         }
         return [];
-    }, [selectedPeriod, dynasties, eras]);
+    }, [draftPeriod, dynasties, eras]);
 
-    // Reset dynasty filter when period changes
-    const handlePeriodChange = (period: string) => {
-        setSelectedPeriod(period);
-        setSelectedDynasty('all');
-    };
+    // Transform monuments to sites for the map (memoized)
+    const filteredSites = useMemo(() => {
+        return monuments
+            .filter(m => {
+                const lat = parseFloat(m.lat || m.locationLat || '0');
+                const lng = parseFloat(m.lng || m.locationLong || '0');
+                return lat !== 0 && lng !== 0;
+            })
+            .map(transformMonumentToSite);
+    }, [monuments]);
 
-    const formatDate = (year: number) => {
+    const formatDate = useCallback((year: number) => {
         if (year < 0) {
             return `${Math.abs(year)} ${tCommon('bc')}`;
         } else {
             return `${year} ${tCommon('ad')}`;
         }
-    };
+    }, [tCommon]);
 
-    const getPeriodColor = (period: string) => {
+    const getPeriodColor = useCallback((period: string) => {
         switch (period) {
             case 'Ancient Egyptian':
                 return 'bg-amber-500 hover:bg-amber-600';
@@ -319,7 +361,7 @@ export default function InteractiveMapPage() {
             default:
                 return 'bg-gray-500 hover:bg-gray-600';
         }
-    };
+    }, []);
 
     return (
         <div className="min-h-screen bg-theme-accent">
@@ -363,7 +405,7 @@ export default function InteractiveMapPage() {
                             >
                                 <Filter size={18} className="text-theme-primary" />
                                 <span className="text-theme-text font-medium text-sm md:text-base">{tMap('buttons.filters')}</span>
-                                {!showFilters && (selectedPeriod !== 'all' || selectedDynasty !== 'all' || selectedSiteType !== 'all' || startDate !== -3100 || endDate !== 2025) && (
+                                {!showFilters && (appliedPeriod !== 'all' || appliedDynasty !== 'all' || appliedSiteType !== 'all' || appliedStartDate !== -3100 || appliedEndDate !== 2025) && (
                                     <span className="ml-1 px-2 py-0.5 bg-theme-primary text-white rounded-full text-xs">
                                         {tMap('buttons.active')}
                                     </span>
@@ -419,7 +461,7 @@ export default function InteractiveMapPage() {
                                                 </span>
                                             </label>
                                             <select
-                                                value={selectedPeriod}
+                                                value={draftPeriod}
                                                 onChange={(e) => handlePeriodChange(e.target.value)}
                                                 className="w-full bg-theme-bg border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:border-theme-primary transition-colors"
                                                 disabled={loading}
@@ -436,8 +478,8 @@ export default function InteractiveMapPage() {
                                         <div>
                                             <label className="block text-theme-text text-sm mb-2">{tMap('filters.dynasty')}</label>
                                             <select
-                                                value={selectedDynasty}
-                                                onChange={(e) => setSelectedDynasty(e.target.value)}
+                                                value={draftDynasty}
+                                                onChange={(e) => setDraftDynasty(e.target.value)}
                                                 className="w-full bg-theme-bg border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:border-theme-primary transition-colors"
                                                 disabled={loading}
                                             >
@@ -456,19 +498,19 @@ export default function InteractiveMapPage() {
                                         <div className="mb-2 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
                                             <label className="text-theme-text text-sm">{tMap('filters.dateRange')}</label>
                                             <span className="text-theme-primary text-sm font-medium">
-                                                {Math.abs(startDate)} {startDate < 0 ? tCommon('bc') : tCommon('ad')} – {Math.abs(endDate)} {endDate < 0 ? tCommon('bc') : tCommon('ad')}
+                                                {Math.abs(draftStartDate)} {draftStartDate < 0 ? tCommon('bc') : tCommon('ad')} – {Math.abs(draftEndDate)} {draftEndDate < 0 ? tCommon('bc') : tCommon('ad')}
                                             </span>
                                         </div>
                                         <Slider.Root
                                             className="relative flex items-center select-none touch-none w-full h-2"
-                                            value={[startDate, endDate]}
+                                            value={[draftStartDate, draftEndDate]}
                                             min={-3100}
                                             max={2025}
                                             step={10}
                                             minStepsBetweenThumbs={1}
                                             onValueChange={(values) => {
-                                                setStartDate(values[0]);
-                                                setEndDate(values[1]);
+                                                setDraftStartDate(values[0]);
+                                                setDraftEndDate(values[1]);
                                             }}
                                         >
                                             <Slider.Track className="relative grow h-2 bg-theme-accent rounded-full">
@@ -495,11 +537,11 @@ export default function InteractiveMapPage() {
                                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 max-h-[200px] overflow-y-auto pr-2">
                                             {siteTypes.map((type) => {
                                                 const Icon = type.icon;
-                                                const isSelected = selectedSiteType === type.value;
+                                                const isSelected = draftSiteType === type.value;
                                                 return (
                                                     <button
                                                         key={type.value}
-                                                        onClick={() => setSelectedSiteType(type.value)}
+                                                        onClick={() => setDraftSiteType(type.value)}
                                                         className={`flex items-center justify-center gap-1.5 px-2 md:px-3 py-2 rounded-lg border-2 transition-all ${isSelected
                                                             ? 'bg-theme-primary border-theme-primary text-white shadow-md'
                                                             : 'bg-theme-bg border-theme-border text-theme-text hover:border-theme-primary hover:bg-theme-accent'
@@ -515,8 +557,27 @@ export default function InteractiveMapPage() {
                                     </div>
                                 </div>
 
-                                <div className="mt-6 pt-6 border-t border-gray-200 text-sm text-theme-muted">
-                                    {loading ? 'Loading monuments...' : `Showing ${filteredSites.length} monument${filteredSites.length !== 1 ? 's' : ''}`}
+                                {/* Filter Actions */}
+                                <div className="mt-6 pt-6 border-t border-theme-border">
+                                    <div className="text-sm text-theme-muted mb-4">
+                                        {loading ? 'Loading monuments...' : `Showing ${filteredSites.length} monument${filteredSites.length !== 1 ? 's' : ''}`}
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={handleResetFilters}
+                                            className="flex-1 px-4 py-2.5 bg-theme-bg border border-theme-border text-theme-text rounded-lg hover:bg-theme-accent hover:border-theme-primary transition-all font-medium"
+                                            disabled={loading}
+                                        >
+                                            Reset Filters
+                                        </button>
+                                        <button
+                                            onClick={handleApplyFilters}
+                                            className="flex-1 px-4 py-2.5 bg-theme-primary text-white rounded-lg hover:bg-theme-primary/90 transition-all font-medium shadow-md"
+                                            disabled={loading}
+                                        >
+                                            Apply Filters
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -564,7 +625,7 @@ export default function InteractiveMapPage() {
                                         </button>
                                     </div>
                                 </div>
-                            ) : loading ? (
+                            ) : loading && filteredSites.length === 0 ? (
                                 <div className="flex items-center justify-center h-full bg-theme-accent">
                                     <div className="text-center">
                                         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-theme-primary mx-auto mb-4"></div>
@@ -575,14 +636,13 @@ export default function InteractiveMapPage() {
                                 <OpenLayersMap
                                     ref={mapRef}
                                     sites={filteredSites}
-                                    onSiteClick={(siteId: any) => router.push(`/sites/${siteId}`)}
+                                    onSiteClick={handleSiteClick}
                                 />
                             )}
                         </div>
                     </div>
 
                     {/* Sites in View Sidebar - Desktop or Mobile Overlay */}
-                    {/* Mobile Backdrop */}
                     {showSidebar && (
                         <div
                             className="lg:hidden fixed inset-0 bg-black/50 z-40"
@@ -611,14 +671,14 @@ export default function InteractiveMapPage() {
 
                         {/* Sites List */}
                         <div className="space-y-3 flex-1 overflow-y-auto p-4 md:p-6 pt-4">
-                            {filteredSites.map((site: any) => (
+                            {filteredSites.map((site) => (
                                 <div
                                     key={site.id}
                                     className={`group relative w-full transition-all duration-300 ${hoveredSite === site.id ? 'z-10' : ''
                                         }`}
                                 >
                                     <button
-                                        onClick={() => router.push(`/sites/${site.id}`)}
+                                        onClick={() => handleSiteClick(site.id)}
                                         onMouseEnter={() => setHoveredSite(site.id)}
                                         onMouseLeave={() => setHoveredSite(null)}
                                         className={`w-full flex gap-3 p-3 bg-theme-accent border rounded-lg transition-all duration-300 text-left ${hoveredSite === site.id
@@ -626,7 +686,6 @@ export default function InteractiveMapPage() {
                                             : 'border-theme-border hover:border-theme-primary'
                                             }`}
                                     >
-                                        {/* Small Image */}
                                         <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
                                             <img
                                                 src={site.imageUrl}
@@ -635,7 +694,6 @@ export default function InteractiveMapPage() {
                                             />
                                         </div>
 
-                                        {/* Content */}
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-start gap-2 mb-1">
                                                 <div
@@ -655,7 +713,6 @@ export default function InteractiveMapPage() {
                                         </div>
                                     </button>
 
-                                    {/* Favorite Button */}
                                     <button
                                         onClick={(e) => toggleFavorite(site.id, e)}
                                         className={`absolute top-3 right-3 p-1.5 rounded-full transition-all hover:scale-110 ${favoriteSites.includes(site.id)
