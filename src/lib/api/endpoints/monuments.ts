@@ -29,14 +29,21 @@ export const monumentEndpoints = {
    * Search monuments with advanced filters
    */
   async search(filters: MonumentSearchFilters): Promise<MonumentListResponse> {
+    // Helper to filter out invalid values (NaN, null, undefined)
+    const filterValidIds = (ids?: number[]): string | undefined => {
+      if (!ids || !Array.isArray(ids)) return undefined;
+      const validIds = ids.filter(id => typeof id === 'number' && !isNaN(id));
+      return validIds.length > 0 ? validIds.join(',') : undefined;
+    };
+
     const response = await httpClient.get<MonumentListResponse>(
       '/portal/monuments/search',
       {
         params: {
           keyword: filters.keyword,
-          eraIds: filters.eraIds?.join(','),
-          dynastyIds: filters.dynastyIds?.join(','),
-          monumentTypeIds: filters.monumentTypeIds?.join(','),
+          eraIds: filterValidIds(filters.eraIds),
+          dynastyIds: filterValidIds(filters.dynastyIds),
+          monumentTypeIds: filterValidIds(filters.monumentTypeIds),
           dateFrom: filters.startDateFrom,
           dateTo: filters.startDateTo,
           page: filters.page || 1,

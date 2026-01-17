@@ -13,8 +13,8 @@ import { Toast } from 'primereact/toast';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { type Locale } from '@/i18n/config';
-import { monumentEndpoints, eraEndpoints, dynastyEndpoints, savedSearchEndpoints } from '@/lib/api/endpoints';
-import { Monument, Era, Dynasty } from '@/lib/api/types/monuments.dto';
+import { monumentEndpoints, eraEndpoints, dynastyEndpoints, monumentTypeEndpoints, savedSearchEndpoints } from '@/lib/api/endpoints';
+import { Monument, Era, Dynasty, MonumentType } from '@/lib/api/types/monuments.dto';
 import { mapMonumentToSite } from '@/lib/utils/monument-mapper';
 
 
@@ -44,6 +44,7 @@ export default function SitesPage() {
     const [monuments, setMonuments] = useState<Monument[]>([]);
     const [eras, setEras] = useState<Era[]>([]);
     const [dynasties, setDynasties] = useState<Dynasty[]>([]);
+    const [monumentTypes, setMonumentTypes] = useState<MonumentType[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [totalPages, setTotalPages] = useState(0);
@@ -72,6 +73,18 @@ export default function SitesPage() {
             }
         };
         fetchDynasties();
+    }, []);
+
+    useEffect(() => {
+        const fetchMonumentTypes = async () => {
+            try {
+                const data = await monumentTypeEndpoints.getAll();
+                setMonumentTypes(data);
+            } catch (err) {
+                console.error('Failed to fetch monument types:', err);
+            }
+        };
+        fetchMonumentTypes();
     }, []);
 
     // Fetch monuments with search/pagination
@@ -255,7 +268,7 @@ export default function SitesPage() {
                 <div className="container mx-auto px-6 md:px-12 max-w-7xl">
                     {/* Advanced Search */}
                     <div className="mb-12">
-                        <AdvancedSearch onSearch={setSearchParams} eras={eras} dynasties={dynasties} />
+                        <AdvancedSearch onSearch={setSearchParams} eras={eras} dynasties={dynasties} monumentTypes={monumentTypes} />
                     </div>
 
                     {/* View Mode Toggle & Results Count */}

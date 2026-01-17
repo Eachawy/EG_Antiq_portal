@@ -3,12 +3,13 @@ import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Search, SlidersHorizontal, X, Landmark, Church, Mountain, Pyramid, Sparkles, Map, Moon, GraduationCap, Crown, Castle, ShoppingBag, DoorOpen, House, Droplet, Bath } from 'lucide-react';
 import * as Slider from '@radix-ui/react-slider';
-import { Era, Dynasty } from '@/lib/api/types/monuments.dto';
+import { Era, Dynasty, MonumentType } from '@/lib/api/types/monuments.dto';
 
 interface AdvancedSearchProps {
   onSearch: (params: SearchParams) => void;
   eras: Era[];
   dynasties: Dynasty[];
+  monumentTypes: MonumentType[];
 }
 
 export interface SearchParams {
@@ -22,7 +23,7 @@ export interface SearchParams {
   maxDuration: string;
 }
 
-export function AdvancedSearch({ onSearch, eras, dynasties }: AdvancedSearchProps) {
+export function AdvancedSearch({ onSearch, eras, dynasties, monumentTypes }: AdvancedSearchProps) {
   const t = useTranslations('sites.filters');
   const tCommon = useTranslations('sites.common');
   const params = useParams();
@@ -39,26 +40,38 @@ export function AdvancedSearch({ onSearch, eras, dynasties }: AdvancedSearchProp
     maxDuration: '',
   });
 
-  // Site type options with icons
-  const siteTypes = [
-    { value: 'all', label: t('allTypes'), icon: Map },
-    { value: 'capital-cities', label: t('types.capital-cities'), icon: Landmark },
-    { value: 'temples', label: t('types.temples'), icon: Church },
-    { value: 'cemeteries', label: t('types.cemeteries'), icon: Mountain },
-    { value: 'pyramids', label: t('types.pyramids'), icon: Pyramid },
-    { value: 'obelisks', label: t('types.obelisks'), icon: Sparkles },
-    { value: 'areas', label: t('types.areas'), icon: Map },
-    { value: 'churches', label: t('types.churches'), icon: Church },
-    { value: 'masjids', label: t('types.masjids'), icon: Moon },
-    { value: 'schools', label: t('types.schools'), icon: GraduationCap },
-    { value: 'palaces', label: t('types.palaces'), icon: Crown },
-    { value: 'castles', label: t('types.castles'), icon: Castle },
-    { value: 'markets', label: t('types.markets'), icon: ShoppingBag },
-    { value: 'doors', label: t('types.doors'), icon: DoorOpen },
-    { value: 'houses', label: t('types.houses'), icon: House },
-    { value: 'sabil', label: t('types.sabil'), icon: Droplet },
-    { value: 'hammam', label: t('types.hammam'), icon: Bath },
-  ];
+  // Icon mapping for different monument types (fallback to default icon)
+  const getIconForType = (typeNameEn: string) => {
+    const lowerName = typeNameEn.toLowerCase();
+    if (lowerName.includes('capital') || lowerName.includes('city')) return Landmark;
+    if (lowerName.includes('temple')) return Church;
+    if (lowerName.includes('cemetery') || lowerName.includes('necropolis')) return Mountain;
+    if (lowerName.includes('pyramid')) return Pyramid;
+    if (lowerName.includes('obelisk')) return Sparkles;
+    if (lowerName.includes('church')) return Church;
+    if (lowerName.includes('mosque') || lowerName.includes('masjid')) return Moon;
+    if (lowerName.includes('school')) return GraduationCap;
+    if (lowerName.includes('palace')) return Crown;
+    if (lowerName.includes('castle') || lowerName.includes('fort')) return Castle;
+    if (lowerName.includes('market') || lowerName.includes('bazaar')) return ShoppingBag;
+    if (lowerName.includes('door') || lowerName.includes('gate')) return DoorOpen;
+    if (lowerName.includes('house') || lowerName.includes('dwelling')) return House;
+    if (lowerName.includes('sabil') || lowerName.includes('fountain')) return Droplet;
+    if (lowerName.includes('hammam') || lowerName.includes('bath')) return Bath;
+    return Map; // Default icon
+  };
+
+  // Build site types from API data
+  const siteTypes = useMemo(() => {
+    return [
+      { value: 'all', label: t('allTypes'), icon: Map },
+      ...monumentTypes.map(type => ({
+        value: type.id.toString(),
+        label: locale === 'ar' ? type.nameAr : type.nameEn,
+        icon: getIconForType(type.nameEn),
+      }))
+    ];
+  }, [monumentTypes, locale, t]);
 
   // Get available dynasties based on selected era
   const availableDynasties = useMemo(() => {
