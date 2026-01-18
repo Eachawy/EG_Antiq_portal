@@ -9,3 +9,4 @@ export { historyEndpoints } from './history';
 export { savedSearchEndpoints } from './saved-searches';
 export { contactEndpoints } from './contact';
 export { portalAuthEndpoints } from './portal-auth';
+export { userEndpoints } from './users';
