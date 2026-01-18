@@ -170,14 +170,12 @@ export default function SitesPage() {
         try {
             await savedSearchEndpoints.create({
                 name: searchName,
-                searchCriteria: {
-                    keyword: searchParams.query || undefined,
-                    eraIds: searchParams.period !== 'all' ? [parseInt(searchParams.period)] : undefined,
-                    dynastyIds: searchParams.dynasty !== 'all' ? [parseInt(searchParams.dynasty)] : undefined,
-                    monumentTypeIds: searchParams.siteType !== 'all' ? [parseInt(searchParams.siteType)] : undefined,
-                    startDateFrom: searchParams.startDate || undefined,
-                    startDateTo: searchParams.endDate || undefined,
-                },
+                keyword: searchParams.query || undefined,
+                eraIds: searchParams.period !== 'all' ? [parseInt(searchParams.period)] : undefined,
+                dynastyIds: searchParams.dynasty !== 'all' ? [parseInt(searchParams.dynasty)] : undefined,
+                monumentTypeIds: searchParams.siteType !== 'all' ? [parseInt(searchParams.siteType)] : undefined,
+                dateFrom: searchParams.startDate || undefined,
+                dateTo: searchParams.endDate || undefined,
             });
 
             toastRef.current?.show({

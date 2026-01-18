@@ -195,7 +195,7 @@ export default function EraDetailsPage() {
                     </div>
                 </div>
 
-                {/* Related Archaeological Sites */}
+                {/* Related Archaeological Sites  WE need to make it dynamic based on the era*/}
                 {eraSites.length > 0 && (
                     <div>
                         <div className="mb-8">

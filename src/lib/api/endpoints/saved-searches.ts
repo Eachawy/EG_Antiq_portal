@@ -5,24 +5,20 @@ import {
   SavedSearch,
   CreateSavedSearchDto,
   UpdateSavedSearchDto,
-  SavedSearchesResponse,
+  SavedSearchResponse,
   ApiResponse,
 } from '../types/saved-searches.dto';
+import { Monument } from '../types/monuments.dto';
 
 export const savedSearchEndpoints = {
   /**
-   * Get all saved searches for authenticated user with pagination
+   * Get all saved searches for authenticated user
    */
-  async getAll(
-    page: number = 1,
-    limit: number = 20
-  ): Promise<SavedSearchesResponse> {
-    const response = await httpClient.get<ApiResponse<SavedSearchesResponse>>(
-      '/portal/saved-searches',
-      {
-        params: { page, limit },
-      }
+  async getAll(): Promise<SavedSearch[]> {
+    const response = await httpClient.get<SavedSearchResponse>(
+      '/portal/saved-searches'
     );
+    // Backend returns: { data: [...], message: "..." }
     return response.data.data;
   },
 
@@ -34,6 +30,7 @@ export const savedSearchEndpoints = {
       '/portal/saved-searches',
       dto
     );
+    // Backend returns: { data: {...}, message: "..." }
     return response.data.data;
   },
 
@@ -41,10 +38,11 @@ export const savedSearchEndpoints = {
    * Update saved search
    */
   async update(id: string, dto: UpdateSavedSearchDto): Promise<SavedSearch> {
-    const response = await httpClient.put<ApiResponse<SavedSearch>>(
+    const response = await httpClient.patch<ApiResponse<SavedSearch>>(
       `/portal/saved-searches/${id}`,
       dto
     );
+    // Backend returns: { data: {...}, message: "..." }
     return response.data.data;
   },
 
@@ -56,12 +54,13 @@ export const savedSearchEndpoints = {
   },
 
   /**
-   * Get saved search by ID
+   * Execute a saved search and get monument results
    */
-  async getById(id: string): Promise<SavedSearch> {
-    const response = await httpClient.get<ApiResponse<SavedSearch>>(
-      `/portal/saved-searches/${id}`
+  async execute(id: string): Promise<{ savedSearch: SavedSearch; monuments: Monument[] }> {
+    const response = await httpClient.post<ApiResponse<{ savedSearch: SavedSearch; monuments: Monument[] }>>(
+      `/portal/saved-searches/${id}/run`
     );
+    // Backend returns: { data: { savedSearch: {...}, monuments: [...] }, message: "..." }
     return response.data.data;
   },
 };

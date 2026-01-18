@@ -1,67 +1,33 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from '@/i18n/routing';
+import { useParams } from 'next/navigation';
 import { BookMarked, Search, MapPin, Calendar, Clock, Trash2, Play } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthContext';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
+import { Toast } from 'primereact/toast';
 import { formatDatecreatedAt } from '@/lib/utils/utils';
-
-interface SavedSearch {
-    id: string;
-    name: string;
-    query: string;
-    filters: {
-        period?: string;
-        location?: string;
-        dateRange?: string;
-    };
-    createdAt: string;
-    resultsCount: number;
-}
+import { savedSearchEndpoints, eraEndpoints, dynastyEndpoints, monumentTypeEndpoints } from '@/lib/api/endpoints';
+import { SavedSearch } from '@/lib/api/types/saved-searches.dto';
+import { Era, Dynasty, MonumentType } from '@/lib/api/types/monuments.dto';
+import { type Locale } from '@/i18n/config';
 
 export default function SavedSearchPage() {
     const { isAuthenticated, user } = useAuth();
     const router = useRouter();
+    const params = useParams();
+    const locale = (params.locale as Locale) || 'en';
     const [searchTerm, setSearchTerm] = useState('');
+    const toastRef = useRef<Toast>(null);
 
-    // Mock saved searches data
-    const [savedSearches] = useState<SavedSearch[]>([
-        {
-            id: '1',
-            name: 'Old Kingdom Pyramids',
-            query: 'pyramid',
-            filters: {
-                period: 'Old Kingdom',
-                location: 'Giza',
-            },
-            createdAt: '2024-01-15',
-            resultsCount: 8,
-        },
-        {
-            id: '2',
-            name: 'Luxor Temples',
-            query: 'temple',
-            filters: {
-                period: 'New Kingdom',
-                location: 'Luxor',
-            },
-            createdAt: '2024-01-20',
-            resultsCount: 12,
-        },
-        {
-            id: '3',
-            name: 'Ptolemaic Sites',
-            query: '',
-            filters: {
-                period: 'Ptolemaic',
-                dateRange: '305-30 BCE',
-            },
-            createdAt: '2024-02-01',
-            resultsCount: 15,
-        },
-    ]);
+    // API state
+    const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);
+    const [eras, setEras] = useState<Era[]>([]);
+    const [dynasties, setDynasties] = useState<Dynasty[]>([]);
+    const [monumentTypes, setMonumentTypes] = useState<MonumentType[]>([]);
+    const [loading, setLoading] = useState(true);
 
     // Redirect if not authenticated
     useEffect(() => {
@@ -70,26 +36,147 @@ export default function SavedSearchPage() {
         }
     }, [isAuthenticated, user, router]);
 
+    // Fetch reference data
+    useEffect(() => {
+        const fetchReferenceData = async () => {
+            try {
+                const [erasData, dynastiesData, typesData] = await Promise.all([
+                    eraEndpoints.getAll(),
+                    dynastyEndpoints.getAll(),
+                    monumentTypeEndpoints.getAll(),
+                ]);
+                setEras(erasData);
+                setDynasties(dynastiesData);
+                setMonumentTypes(typesData);
+            } catch (err) {
+                console.error('Failed to fetch reference data:', err);
+            }
+        };
+        fetchReferenceData();
+    }, []);
+
+    // Fetch saved searches
+    useEffect(() => {
+        if (!isAuthenticated) return;
+
+        const fetchSavedSearches = async () => {
+            setLoading(true);
+            try {
+                const data = await savedSearchEndpoints.getAll();
+                setSavedSearches(data || []);
+            } catch (err: any) {
+                console.error('Failed to fetch saved searches:', err);
+                toastRef.current?.show({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: err.message || 'Failed to load saved searches',
+                    life: 3000,
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSavedSearches();
+    }, [isAuthenticated]);
+
     if (!isAuthenticated || !user) {
         return null;
     }
 
+    // Helper functions to get names from IDs
+    const getEraName = (eraId: number): string => {
+        const era = eras.find(e => e.id === eraId);
+        return locale === 'ar' ? (era?.nameAr || '') : (era?.nameEn || '');
+    };
+
+    const getDynastyName = (dynastyId: number): string => {
+        const dynasty = dynasties.find(d => d.id === dynastyId);
+        return locale === 'ar' ? (dynasty?.nameAr || '') : (dynasty?.nameEn || '');
+    };
+
+    const getMonumentTypeName = (typeId: number): string => {
+        const type = monumentTypes.find(t => t.id === typeId);
+        return locale === 'ar' ? (type?.nameAr || '') : (type?.nameEn || '');
+    };
+
     const filteredSearches = savedSearches.filter((search) =>
         search.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        search.query.toLowerCase().includes(searchTerm.toLowerCase())
+        (search.keyword && search.keyword.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
-    const handleRunSearch = (search: SavedSearch) => {
-        // Navigate to sites page with filters
-        const params = new URLSearchParams();
-        if (search.query) params.set('q', search.query);
-        if (search.filters.period) params.set('period', search.filters.period);
-        if (search.filters.location) params.set('location', search.filters.location);
-        router.push(`/sites?${params.toString()}`);
+    const handleRunSearch = async (search: SavedSearch) => {
+        try {
+            // Execute the saved search to get updated results
+            const result = await savedSearchEndpoints.execute(search.id);
+
+            // Show success message
+            toastRef.current?.show({
+                severity: 'success',
+                summary: 'Search Executed',
+                detail: `Found ${result.monuments.length} monuments`,
+                life: 3000,
+            });
+
+            // Navigate to sites page with filters
+            const params = new URLSearchParams();
+            if (search.keyword) params.set('q', search.keyword);
+            if (search.eraIds && search.eraIds.length > 0) params.set('period', search.eraIds[0].toString());
+            if (search.dynastyIds && search.dynastyIds.length > 0) params.set('dynasty', search.dynastyIds[0].toString());
+            if (search.monumentTypeIds && search.monumentTypeIds.length > 0) params.set('siteType', search.monumentTypeIds[0].toString());
+            if (search.dateFrom) params.set('startDate', search.dateFrom);
+            if (search.dateTo) params.set('endDate', search.dateTo);
+
+            router.push(`/sites?${params.toString()}`);
+        } catch (err: any) {
+            toastRef.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.message || 'Failed to execute search',
+                life: 3000,
+            });
+        }
     };
+
+    const handleDeleteSearch = async (searchId: string, searchName: string) => {
+        try {
+            await savedSearchEndpoints.delete(searchId);
+
+            // Remove from local state
+            setSavedSearches(prev => prev.filter(s => s.id !== searchId));
+
+            toastRef.current?.show({
+                severity: 'success',
+                summary: 'Deleted',
+                detail: `Deleted search "${searchName}"`,
+                life: 3000,
+            });
+        } catch (err: any) {
+            toastRef.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.message || 'Failed to delete search',
+                life: 3000,
+            });
+        }
+    };
+
+    // Loading state
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-theme-bg flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-theme-primary mx-auto mb-4"></div>
+                    <p className="text-theme-text">Loading saved searches...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-theme-bg pt-20">
+            <Toast ref={toastRef} />
+
             {/* Hero Section */}
             <div className="relative bg-gradient-to-br from-theme-primary/20 via-theme-accent to-theme-secondary/20 py-16 border-b border-theme-border">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -131,7 +218,7 @@ export default function SavedSearchPage() {
                         </div>
                         <div className="bg-gradient-to-br from-theme-secondary/10 to-theme-secondary/5 border border-theme-secondary/20 rounded-xl p-6 text-center">
                             <div className="text-3xl font-bold text-theme-secondary mb-2">
-                                {savedSearches.reduce((sum, s) => sum + s.resultsCount, 0)}
+                                {savedSearches.reduce((sum, s) => sum + (s.resultCount || 0), 0)}
                             </div>
                             <div className="text-theme-muted text-sm">Total Results</div>
                         </div>
@@ -155,16 +242,17 @@ export default function SavedSearchPage() {
                                             <h3 className="text-xl font-bold text-theme-text mb-2 group-hover:text-theme-primary transition-colors">
                                                 {search.name}
                                             </h3>
-                                            {search.query && (
+                                            {search.keyword && (
                                                 <div className="flex items-center gap-2 text-theme-muted text-sm mb-3">
                                                     <Search size={16} className="text-theme-primary" />
                                                     <span className="font-mono bg-theme-accent px-3 py-1 rounded-lg">
-                                                        "{search.query}"
+                                                        "{search.keyword}"
                                                     </span>
                                                 </div>
                                             )}
                                         </div>
                                         <button
+                                            onClick={() => handleDeleteSearch(search.id, search.name)}
                                             className="p-2.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all hover:scale-110 active:scale-95"
                                         >
                                             <Trash2 size={20} />
@@ -173,22 +261,28 @@ export default function SavedSearchPage() {
 
                                     {/* Filters */}
                                     <div className="flex items-center gap-2 mb-4 flex-wrap">
-                                        {search.filters.period && (
+                                        {search.eraIds && search.eraIds.length > 0 && (
                                             <div className="flex items-center gap-1.5 bg-gradient-to-r from-theme-primary/10 to-theme-primary/5 text-theme-primary border border-theme-primary/20 px-3 py-1.5 rounded-full text-sm font-medium">
                                                 <Calendar size={14} />
-                                                <span>{search.filters.period}</span>
+                                                <span>Era: {getEraName(search.eraIds[0])}</span>
                                             </div>
                                         )}
-                                        {search.filters.location && (
+                                        {search.dynastyIds && search.dynastyIds.length > 0 && (
                                             <div className="flex items-center gap-1.5 bg-gradient-to-r from-theme-secondary/10 to-theme-secondary/5 text-theme-secondary border border-theme-secondary/20 px-3 py-1.5 rounded-full text-sm font-medium">
-                                                <MapPin size={14} />
-                                                <span>{search.filters.location}</span>
+                                                <Calendar size={14} />
+                                                <span>Dynasty: {getDynastyName(search.dynastyIds[0])}</span>
                                             </div>
                                         )}
-                                        {search.filters.dateRange && (
+                                        {search.monumentTypeIds && search.monumentTypeIds.length > 0 && (
                                             <div className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500/10 to-amber-500/5 text-amber-700 dark:text-amber-500 border border-amber-500/20 px-3 py-1.5 rounded-full text-sm font-medium">
+                                                <MapPin size={14} />
+                                                <span>{getMonumentTypeName(search.monumentTypeIds[0])}</span>
+                                            </div>
+                                        )}
+                                        {search.dateFrom && search.dateTo && (
+                                            <div className="flex items-center gap-1.5 bg-gradient-to-r from-blue-500/10 to-blue-500/5 text-blue-700 dark:text-blue-500 border border-blue-500/20 px-3 py-1.5 rounded-full text-sm font-medium">
                                                 <Clock size={14} />
-                                                <span>{search.filters.dateRange}</span>
+                                                <span>{search.dateFrom} - {search.dateTo}</span>
                                             </div>
                                         )}
                                     </div>
@@ -200,10 +294,12 @@ export default function SavedSearchPage() {
                                                 <Clock size={16} />
                                                 <span>{formatDatecreatedAt(search.createdAt)}</span>
                                             </div>
-                                            <div className="flex items-center gap-1.5">
-                                                <span className="font-semibold text-theme-primary">{search.resultsCount}</span>
-                                                <span>results</span>
-                                            </div>
+                                            {search.resultCount !== undefined && (
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="font-semibold text-theme-primary">{search.resultCount}</span>
+                                                    <span>results</span>
+                                                </div>
+                                            )}
                                         </div>
 
                                         <Button

@@ -2,56 +2,49 @@
 
 export interface SavedSearch {
   id: string;
-  userId: string;
+  portalUserId: string;
   name: string;
-  searchCriteria: {
-    keyword?: string;
-    eraIds?: number[];
-    dynastyIds?: number[];
-    monumentTypeIds?: number[];
-    startDateFrom?: string;
-    startDateTo?: string;
-    endDateFrom?: string;
-    endDateTo?: string;
-  };
+  keyword?: string;
+  eraIds?: number[];
+  dynastyIds?: number[];
+  monumentTypeIds?: number[];
+  dateFrom?: string;
+  dateTo?: string;
+  filters?: Record<string, any>;
+  resultCount?: number;
+  lastRunAt?: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateSavedSearchDto {
   name: string;
-  searchCriteria: {
-    keyword?: string;
-    eraIds?: number[];
-    dynastyIds?: number[];
-    monumentTypeIds?: number[];
-    startDateFrom?: string;
-    startDateTo?: string;
-    endDateFrom?: string;
-    endDateTo?: string;
-  };
+  keyword?: string;
+  eraIds?: number[];
+  dynastyIds?: number[];
+  monumentTypeIds?: number[];
+  dateFrom?: string;
+  dateTo?: string;
+  filters?: Record<string, any>;
 }
 
 export interface UpdateSavedSearchDto {
   name?: string;
-  searchCriteria?: {
-    keyword?: string;
-    eraIds?: number[];
-    dynastyIds?: number[];
-    monumentTypeIds?: number[];
-    startDateFrom?: string;
-    startDateTo?: string;
-    endDateFrom?: string;
-    endDateTo?: string;
-  };
+  keyword?: string;
+  eraIds?: number[];
+  dynastyIds?: number[];
+  monumentTypeIds?: number[];
+  dateFrom?: string;
+  dateTo?: string;
+  filters?: Record<string, any>;
 }
 
-export interface SavedSearchesResponse {
+export interface SavedSearchResponse {
   data: SavedSearch[];
-  pagination: {
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
-  };
+  message: string;
+}
+
+export interface ApiResponse<T> {
+  data: T;
+  message: string;
 }
