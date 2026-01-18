@@ -4,24 +4,41 @@ import { Monument } from './monuments.dto';
 
 export interface BrowsingHistoryEntry {
   id: string;
-  userId: string;
+  portalUserId: string;
   monumentId: number;
   monument?: Monument;
+  durationSeconds?: number;
   visitedAt: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface TrackVisitDto {
   monumentId: number;
+  durationSeconds?: number;
 }
 
 export interface BrowsingHistoryResponse {
   data: BrowsingHistoryEntry[];
   pagination: {
-    page: number;
-    pageSize: number;
+    page?: number;
+    limit?: number;
     total: number;
-    totalPages: number;
+    totalPages?: number;
   };
+  message: string;
+}
+
+export interface BrowsingHistoryStats {
+  totalVisits: number;
+  uniqueMonumentsVisited: number;
+  mostVisited: Array<{
+    monumentId: number;
+    visitCount: number;
+  }>;
+}
+
+export interface ApiResponse<T> {
+  data: T;
+  message: string;
 }

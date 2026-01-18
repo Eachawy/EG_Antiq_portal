@@ -6,7 +6,7 @@ import { useRouter } from '@/i18n/routing';
 import { MapPin, Clock, Info, Calendar, ExternalLink, ArrowLeft, BookOpen, Heart, AlertCircle, Map } from 'lucide-react';
 import { ImageGallery } from './components/ImageGallery';
 import { useFavorites } from '../../../../components/auth/FavoriteContext';
-import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState, useEffect } from 'react';
+import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/components/auth/AuthContext';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { monumentEndpoints, historyEndpoints, favoriteEndpoints } from '@/lib/api/endpoints';
@@ -29,6 +29,9 @@ export default function SiteDetailsPage() {
     const [isFavorited, setIsFavorited] = useState(false);
     const [favoriteId, setFavoriteId] = useState<string | null>(null);
 
+    // Track which monument we've already logged to prevent duplicates
+    const visitTrackedRef = useRef<number | null>(null);
+
     // Fetch monument data
     useEffect(() => {
         const fetchMonument = async () => {
@@ -40,12 +43,16 @@ export default function SiteDetailsPage() {
                 const data = await monumentEndpoints.getById(parseInt(siteId as string));
                 setMonument(data);
 
-                // Track visit if authenticated (non-blocking)
-                if (isAuthenticated) {
+                // Track visit if authenticated (non-blocking) - only once per monument
+                if (isAuthenticated && visitTrackedRef.current !== data.id) {
+                    visitTrackedRef.current = data.id;
                     try {
                         await historyEndpoints.trackVisit(data.id);
+                        console.log('Visit tracked for monument:', data.id);
                     } catch (err) {
                         console.error('Failed to track visit:', err);
+                        // Reset on error so it can retry
+                        visitTrackedRef.current = null;
                     }
                 }
 
