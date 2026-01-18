@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Mail, Lock, User as UserIcon, Apple, Facebook } from 'lucide-react';
+import { X, Mail, Lock, User as UserIcon, Apple, Facebook, Loader2 } from 'lucide-react';
 import { useAuth } from './AuthContext';
+import { portalAuthEndpoints } from '@/lib/api/endpoints';
+import Cookies from 'js-cookie';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -17,7 +19,10 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   // Prevent body scroll when modal is open - MUST be before early return
   useEffect(() => {
@@ -34,44 +39,122 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   // Don't render anything if modal is not open
   if (!isOpen) return null;
 
-  const handleEmailAuth = (e: React.FormEvent) => {
+  const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    setIsLoading(true);
 
-    // Mock authentication - In a real app, this would call your backend API
-    const mockUser = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: isSignUp ? name : email.split('@')[0],
-      email: email,
-      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(isSignUp ? name : email.split('@')[0])}&background=8B7355&color=fff`,
-      provider: 'email' as const,
-      joinDate: new Date().toISOString(),
-      bio: '',
-      location: '',
-      phone: '',
-      interests: []
-    };
+    console.log('Starting authentication...');
 
-    login(mockUser);
-    onClose();
+    try {
+      if (isSignUp) {
+        // Register new user
+        const response = await portalAuthEndpoints.register({
+          email: email.trim(),
+          password,
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+        });
+
+        // Store tokens in cookie (for HTTP client) and localStorage (backup)
+        Cookies.set('auth_token', response.accessToken, {
+          expires: 1/96, // 15 minutes (1/96 of a day)
+          path: '/',
+          sameSite: 'lax'
+        });
+        localStorage.setItem('access_token', response.accessToken);
+        localStorage.setItem('refresh_token', response.refreshToken);
+        console.log('Token stored in cookie (register):', Cookies.get('auth_token')?.substring(0, 20) + '...');
+
+        // Create user object for context
+        const user = {
+          id: response.user.id,
+          name: `${response.user.firstName} ${response.user.lastName}`,
+          email: response.user.email,
+          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(`${response.user.firstName} ${response.user.lastName}`)}&background=8B7355&color=fff`,
+          provider: 'email' as const,
+          joinDate: response.user.createdAt,
+          bio: '',
+          location: '',
+          phone: '',
+          interests: []
+        };
+
+        login(user);
+        onClose();
+      } else {
+        // Login existing user
+        console.log('Calling login API...');
+        const response = await portalAuthEndpoints.login({
+          email: email.trim(),
+          password,
+        });
+
+        console.log('Login successful, storing tokens...');
+        // Store tokens in cookie (for HTTP client) and localStorage (backup)
+        Cookies.set('auth_token', response.accessToken, {
+          expires: 1/96, // 15 minutes (1/96 of a day)
+          path: '/',
+          sameSite: 'lax'
+        });
+        localStorage.setItem('access_token', response.accessToken);
+        localStorage.setItem('refresh_token', response.refreshToken);
+        console.log('Token stored in cookie:', Cookies.get('auth_token')?.substring(0, 20) + '...');
+
+        console.log('Creating user object...');
+        // Create user object for context
+        const user = {
+          id: response.user.id,
+          name: `${response.user.firstName} ${response.user.lastName}`,
+          email: response.user.email,
+          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(`${response.user.firstName} ${response.user.lastName}`)}&background=8B7355&color=fff`,
+          provider: 'email' as const,
+          joinDate: response.user.createdAt,
+          bio: '',
+          location: '',
+          phone: '',
+          interests: []
+        };
+
+        console.log('Logging in user via context...');
+        login(user);
+
+        console.log('Closing modal...');
+        onClose();
+
+        console.log('Login complete!');
+      }
+    } catch (err: any) {
+      console.error('Authentication error:', err);
+      setError(
+        err?.response?.data?.error?.message ||
+        err?.message ||
+        (isSignUp ? 'Failed to create account. Please try again.' : 'Invalid email or password.')
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSocialLogin = (provider: 'google' | 'facebook' | 'apple') => {
-    // Mock social authentication - In a real app, this would use OAuth
-    const mockUser = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: `User from ${provider}`,
-      email: `user@${provider}.com`,
-      avatar: `https://ui-avatars.com/api/?name=${provider}&background=8B7355&color=fff`,
-      provider: provider,
-      joinDate: new Date().toISOString(),
-      bio: '',
-      location: '',
-      phone: '',
-      interests: []
-    };
+  const handleSocialLogin = async (provider: 'google' | 'facebook' | 'apple') => {
+    setError('');
 
-    login(mockUser);
-    onClose();
+    try {
+      if (provider === 'google') {
+        await portalAuthEndpoints.loginWithGoogle();
+      } else if (provider === 'facebook') {
+        await portalAuthEndpoints.loginWithFacebook();
+      } else if (provider === 'apple') {
+        // Apple Sign In requires Apple JS SDK
+        setError('Apple Sign In coming soon...');
+      }
+
+      // Note: OAuth flow will redirect/popup, so we don't close the modal here
+      // The callback will handle authentication
+    } catch (err: any) {
+      console.error('Social login error:', err);
+      setError(`Failed to login with ${provider}. Please try again.`);
+    }
   };
 
 
@@ -163,26 +246,53 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               </div>
             </div>
 
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+              </div>
+            )}
+
             {/* Email Form */}
             <form onSubmit={handleEmailAuth} className="space-y-4">
               {isSignUp && (
-                <div>
-                  <label htmlFor="name" className="text-theme-text mb-2 block text-sm">
-                    {t('fullName')}
-                  </label>
-                  <div className="relative">
-                    <UserIcon className="text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" size={20} />
-                    <input
-                      id="name"
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder={t('namePlaceholder')}
-                      required={isSignUp}
-                      className="bg-theme-bg border-theme-border text-theme-text focus:border-theme-primary w-full rounded-lg border py-3 pl-10 pr-4 transition-colors focus:outline-none"
-                    />
+                <>
+                  <div>
+                    <label htmlFor="firstName" className="text-theme-text mb-2 block text-sm">
+                      {t('firstName') || 'First Name'}
+                    </label>
+                    <div className="relative">
+                      <UserIcon className="text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" size={20} />
+                      <input
+                        id="firstName"
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder={t('firstNamePlaceholder') || 'Enter your first name'}
+                        required={isSignUp}
+                        className="bg-theme-bg border-theme-border text-theme-text focus:border-theme-primary w-full rounded-lg border py-3 pl-10 pr-4 transition-colors focus:outline-none"
+                      />
+                    </div>
                   </div>
-                </div>
+
+                  <div>
+                    <label htmlFor="lastName" className="text-theme-text mb-2 block text-sm">
+                      {t('lastName') || 'Last Name'}
+                    </label>
+                    <div className="relative">
+                      <UserIcon className="text-theme-muted absolute left-3 top-1/2 -translate-y-1/2" size={20} />
+                      <input
+                        id="lastName"
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder={t('lastNamePlaceholder') || 'Enter your last name'}
+                        required={isSignUp}
+                        className="bg-theme-bg border-theme-border text-theme-text focus:border-theme-primary w-full rounded-lg border py-3 pl-10 pr-4 transition-colors focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </>
               )}
 
               <div>
@@ -235,9 +345,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
               <button
                 type="submit"
-                className="bg-theme-primary hover:bg-theme-secondary w-full rounded-lg py-3 text-white transition-colors duration-300"
+                disabled={isLoading}
+                className="bg-theme-primary hover:bg-theme-secondary w-full rounded-lg py-3 text-white transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {isSignUp ? t('createAccountButton') : t('signInButton')}
+                {isLoading && <Loader2 className="animate-spin" size={20} />}
+                {isLoading ? (isSignUp ? 'Creating Account...' : 'Signing In...') : (isSignUp ? t('createAccountButton') : t('signInButton'))}
               </button>
             </form>
 
@@ -247,7 +359,10 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 {isSignUp ? t('haveAccount') : t('noAccount')}{' '}
               </span>
               <button
-                onClick={() => setIsSignUp(!isSignUp)}
+                onClick={() => {
+                  setIsSignUp(!isSignUp);
+                  setError('');
+                }}
                 className="text-theme-primary hover:text-theme-secondary font-medium"
               >
                 {isSignUp ? t('signInLink') : t('signUpLink')}

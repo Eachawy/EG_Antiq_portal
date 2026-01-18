@@ -27,7 +27,16 @@ export default async function middleware(request: NextRequest) {
   const isProtectedRoute = pathname.includes('/dashboard');
   const isLoginPage = pathname.includes('/login');
 
+  // Debug logging
+  console.log('Middleware:', {
+    pathname,
+    hasToken: !!authToken,
+    isProtectedRoute,
+    isLoginPage
+  });
+
   if (isProtectedRoute && !authToken) {
+    console.log('Redirecting to login: no token for protected route');
     // Redirect to login with returnUrl
     const loginUrl = new URL(`/${locale}/login`, request.url);
     loginUrl.searchParams.set('returnUrl', pathname);
@@ -35,6 +44,7 @@ export default async function middleware(request: NextRequest) {
   }
 
   if (isLoginPage && authToken) {
+    console.log('Redirecting to dashboard: already logged in');
     // Already logged in, redirect to dashboard
     return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
   }

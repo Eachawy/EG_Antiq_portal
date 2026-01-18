@@ -8,3 +8,4 @@ export { favoriteEndpoints } from './favorites';
 export { historyEndpoints } from './history';
 export { savedSearchEndpoints } from './saved-searches';
 export { contactEndpoints } from './contact';
+export { portalAuthEndpoints } from './portal-auth';

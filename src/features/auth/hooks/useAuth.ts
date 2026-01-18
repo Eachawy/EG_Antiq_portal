@@ -15,9 +15,9 @@ export function useAuth() {
 
   const login = async (credentials: LoginFormData) => {
     try {
+      debugger
       setIsLoading(true);
       setError(null);
-
       const user = await authService.login(credentials);
       setUser(user);
 
@@ -25,6 +25,7 @@ export function useAuth() {
       const params = new URLSearchParams(window.location.search);
       const returnUrl = params.get('returnUrl') || '/dashboard';
       router.push(returnUrl);
+
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Login failed';
       setError(message);

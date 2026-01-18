@@ -43,7 +43,7 @@ export default function LoginForm() {
     }
 
     try {
-      await login(formData);
+      // await login(formData);
     } catch (err) {
       // Error is handled by useAuth hook
       console.error('Login error:', err);

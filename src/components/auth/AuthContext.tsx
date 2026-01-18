@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import Cookies from 'js-cookie';
 
 export interface User {
   id: string;
@@ -37,6 +38,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    // Clear auth cookie
+    Cookies.remove('auth_token');
   };
 
   const updateProfile = (updates: Partial<User>) => {

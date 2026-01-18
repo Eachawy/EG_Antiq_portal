@@ -6,7 +6,6 @@ import {
   CreateFavoriteDto,
   FavoritesResponse,
   CheckFavoriteResponse,
-  ApiResponse,
 } from '../types/favorites.dto';
 
 export const favoriteEndpoints = {
@@ -17,13 +16,14 @@ export const favoriteEndpoints = {
     page: number = 1,
     limit: number = 20
   ): Promise<FavoritesResponse> {
-    const response = await httpClient.get<ApiResponse<FavoritesResponse>>(
+    const response = await httpClient.get<FavoritesResponse>(
       '/portal/favorites',
       {
         params: { page, limit },
       }
     );
-    return response.data.data;
+    // Backend returns: { data: [...], pagination: {...}, message: "..." }
+    return response.data;
   },
 
   /**
@@ -31,10 +31,11 @@ export const favoriteEndpoints = {
    */
   async add(monumentId: number): Promise<Favorite> {
     const dto: CreateFavoriteDto = { monumentId };
-    const response = await httpClient.post<ApiResponse<Favorite>>(
+    const response = await httpClient.post<{ data: Favorite }>(
       '/portal/favorites',
       dto
     );
+    // Backend returns: { data: {...}, message: "..." }
     return response.data.data;
   },
 
@@ -49,9 +50,10 @@ export const favoriteEndpoints = {
    * Check if monument is favorited
    */
   async check(monumentId: number): Promise<CheckFavoriteResponse> {
-    const response = await httpClient.get<ApiResponse<CheckFavoriteResponse>>(
+    const response = await httpClient.get<{ data: CheckFavoriteResponse }>(
       `/portal/favorites/check/${monumentId}`
     );
+    // Backend returns: { data: {...}, message: "..." }
     return response.data.data;
   },
 };

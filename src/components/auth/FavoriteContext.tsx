@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { favoriteEndpoints } from '@/lib/api/endpoints';
+import { getImageUrl } from '@/lib/utils/image-url';
 
 export interface FavoriteSite {
   id: string;
@@ -32,42 +33,58 @@ export function FavoriteProvider({ children }: { children: ReactNode }) {
   // Load favorites (from backend if authenticated, localStorage otherwise)
   useEffect(() => {
     const loadFavorites = async () => {
-      setIsSyncing(true);
-      try {
-        if (isAuthenticated) {
-          // Fetch from backend
-          const response = await favoriteEndpoints.getAll(1, 1000);
-          const backendFavorites: FavoriteSite[] = response.data.map((fav) => ({
-            id: fav.monumentId.toString(),
-            name: fav.monument?.monumentNameEn || '',
-            location: fav.monument?.locationDescriptionEn || '',
-            period: fav.monument?.monumentEras?.[0]?.era?.nameEn || '',
-            historicalDates: `${fav.monument?.startDate || ''} - ${fav.monument?.endDate || ''}`,
-            image: fav.monument?.image || fav.monument?.galleries?.[0]?.galleryPath || '',
-          }));
+      // Check if user is authenticated AND has a token
+      const hasToken = document.cookie.includes('auth_token');
 
-          // Build favoriteIds map
-          const idsMap = new Map<string, string>();
-          response.data.forEach((fav) => {
-            idsMap.set(fav.monumentId.toString(), fav.id);
-          });
+      console.log('FavoriteContext loading:', { isAuthenticated, hasToken });
 
-          setFavorites(backendFavorites);
-          setFavoriteIds(idsMap);
-        } else {
-          // Load from localStorage
-          const saved = localStorage.getItem('favorites');
-          if (saved) {
-            try {
-              setFavorites(JSON.parse(saved));
-            } catch (e) {
-              console.error('Failed to parse favorites', e);
-            }
+      if (!isAuthenticated || !hasToken) {
+        // Load from localStorage if not authenticated or no token
+        const saved = localStorage.getItem('favorites');
+        if (saved) {
+          try {
+            setFavorites(JSON.parse(saved));
+          } catch (e) {
+            console.error('Failed to parse favorites', e);
           }
         }
-      } catch (error) {
-        console.error('Failed to load favorites:', error);
-        // Fall back to localStorage on error
+        setIsInitialized(true);
+        return;
+      }
+
+      // Add a small delay to ensure cookie is properly set
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      setIsSyncing(true);
+      try {
+        console.log('Fetching favorites from backend...');
+        // Fetch from backend
+        const response = await favoriteEndpoints.getAll(1, 1000);
+        console.log('Favorites loaded:', response.data.length);
+
+        const backendFavorites: FavoriteSite[] = response.data.map((fav: any) => ({
+          id: fav.monumentId.toString(),
+          name: fav.monument?.monumentNameEn || fav.monument?.monumentNameAr || '',
+          location: fav.monument?.lat && fav.monument?.lng
+            ? `Lat: ${fav.monument.lat}, Lng: ${fav.monument.lng}`
+            : '',
+          period: fav.monument?.era?.nameEn || fav.monument?.dynasty?.nameEn || '',
+          historicalDates: `${fav.monument?.startDate || ''} - ${fav.monument?.endDate || ''}`,
+          image: getImageUrl(fav.monument?.image || fav.monument?.galleries?.[0]?.galleryPath || ''),
+        }));
+
+        // Build favoriteIds map
+        const idsMap = new Map<string, string>();
+        response.data.forEach((fav) => {
+          idsMap.set(fav.monumentId.toString(), fav.id);
+        });
+
+        setFavorites(backendFavorites);
+        setFavoriteIds(idsMap);
+      } catch (error: any) {
+        console.error('Failed to load favorites from backend:', error);
+
+        // Don't trigger redirect loop - just fall back to localStorage
         const saved = localStorage.getItem('favorites');
         if (saved) {
           try {

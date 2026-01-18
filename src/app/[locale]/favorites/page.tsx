@@ -15,32 +15,6 @@ export default function FavoritesPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Mock data - populate favorites if empty (for demo)
-  useEffect(() => {
-    if (favorites.length === 0 && isAuthenticated) {
-      // Add some mock favorites
-      const mockFavorites = [
-        {
-          id: '1',
-          name: 'Great Pyramid of Giza',
-          location: 'Giza Plateau, Cairo',
-          period: 'Old Kingdom',
-          historicalDates: 'c. 2580-2560 BCE',
-          image: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=400',
-        },
-        {
-          id: '2',
-          name: 'Karnak Temple Complex',
-          location: 'Luxor, Upper Egypt',
-          period: 'New Kingdom',
-          historicalDates: 'c. 2055-100 BCE',
-          image: 'https://images.unsplash.com/photo-1539650116574-8efeb43e2750?w=400',
-        },
-      ];
-      // Note: In real use, favorites would be added through user interaction
-    }
-  }, [favorites.length, isAuthenticated]);
-
   // Redirect if not authenticated
   useEffect(() => {
     if (!isAuthenticated || !user) {
