@@ -1,12 +1,15 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, Calendar, MapPin, Building2, Sparkles, BookOpen, Heart, Clock, Landmark, ArrowUpRight, AlertCircle } from 'lucide-react';
 import { type Locale } from '@/i18n/config';
+import { eraEndpoints } from '@/lib/api/endpoints';
+import { Era, Monument } from '@/lib/api/types/monuments.dto';
+import { getImageUrl } from '@/lib/utils/image-url';
 import { getEraById } from '../../HomePage-Components/data/erasData';
-import { archaeologicalSites } from '../../about/data/sitesData';
 
 export default function EraDetailsPage() {
     const params = useParams();
@@ -15,15 +18,81 @@ export default function EraDetailsPage() {
     const t = useTranslations('era');
     const tCommon = useTranslations('common');
     const router = useRouter();
-    const era = erasId ? getEraById(erasId as string) : undefined;
 
-    if (!era) {
+    const [era, setEra] = useState<Era | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // Get mock era data for detailed content (historical context, etc.)
+    const mockEra = erasId ? getEraById(erasId as string) : undefined;
+
+    // Map string IDs to database numeric IDs
+    const getNumericEraId = (id: string): number | null => {
+        const idMap: Record<string, number> = {
+            'pharaonic': 1,        // Ancient Egypt
+            'greco-roman': 2,      // Ptolemaic
+            'ptolemaic': 2,        // Ptolemaic
+            'roman': 3,            // Roman
+            'byzantine': 4,        // Byzantine
+            'islamic': 5,          // Islamic
+        };
+
+        // First try to parse as number
+        const numId = parseInt(id, 10);
+        if (!isNaN(numId)) {
+            return numId;
+        }
+
+        // Then check the mapping
+        return idMap[id.toLowerCase()] || null;
+    };
+
+    useEffect(() => {
+        const fetchEra = async () => {
+            if (!erasId) return;
+
+            try {
+                setLoading(true);
+                setError(null);
+
+                // Get numeric era ID
+                const eraIdNum = getNumericEraId(erasId as string);
+                if (!eraIdNum) {
+                    setError('Invalid era ID');
+                    return;
+                }
+
+                const data = await eraEndpoints.getById(eraIdNum);
+                setEra(data);
+            } catch (err: any) {
+                console.error('Failed to fetch era:', err);
+                setError(err?.message || 'Failed to load era details');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchEra();
+    }, [erasId]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-theme-bg flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-theme-primary mx-auto mb-4"></div>
+                    <p className="text-theme-text/70">Loading era details...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error || !era || !mockEra) {
         return (
             <div className="min-h-screen bg-theme-bg flex items-center justify-center">
                 <div className="text-center p-8 bg-theme-card border border-theme-border rounded-xl shadow-2xl max-w-md mx-4">
                     <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
                     <h2 className="text-2xl font-bold text-theme-text mb-2">{t('notFound.title')}</h2>
-                    <p className="text-theme-text/70 mb-6">{t('notFound.description')}</p>
+                    <p className="text-theme-text/70 mb-6">{error || t('notFound.description')}</p>
                     <button
                         onClick={() => router.push('/')}
                         className="mt-6 px-6 py-2 bg-theme-primary text-white rounded-lg hover:opacity-90 transition-colors"
@@ -35,12 +104,8 @@ export default function EraDetailsPage() {
         );
     }
 
-    // Find sites from this era
-    const eraSites = archaeologicalSites.filter(
-        site => site.historicalPeriod === era.name.en
-    );
-
-    // formatYear removed
+    // Get monuments from API data
+    const eraSites = era.monuments || [];
 
     return (
         <div className="min-h-screen bg-theme-bg">
@@ -49,11 +114,11 @@ export default function EraDetailsPage() {
                 {/* Background Image with Overlay */}
                 <div className="absolute inset-0">
                     <img
-                        src={era.imageUrl}
-                        alt={era.name[currentLocale]}
+                        src={mockEra.imageUrl}
+                        alt={currentLocale === 'ar' ? era.nameAr : era.nameEn}
                         className="w-full h-full object-cover"
                     />
-                    <div className={`absolute inset-0 bg-gradient-to-br ${era.color.primary} opacity-90`}></div>
+                    <div className={`absolute inset-0 bg-gradient-to-br ${mockEra.color.primary} opacity-90`}></div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
                 </div>
 
@@ -77,18 +142,18 @@ export default function EraDetailsPage() {
                             </div>
 
                             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-                                {t('hero.title', { eraName: era.name[currentLocale] })}
+                                {t('hero.title', { eraName: currentLocale === 'ar' ? era.nameAr : era.nameEn })}
                             </h1>
 
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm">
                                     <Calendar size={16} />
-                                    <span className="font-semibold">{era.period[currentLocale]}</span>
+                                    <span className="font-semibold">{mockEra.period[currentLocale]}</span>
                                 </div>
                                 <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm">
                                     <Clock size={16} />
                                     <span className="font-semibold">
-                                        {t('hero.duration', { years: Math.abs(era.timeline.end - era.timeline.start) })}
+                                        {t('hero.duration', { years: Math.abs(mockEra.timeline.end - mockEra.timeline.start) })}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm">
@@ -98,7 +163,7 @@ export default function EraDetailsPage() {
                             </div>
 
                             <p className="text-base md:text-lg text-white/95 leading-relaxed max-w-3xl">
-                                {era.fullDescription[currentLocale]}
+                                {mockEra.fullDescription[currentLocale]}
                             </p>
                         </div>
                     </div>
@@ -119,7 +184,7 @@ export default function EraDetailsPage() {
                                 <h2 className="text-base sm:text-lg font-semibold text-theme-text">{t('sections.historicalContext.title')}</h2>
                             </div>
                             <p className="text-theme-text/80 leading-relaxed">
-                                {era.historicalContext[currentLocale]}
+                                {mockEra.historicalContext[currentLocale]}
                             </p>
                         </div>
 
@@ -132,7 +197,7 @@ export default function EraDetailsPage() {
                                 <h2 className="text-base sm:text-lg font-semibold text-theme-text">{t('sections.culturalSignificance.title')}</h2>
                             </div>
                             <p className="text-theme-text/80 leading-relaxed">
-                                {era.culturalSignificance[currentLocale]}
+                                {mockEra.culturalSignificance[currentLocale]}
                             </p>
                         </div>
 
@@ -145,7 +210,7 @@ export default function EraDetailsPage() {
                                 <h2 className="text-base sm:text-lg font-semibold text-theme-text">{t('sections.architecturalStyle.title')}</h2>
                             </div>
                             <p className="text-theme-text/80 leading-relaxed">
-                                {era.architecturalStyle[currentLocale]}
+                                {mockEra.architecturalStyle[currentLocale]}
                             </p>
                         </div>
 
@@ -158,7 +223,7 @@ export default function EraDetailsPage() {
                                 <h2 className="text-base sm:text-lg font-semibold text-theme-text">{t('sections.religiousBeliefs.title')}</h2>
                             </div>
                             <p className="text-theme-text/80 leading-relaxed">
-                                {era.religiousBeliefs[currentLocale]}
+                                {mockEra.religiousBeliefs[currentLocale]}
                             </p>
                         </div>
                     </div>
@@ -169,7 +234,7 @@ export default function EraDetailsPage() {
                         <div className="bg-theme-card border border-theme-border rounded-2xl p-6 shadow-lg">
                             <h3 className="text-base sm:text-lg font-semibold text-theme-text mb-4">{t('sections.keyCharacteristics.title')}</h3>
                             <ul className="space-y-3">
-                                {era.keyCharacteristics.map((characteristic, index) => (
+                                {mockEra.keyCharacteristics.map((characteristic, index) => (
                                     <li key={index} className="flex items-start gap-3">
                                         <div className="p-1 bg-theme-primary rounded-md mt-0.5">
                                             <div className="w-2 h-2 bg-white rounded-full"></div>
@@ -184,7 +249,7 @@ export default function EraDetailsPage() {
                         <div className="bg-theme-card border border-theme-border rounded-2xl p-6 shadow-lg">
                             <h3 className="text-base sm:text-lg font-semibold text-theme-text mb-4">{t('sections.notableSites.title')}</h3>
                             <ul className="space-y-3">
-                                {era.notableSites.map((site, index) => (
+                                {mockEra.notableSites.map((site, index) => (
                                     <li key={index} className="flex items-start gap-3">
                                         <MapPin size={16} className={`text-theme-primary mt-0.5 flex-shrink-0`} />
                                         <span className="text-sm text-theme-text/80">{site[currentLocale]}</span>
@@ -195,12 +260,12 @@ export default function EraDetailsPage() {
                     </div>
                 </div>
 
-                {/* Related Archaeological Sites  WE need to make it dynamic based on the era*/}
+                {/* Related Archaeological Sites - Now Dynamic from API */}
                 {eraSites.length > 0 && (
                     <div>
                         <div className="mb-8">
                             <h2 className="text-2xl sm:text-3xl font-semibold text-theme-text mb-3">
-                                {t('sections.archaeologicalSites.title', { eraName: era.name[currentLocale] })}
+                                {t('sections.archaeologicalSites.title', { eraName: currentLocale === 'ar' ? era.nameAr : era.nameEn })}
                             </h2>
                             <p className="text-theme-text/70">
                                 {t('sections.archaeologicalSites.description', { count: eraSites.length })}
@@ -208,43 +273,57 @@ export default function EraDetailsPage() {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {eraSites.map((site) => (
-                                <div
-                                    key={site.id}
-                                    onClick={() => router.push(`/sites/${site.id}`)}
-                                    className="group cursor-pointer bg-theme-card border border-theme-border rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300"
-                                >
-                                    <div className="relative h-48 overflow-hidden">
-                                        <img
-                                            src={site.thumbnailUrl}
-                                            alt={site.name[currentLocale]}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                        <div className="absolute bottom-3 left-3 right-3">
-                                            <h3 className="text-white font-semibold mb-1">{site.name[currentLocale]}</h3>
-                                            <p className="text-white/80 text-xs flex items-center gap-1">
-                                                <MapPin size={12} />
-                                                {site.location.city[currentLocale]}, {site.location.governorate[currentLocale]}
+                            {eraSites.map((monument: Monument) => {
+                                // Get first gallery image
+                                const imageUrl = monument.galleries && monument.galleries.length > 0
+                                    ? getImageUrl(monument.galleries[0].galleryPath)
+                                    : monument.image
+                                    ? getImageUrl(monument.image)
+                                    : '/placeholder-monument.jpg';
+
+                                const monumentName = currentLocale === 'ar' ? monument.monumentNameAr : monument.monumentNameEn;
+                                const monumentDescription = currentLocale === 'ar' ? monument.monumentBiographyAr : monument.monumentBiographyEn;
+
+                                return (
+                                    <div
+                                        key={monument.id}
+                                        onClick={() => router.push(`/sites/${monument.id}`)}
+                                        className="group cursor-pointer bg-theme-card border border-theme-border rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300"
+                                    >
+                                        <div className="relative h-48 overflow-hidden">
+                                            <img
+                                                src={imageUrl}
+                                                alt={monumentName}
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                            <div className="absolute bottom-3 left-3 right-3">
+                                                <h3 className="text-white font-semibold mb-1 line-clamp-1">{monumentName}</h3>
+                                                {monument.monumentType && (
+                                                    <p className="text-white/80 text-xs flex items-center gap-1">
+                                                        <Building2 size={12} />
+                                                        {currentLocale === 'ar' ? monument.monumentType.nameAr : monument.monumentType.nameEn}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="p-4">
+                                            <p className="text-theme-text/70 text-sm line-clamp-2">
+                                                {monumentDescription ? (monumentDescription.length > 100 ? monumentDescription.substring(0, 100) + '...' : monumentDescription) : 'No description available'}
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="p-4">
-                                        <p className="text-theme-text/70 text-sm line-clamp-2">
-                                            {site.description[currentLocale].substring(0, 100)}...
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
-                        {eraSites.length > 6 && (
+                        {eraSites.length >= 6 && (
                             <div className="text-center mt-8">
                                 <button
-                                    onClick={() => router.push('/sites')}
+                                    onClick={() => router.push(`/sites?period=${era.id}`)}
                                     className="inline-flex items-center gap-2 bg-theme-primary hover:bg-theme-secondary text-white px-6 py-3 rounded-lg transition-colors"
                                 >
-                                    {t('sections.archaeologicalSites.viewAllButton', { eraName: era.name[currentLocale] })}
+                                    {t('sections.archaeologicalSites.viewAllButton', { eraName: currentLocale === 'ar' ? era.nameAr : era.nameEn })}
                                     <ArrowUpRight size={18} />
                                 </button>
                             </div>
@@ -253,19 +332,19 @@ export default function EraDetailsPage() {
                 )}
 
                 {/* Dynasties Section */}
-                {era.dynasties && era.dynasties.length > 0 && (
+                {mockEra.dynasties && mockEra.dynasties.length > 0 && (
                     <div className="mt-16">
                         <div className="mb-8">
                             <h2 className="text-2xl sm:text-3xl font-semibold text-theme-text mb-3">
                                 {t('sections.dynasties.title')}
                             </h2>
                             <p className="text-theme-text/70">
-                                {t('sections.dynasties.description', { eraName: era.name[currentLocale] })}
+                                {t('sections.dynasties.description', { eraName: currentLocale === 'ar' ? era.nameAr : era.nameEn })}
                             </p>
                         </div>
 
                         <div className="space-y-8">
-                            {era.dynasties.map((dynasty) => (
+                            {mockEra.dynasties.map((dynasty) => (
                                 <div
                                     key={dynasty.id}
                                     className="bg-theme-card border border-theme-border rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
@@ -289,54 +368,10 @@ export default function EraDetailsPage() {
                                         </div>
 
                                         {/* Content */}
-                                        <div className="p-6 lg:p-8">
-                                            <p className="text-theme-text/80 leading-relaxed mb-6">
+                                        <div className="p-6 sm:p-8 flex flex-col justify-center">
+                                            <p className="text-theme-text/80 mb-4 leading-relaxed">
                                                 {dynasty.description[currentLocale]}
                                             </p>
-
-                                            {/* Notable Rulers */}
-                                            {dynasty.notableRulers && dynasty.notableRulers.length > 0 && (
-                                                <div className="mb-6">
-                                                    <h4 className="text-base sm:text-lg font-semibold text-theme-text mb-3 flex items-center gap-2">
-                                                        <div className="p-2 bg-theme-primary rounded-lg">
-                                                            <Sparkles className="text-white" size={18} />
-                                                        </div>
-                                                        {t("hero.notableRulers")}
-                                                    </h4>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {dynasty.notableRulers.map((ruler, idx) => (
-                                                            <span
-                                                                key={idx}
-                                                                className={`px-3 py-1.5 ${era.color.secondary} border ${era.color.badge.split(' ').slice(-1)[0]} rounded-full text-sm text-theme-text`}
-                                                            >
-                                                                {ruler[currentLocale]}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {/* Key Achievements */}
-                                            {dynasty.keyAchievements && dynasty.keyAchievements.length > 0 && (
-                                                <div>
-                                                    <h4 className="text-base sm:text-lg font-semibold text-theme-text mb-3 flex items-center gap-2">
-                                                        <div className="p-2 bg-theme-primary rounded-lg">
-                                                            <Building2 className="text-white" size={18} />
-                                                        </div>
-                                                        {t("hero.keyAchievements")}
-                                                    </h4>
-                                                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                                        {dynasty.keyAchievements.map((achievement, idx) => (
-                                                            <li key={idx} className="flex items-start gap-2 text-sm text-theme-text/80">
-                                                                <div className="p-0.5 bg-theme-primary rounded-full mt-1.5 flex-shrink-0">
-                                                                    <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-                                                                </div>
-                                                                <span>{achievement[currentLocale]}</span>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            )}
                                         </div>
                                     </div>
                                 </div>

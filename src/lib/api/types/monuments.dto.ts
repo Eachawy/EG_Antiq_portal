@@ -10,6 +10,8 @@ export interface Era {
   toYear?: string;
   createdAt: string;
   updatedAt: string;
+  monuments?: Monument[];
+  dynasties?: Dynasty[];
 }
 
 export interface Dynasty {

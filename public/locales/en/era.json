@@ -34,7 +34,7 @@
         },
         "archaeologicalSites": {
             "title": "Archaeological Sites from the {eraName} Era",
-            "description": "Explore {count} site{s, plural, one {} other {s}} from this period",
+            "description": "Explore {count} site(s) from this period",
             "viewAllButton": "View All {eraName} Sites"
         },
         "dynasties": {

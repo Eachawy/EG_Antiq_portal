@@ -114,7 +114,7 @@
 }
 
 .Kemetra_Logo {
-    background: url(./images/kemetra_dark.png) no-repeat;
+    background: url(/styles/images/kemetra_dark.png) no-repeat;
     width: 234px;
     height: 45px;
     display: block;
