@@ -11,7 +11,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { useTranslations } from 'next-intl';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams as useNextSearchParams } from 'next/navigation';
 import { type Locale } from '@/i18n/config';
 import { monumentEndpoints, eraEndpoints, dynastyEndpoints, monumentTypeEndpoints, savedSearchEndpoints } from '@/lib/api/endpoints';
 import { Monument, Era, Dynasty, MonumentType } from '@/lib/api/types/monuments.dto';
@@ -22,6 +22,7 @@ export default function SitesPage() {
     const tHero = useTranslations('sites.hero');
     const tSearch = useTranslations('sites.search');
     const params = useParams();
+    const urlSearchParams = useNextSearchParams();
     const currentLocale = (params.locale as Locale) || 'en';
     const locale = params.locale as 'en' | 'ar';
     const { isAuthenticated } = useAuth();
@@ -49,6 +50,31 @@ export default function SitesPage() {
     const [error, setError] = useState<string | null>(null);
     const [totalPages, setTotalPages] = useState(0);
     const [totalResults, setTotalResults] = useState(0);
+
+    // Initialize search params from URL on mount
+    useEffect(() => {
+        if (urlSearchParams) {
+            const initialParams: SearchParams = {
+                query: urlSearchParams.get('q') || '',
+                period: urlSearchParams.get('period') || 'all',
+                dynasty: urlSearchParams.get('dynasty') || 'all',
+                startDate: urlSearchParams.get('startDate') || '',
+                endDate: urlSearchParams.get('endDate') || '',
+                siteType: urlSearchParams.get('siteType') || 'all',
+                minDuration: urlSearchParams.get('minDuration') || '',
+                maxDuration: urlSearchParams.get('maxDuration') || '',
+            };
+
+            // Only update if there are actual params in the URL
+            const hasParams = Object.entries(initialParams).some(
+                ([key, value]) => value !== '' && value !== 'all'
+            );
+
+            if (hasParams) {
+                setSearchParams(initialParams);
+            }
+        }
+    }, [urlSearchParams]);
 
     // Fetch reference data on mount
     useEffect(() => {

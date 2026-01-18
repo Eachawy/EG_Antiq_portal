@@ -105,37 +105,23 @@ export default function SavedSearchPage() {
         (search.keyword && search.keyword.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
-    const handleRunSearch = async (search: SavedSearch) => {
-        try {
-            // Execute the saved search to get updated results
-            const result = await savedSearchEndpoints.execute(search.id);
+    const handleRunSearch = (search: SavedSearch) => {
+        // Navigate to sites page with filters
+        const params = new URLSearchParams();
+        if (search.keyword) params.set('q', search.keyword);
+        if (search.eraIds && search.eraIds.length > 0) params.set('period', search.eraIds[0].toString());
+        if (search.dynastyIds && search.dynastyIds.length > 0) params.set('dynasty', search.dynastyIds[0].toString());
+        if (search.monumentTypeIds && search.monumentTypeIds.length > 0) params.set('siteType', search.monumentTypeIds[0].toString());
+        if (search.dateFrom) params.set('startDate', search.dateFrom);
+        if (search.dateTo) params.set('endDate', search.dateTo);
 
-            // Show success message
-            toastRef.current?.show({
-                severity: 'success',
-                summary: 'Search Executed',
-                detail: `Found ${result.monuments.length} monuments`,
-                life: 3000,
-            });
+        // Navigate to sites page - the sites page will automatically fetch monuments based on URL params
+        router.push(`/sites?${params.toString()}`);
 
-            // Navigate to sites page with filters
-            const params = new URLSearchParams();
-            if (search.keyword) params.set('q', search.keyword);
-            if (search.eraIds && search.eraIds.length > 0) params.set('period', search.eraIds[0].toString());
-            if (search.dynastyIds && search.dynastyIds.length > 0) params.set('dynasty', search.dynastyIds[0].toString());
-            if (search.monumentTypeIds && search.monumentTypeIds.length > 0) params.set('siteType', search.monumentTypeIds[0].toString());
-            if (search.dateFrom) params.set('startDate', search.dateFrom);
-            if (search.dateTo) params.set('endDate', search.dateTo);
-
-            router.push(`/sites?${params.toString()}`);
-        } catch (err: any) {
-            toastRef.current?.show({
-                severity: 'error',
-                summary: 'Error',
-                detail: err.message || 'Failed to execute search',
-                life: 3000,
-            });
-        }
+        // Execute search in background to update result count
+        savedSearchEndpoints.execute(search.id).catch((err) => {
+            console.error('Failed to update search result count:', err);
+        });
     };
 
     const handleDeleteSearch = async (searchId: string, searchName: string) => {
