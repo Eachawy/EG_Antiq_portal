@@ -30,8 +30,30 @@ else
 fi
 echo ""
 
-# Step 2: Backup existing configuration (if exists)
-echo "Step 2: Backing up existing configuration..."
+# Step 2: Create necessary directories if they don't exist
+echo "Step 2: Checking Nginx directories..."
+if [ ! -d /etc/nginx/sites-available ]; then
+    echo "Creating /etc/nginx/sites-available..."
+    mkdir -p /etc/nginx/sites-available
+    echo "✓ Directory created"
+fi
+
+if [ ! -d /etc/nginx/sites-enabled ]; then
+    echo "Creating /etc/nginx/sites-enabled..."
+    mkdir -p /etc/nginx/sites-enabled
+    echo "✓ Directory created"
+fi
+
+# Ensure sites-enabled is included in nginx.conf
+if ! grep -q "sites-enabled" /etc/nginx/nginx.conf; then
+    echo "Adding sites-enabled to nginx.conf..."
+    sed -i '/http {/a \    include /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
+    echo "✓ Updated nginx.conf"
+fi
+echo ""
+
+# Step 3: Backup existing configuration (if exists)
+echo "Step 3: Backing up existing configuration..."
 if [ -f /etc/nginx/sites-available/kemetra.org ]; then
     cp /etc/nginx/sites-available/kemetra.org /etc/nginx/sites-available/kemetra.org.backup.$(date +%Y%m%d%H%M%S)
     echo "✓ Backup created"
@@ -40,8 +62,8 @@ else
 fi
 echo ""
 
-# Step 3: Create Nginx configuration
-echo "Step 3: Creating Nginx configuration..."
+# Step 4: Create Nginx configuration
+echo "Step 4: Creating Nginx configuration..."
 cat > /etc/nginx/sites-available/kemetra.org << 'EOF'
 # Kemetra.org Portal Configuration
 
@@ -118,14 +140,14 @@ EOF
 echo "✓ Configuration file created"
 echo ""
 
-# Step 4: Enable the site
-echo "Step 4: Enabling site configuration..."
+# Step 5: Enable the site
+echo "Step 5: Enabling site configuration..."
 ln -sf /etc/nginx/sites-available/kemetra.org /etc/nginx/sites-enabled/
 echo "✓ Site enabled"
 echo ""
 
-# Step 5: Remove default site if it exists and conflicts
-echo "Step 5: Checking for conflicting configurations..."
+# Step 6: Remove default site if it exists and conflicts
+echo "Step 6: Checking for conflicting configurations..."
 if [ -f /etc/nginx/sites-enabled/default ]; then
     echo "Removing default site..."
     rm -f /etc/nginx/sites-enabled/default
@@ -133,8 +155,8 @@ if [ -f /etc/nginx/sites-enabled/default ]; then
 fi
 echo ""
 
-# Step 6: Test Nginx configuration
-echo "Step 6: Testing Nginx configuration..."
+# Step 7: Test Nginx configuration
+echo "Step 7: Testing Nginx configuration..."
 if nginx -t; then
     echo "✓ Configuration is valid"
 else
@@ -147,14 +169,14 @@ else
 fi
 echo ""
 
-# Step 7: Reload Nginx
-echo "Step 7: Reloading Nginx..."
+# Step 8: Reload Nginx
+echo "Step 8: Reloading Nginx..."
 systemctl reload nginx
 echo "✓ Nginx reloaded"
 echo ""
 
-# Step 8: Check if SSL certificate exists
-echo "Step 8: Checking SSL certificate..."
+# Step 9: Check if SSL certificate exists
+echo "Step 9: Checking SSL certificate..."
 if [ -d /etc/letsencrypt/live/kemetra.org ]; then
     echo "✓ SSL certificate already exists"
 else
@@ -165,8 +187,8 @@ else
 fi
 echo ""
 
-# Step 9: Test the configuration
-echo "Step 9: Testing portal access..."
+# Step 10: Test the configuration
+echo "Step 10: Testing portal access..."
 HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://kemetra.org || echo "000")
 if [ "$HTTP_CODE" == "301" ] || [ "$HTTP_CODE" == "200" ]; then
     echo "✓ HTTP redirect is working (Code: $HTTP_CODE)"
