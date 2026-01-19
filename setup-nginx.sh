@@ -66,40 +66,19 @@ echo ""
 echo "Step 4: Creating Nginx configuration..."
 cat > /etc/nginx/sites-available/kemetra.org << 'EOF'
 # Kemetra.org Portal Configuration
+# Initial HTTP-only config - Certbot will add SSL automatically
 
-# Redirect HTTP to HTTPS
 server {
     listen 80;
     listen [::]:80;
     server_name kemetra.org www.kemetra.org;
 
-    # Allow Certbot challenges
-    location /.well-known/acme-challenge/ {
-        root /var/www/html;
-    }
-
-    # Redirect all other traffic to HTTPS
-    location / {
-        return 301 https://$host$request_uri;
-    }
-}
-
-# HTTPS Server Block
-server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name kemetra.org www.kemetra.org;
-
-    # SSL Configuration (will be updated by Certbot)
-    # ssl_certificate /etc/letsencrypt/live/kemetra.org/fullchain.pem;
-    # ssl_certificate_key /etc/letsencrypt/live/kemetra.org/privkey.pem;
-    
     # Security headers
     add_header X-Frame-Options "SAMEORIGIN" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-XSS-Protection "1; mode=block" always;
 
-    # Proxy to Next.js app
+    # Proxy to Next.js app on port 3002
     location / {
         proxy_pass http://localhost:3002;
         proxy_http_version 1.1;
