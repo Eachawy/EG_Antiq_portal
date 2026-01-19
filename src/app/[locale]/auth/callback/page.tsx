@@ -55,8 +55,17 @@ export default function AuthCallbackPage() {
           interests: []
         };
 
-        // Update auth context
+        // Update auth context (stores user in localStorage)
         login(user);
+
+        // Explicitly store user data to be extra sure
+        localStorage.setItem('user', JSON.stringify(user));
+
+        console.log('Callback: All data stored. Tokens and user data saved.');
+        console.log('Callback: Waiting briefly before setting success flag...');
+
+        // Wait a moment to ensure all writes are complete
+        await new Promise(resolve => setTimeout(resolve, 200));
 
         console.log('Callback: Setting OAuth completion flag in localStorage...');
 
@@ -64,6 +73,8 @@ export default function AuthCallbackPage() {
         // This is more reliable than postMessage across different scenarios
         localStorage.setItem('oauth_login_complete', Date.now().toString());
         localStorage.setItem('oauth_success', 'true');
+
+        console.log('Callback: OAuth success flag set!');
 
         console.log('Callback: Checking if this is a popup window...');
         console.log('window.opener exists:', !!window.opener);

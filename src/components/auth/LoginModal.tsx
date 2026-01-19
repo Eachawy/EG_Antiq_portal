@@ -46,10 +46,24 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     const checkOAuthCompletion = () => {
       const oauthSuccess = localStorage.getItem('oauth_success');
       const oauthTimestamp = localStorage.getItem('oauth_login_complete');
+      const accessToken = localStorage.getItem('access_token');
+      const authCookie = Cookies.get('auth_token');
+      const userDataStored = localStorage.getItem('user');
 
       if (oauthSuccess === 'true') {
         console.log('OAuth success detected via localStorage!');
         console.log('OAuth completed at:', oauthTimestamp);
+        console.log('Access token exists:', !!accessToken);
+        console.log('Auth cookie exists:', !!authCookie);
+        console.log('User data exists:', !!userDataStored);
+
+        // Verify that tokens are actually stored
+        if (!accessToken || !authCookie || !userDataStored) {
+          console.warn('OAuth success flag set but tokens/user not found yet, waiting...');
+          return; // Wait for next poll
+        }
+
+        console.log('All tokens and user data verified, proceeding with refresh...');
 
         // Clear the flags
         localStorage.removeItem('oauth_success');
@@ -60,8 +74,10 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
         console.log('Refreshing page to show logged-in state...');
 
-        // Refresh the page immediately to show logged-in state
-        window.location.reload();
+        // Add a small delay to ensure everything is saved
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       }
     };
 
