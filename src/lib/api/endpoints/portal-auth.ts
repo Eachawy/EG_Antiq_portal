@@ -84,11 +84,16 @@ export const portalAuthEndpoints = {
 
     const googleAuthUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/portal/auth/google`;
 
-    window.open(
+    const popup = window.open(
       googleAuthUrl,
-      'Google OAuth',
-      `width=${width},height=${height},left=${left},top=${top}`
+      'GoogleOAuth',
+      `width=${width},height=${height},left=${left},top=${top},toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes`
     );
+
+    // Focus the popup
+    if (popup) {
+      popup.focus();
+    }
   },
 
   /**
@@ -103,11 +108,16 @@ export const portalAuthEndpoints = {
 
     const facebookAuthUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/portal/auth/facebook`;
 
-    window.open(
+    const popup = window.open(
       facebookAuthUrl,
-      'Facebook OAuth',
-      `width=${width},height=${height},left=${left},top=${top}`
+      'FacebookOAuth',
+      `width=${width},height=${height},left=${left},top=${top},toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes`
     );
+
+    // Focus the popup
+    if (popup) {
+      popup.focus();
+    }
   },
 
   /**

@@ -70,7 +70,8 @@ const transformMonumentToSite = (monument: Monument): Site => {
     };
 };
 
-// Debounce hook
+// Debounce hook (currently unused, but may be needed for search functionality)
+// @ts-ignore - Keeping for future search functionality
 function useDebounce<T>(value: T, delay: number): T {
     const [debouncedValue, setDebouncedValue] = useState<T>(value);
 

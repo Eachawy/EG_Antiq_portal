@@ -5,7 +5,6 @@ import { useRouter } from '@/i18n/routing';
 import {
     Settings as SettingsIcon,
     Bell,
-    Globe,
     Moon,
     Sun,
     Lock,
@@ -21,7 +20,6 @@ import { useTheme } from '@/components/common/ThemeContext';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { InputSwitch } from 'primereact/inputswitch';
-import { Dropdown } from 'primereact/dropdown';
 import { Divider } from 'primereact/divider';
 
 export default function SettingsPage() {
@@ -47,11 +45,6 @@ export default function SettingsPage() {
     if (!isAuthenticated || !user) {
         return null;
     }
-
-    const languageOptions = [
-        { label: 'English', value: 'en' },
-        { label: 'العربية', value: 'ar' },
-    ];
 
     return (
         <div className="min-h-screen bg-theme-bg pt-20">

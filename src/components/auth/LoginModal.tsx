@@ -62,6 +62,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
         // Close modal
         onClose();
+
+        // Refresh the page to update UI everywhere
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       }
     };
 

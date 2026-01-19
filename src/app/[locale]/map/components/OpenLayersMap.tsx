@@ -123,7 +123,7 @@ const OpenLayersMapComponent = forwardRef<OpenLayersMapRef, OpenLayersMapProps>(
     const [hoveredSite, setHoveredSite] = useState<Site | null>(null);
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [currentLocationLayer, setCurrentLocationLayer] = useState<VectorLayer<VectorSource> | null>(null);
-    const [isLocating, setIsLocating] = useState(false);
+    const [, setIsLocating] = useState(false);
 
 
     // Initialize map once

@@ -58,26 +58,31 @@ export default function AuthCallbackPage() {
         // Update auth context
         login(user);
 
-        // Check if this is a popup window
-        if (window.opener) {
-          // We're in a popup - send message to parent and close
-          window.opener.postMessage({
-            type: 'oauth_success',
-            user,
-            accessToken,
-            refreshToken
-          }, window.location.origin);
-
-          // Close the popup after a short delay
-          setTimeout(() => {
-            window.close();
-          }, 500);
-        } else {
-          // We're in the main window - redirect to home
-          setTimeout(() => {
-            router.push('/');
-          }, 1000);
+        // Always try to send message to opener (if this is a popup)
+        if (window.opener && !window.opener.closed) {
+          try {
+            window.opener.postMessage({
+              type: 'oauth_success',
+              user,
+              accessToken,
+              refreshToken
+            }, window.location.origin);
+          } catch (error) {
+            console.error('Failed to send message to parent window:', error);
+          }
         }
+
+        // Always try to close the window (works for popups)
+        setTimeout(() => {
+          window.close();
+
+          // If window didn't close (opened as tab), redirect to home
+          setTimeout(() => {
+            if (!window.closed) {
+              router.push('/');
+            }
+          }, 500);
+        }, 300);
       } catch (err: any) {
         console.error('OAuth callback error:', err);
         setError(err.message || 'Failed to complete authentication');
@@ -114,9 +119,10 @@ export default function AuthCallbackPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-theme-bg">
-      <div className="text-center">
+      <div className="text-center p-8 max-w-md mx-auto">
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-theme-primary mx-auto mb-4"></div>
-        <p className="text-theme-text text-lg">Completing authentication...</p>
+        <p className="text-theme-text text-lg mb-4">Completing authentication...</p>
+        <p className="text-theme-muted text-sm">This window will close automatically...</p>
       </div>
     </div>
   );

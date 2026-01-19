@@ -1,21 +1,29 @@
 version: '3.8'
 
 services:
-  antiq-portal:
+  portal:
+    container_name: antiq-portal
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '3000:3000'
+      - '3002:3000'  # Map host port 3002 to container port 3000
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000/api}
-    env_file:
-      - .env.production
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api/v1
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
     restart: unless-stopped
+    networks:
+      - antiq-network
     healthcheck:
       test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3000/']
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+
+networks:
+  antiq-network:
+    external: true
+    name: eg_antiq_app-network
