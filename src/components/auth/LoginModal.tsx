@@ -36,6 +36,39 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     };
   }, [isOpen]);
 
+  // Listen for OAuth callback messages from popup
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Verify origin
+      if (event.origin !== window.location.origin) {
+        return;
+      }
+
+      // Handle OAuth success
+      if (event.data.type === 'oauth_success') {
+        const { user, accessToken, refreshToken } = event.data;
+
+        // Store tokens
+        Cookies.set('auth_token', accessToken, {
+          expires: 1/96, // 15 minutes
+          path: '/',
+          sameSite: 'lax'
+        });
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('refresh_token', refreshToken);
+
+        // Update auth context
+        login(user);
+
+        // Close modal
+        onClose();
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [login, onClose]);
+
   // Don't render anything if modal is not open
   if (!isOpen) return null;
 
