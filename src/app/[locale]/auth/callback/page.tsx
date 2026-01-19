@@ -58,28 +58,50 @@ export default function AuthCallbackPage() {
         // Update auth context
         login(user);
 
-        // Always try to send message to opener (if this is a popup)
+        console.log('Callback: Setting OAuth completion flag in localStorage...');
+
+        // Set a flag in localStorage to notify the parent window
+        // This is more reliable than postMessage across different scenarios
+        localStorage.setItem('oauth_login_complete', Date.now().toString());
+        localStorage.setItem('oauth_success', 'true');
+
+        console.log('Callback: Checking if this is a popup window...');
+        console.log('window.opener exists:', !!window.opener);
+        console.log('window.opener.closed:', window.opener ? window.opener.closed : 'N/A');
+
+        // Also try postMessage as backup (if this is a popup)
         if (window.opener && !window.opener.closed) {
           try {
-            window.opener.postMessage({
+            console.log('Callback: Sending success message to parent window...');
+            const message = {
               type: 'oauth_success',
               user,
               accessToken,
               refreshToken
-            }, window.location.origin);
+            };
+            console.log('Message being sent:', message);
+            window.opener.postMessage(message, window.location.origin);
+            console.log('Callback: Message sent successfully!');
           } catch (error) {
-            console.error('Failed to send message to parent window:', error);
+            console.error('Callback: Failed to send message to parent window:', error);
           }
+        } else {
+          console.log('Callback: Not a popup or parent window is closed');
         }
 
         // Always try to close the window (works for popups)
+        console.log('Callback: Attempting to close popup window...');
         setTimeout(() => {
           window.close();
+          console.log('Callback: window.close() called');
 
           // If window didn't close (opened as tab), redirect to home
           setTimeout(() => {
             if (!window.closed) {
+              console.log('Callback: Window did not close, redirecting to home...');
               router.push('/');
+            } else {
+              console.log('Callback: Window closed successfully');
             }
           }, 500);
         }, 300);

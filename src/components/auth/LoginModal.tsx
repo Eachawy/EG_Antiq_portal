@@ -36,16 +36,65 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     };
   }, [isOpen]);
 
-  // Listen for OAuth callback messages from popup
+  // Listen for OAuth callback via localStorage (more reliable than postMessage)
   useEffect(() => {
+    console.log('Setting up OAuth completion listener...');
+
+    // Clear any old flags
+    localStorage.removeItem('oauth_success');
+
+    const checkOAuthCompletion = () => {
+      const oauthSuccess = localStorage.getItem('oauth_success');
+      const oauthTimestamp = localStorage.getItem('oauth_login_complete');
+
+      if (oauthSuccess === 'true') {
+        console.log('OAuth success detected via localStorage!');
+        console.log('OAuth completed at:', oauthTimestamp);
+
+        // Clear the flags
+        localStorage.removeItem('oauth_success');
+        localStorage.removeItem('oauth_login_complete');
+
+        // Close modal
+        onClose();
+
+        console.log('Refreshing page to show logged-in state...');
+
+        // Refresh the page immediately to show logged-in state
+        window.location.reload();
+      }
+    };
+
+    // Check immediately
+    checkOAuthCompletion();
+
+    // Poll for changes every 500ms
+    const pollInterval = setInterval(checkOAuthCompletion, 500);
+
+    // Also listen for storage events (fired when another tab/window changes localStorage)
+    const handleStorageChange = (e: StorageEvent) => {
+      console.log('Storage change detected:', e.key, e.newValue);
+      if (e.key === 'oauth_success' && e.newValue === 'true') {
+        console.log('OAuth success detected via storage event!');
+        checkOAuthCompletion();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    // Backup: Also listen for postMessage
     const handleMessage = (event: MessageEvent) => {
+      console.log('Message received in parent window:', event.data);
+
       // Verify origin
       if (event.origin !== window.location.origin) {
+        console.log('Message rejected - wrong origin:', event.origin);
         return;
       }
 
       // Handle OAuth success
       if (event.data.type === 'oauth_success') {
+        console.log('OAuth success message received via postMessage!');
         const { user, accessToken, refreshToken } = event.data;
 
         // Store tokens
@@ -57,21 +106,30 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         localStorage.setItem('access_token', accessToken);
         localStorage.setItem('refresh_token', refreshToken);
 
+        console.log('Tokens stored, updating auth context...');
+
         // Update auth context
         login(user);
+
+        console.log('Closing modal and refreshing page...');
 
         // Close modal
         onClose();
 
-        // Refresh the page to update UI everywhere
-        setTimeout(() => {
-          window.location.reload();
-        }, 500);
+        // Refresh the page immediately to show logged-in state
+        window.location.reload();
       }
     };
 
     window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
+    console.log('OAuth listeners registered (localStorage polling + storage event + postMessage)');
+
+    return () => {
+      clearInterval(pollInterval);
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('message', handleMessage);
+      console.log('OAuth listeners removed');
+    };
   }, [login, onClose]);
 
   // Don't render anything if modal is not open
