@@ -37,4 +37,5 @@ services:
 
 networks:
   production-network:
-    driver: bridge
+    external: true
+    name: eg_antiq_app-network

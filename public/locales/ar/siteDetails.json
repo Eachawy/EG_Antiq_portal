@@ -20,7 +20,21 @@
         "timeline": "الجدول الزمني",
         "locationMap": "خريطة الموقع",
         "nearbySites": "مواقع قريبة",
-        "favorite": "المفضلة"
+        "favorite": "المفضلة",
+        "imageGallery": "معرض الصور",
+        "viewFullSize": "عرض بالحجم الكامل",
+        "morePhotos": "المزيد من الصور",
+        "photos": "صور",
+        "featured": "مميز",
+        "shareThisSite": "شارك هذا الموقع",
+        "shareOnSocialMedia": "شارك على وسائل التواصل الاجتماعي",
+        "facebook": "Facebook",
+        "twitter": "Twitter",
+        "whatsapp": "WhatsApp",
+        "email": "Email",
+        "linkedin": "LinkedIn",
+        "telegram": "Telegram",
+        "copyLink": "Copy Link"
     },
     "labels": {
         "reliableSources": "مراجع موثوقة ويمكن التحقق منها",

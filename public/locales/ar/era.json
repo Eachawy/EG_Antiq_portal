@@ -7,7 +7,7 @@
     "hero": {
         "backButton": "العودة إلى الصفحة الرئيسية",
         "historicalEra": "عصر تاريخي",
-        "title": "عصر {eraName}",
+        "title": "الحقبة {eraName}",
         "duration": "{years} سنة",
         "sitesCount": "{count} موقع",
         "notableRulers": "حكام بارزون",
@@ -38,8 +38,8 @@
             "viewAllButton": "عرض جميع مواقع {eraName}"
         },
         "dynasties": {
-            "title": "الأسرات والفترات",
-            "description": "استكشف الأسرات والفترات الرئيسية التي حددت عصر {eraName}"
+            "title": "الفترات",
+            "description": "استكشف الفترات الرئيسية التي حددت عصر {eraName}"
         },
         "notableRulers": {
             "title": "حكام بارزون"

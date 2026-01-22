@@ -31,7 +31,7 @@
     "footer": {
         "about": {
             "title": "ANCIENT EGYPT",
-            "description": "Preserving and sharing the wonders of ancient Egyptian civilization. Explore archaeological sites, monuments, and historical treasures from the land of the pharaohs."
+            "description": "Preserving and sharing the wonders of ancient Egyptian civilization. Explore archaeological sites, monuments, and historical treasures from the land of the Ancient Egyptians."
         },
         "newsletter": {
             "title": "Subscribe to Our Newsletter",
@@ -45,7 +45,7 @@
             "success": "You have been subscribed successfully!"
         },
         "bottom": {
-            "copyright": "© {year} Ancient Egypt Archaeological Sites. All rights reserved.",
+            "copyright": "© {year} KEMETRA - Ancient Egypt Archaeological Sites. All rights reserved.",
             "privacyPolicy": "Privacy Policy",
             "termsOfUse": "Terms of Use",
             "cookiePolicy": "Cookie Policy"

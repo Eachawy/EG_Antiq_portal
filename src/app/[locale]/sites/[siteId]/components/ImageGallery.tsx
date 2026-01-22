@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, ChevronLeft, ChevronRight, Maximize2, Image as ImageIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface ImageGalleryProps {
   images: string[];
@@ -8,6 +9,7 @@ interface ImageGalleryProps {
 
 export function ImageGallery({ images, siteName }: ImageGalleryProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const t = useTranslations('siteDetails');
 
   const openModal = (index: number) => {
     setSelectedImageIndex(index);
@@ -39,8 +41,8 @@ export function ImageGallery({ images, siteName }: ImageGalleryProps) {
             <ImageIcon size={20} className="text-theme-primary" />
           </div>
           <div>
-            <h3 className="text-theme-text">Image Gallery</h3>
-            <p className="text-theme-muted text-sm">{images.length} photos</p>
+            <h3 className="text-theme-text">{t('sections.imageGallery')}</h3>
+            <p className="text-theme-muted text-sm">{images.length} {t('sections.photos')}</p>
           </div>
         </div>
 
@@ -60,12 +62,12 @@ export function ImageGallery({ images, siteName }: ImageGalleryProps) {
               <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                 <div className="flex items-center gap-2 text-white">
                   <Maximize2 size={18} />
-                  <span className="text-sm font-medium">View Full Size</span>
+                  <span className="text-sm font-medium">{t('sections.viewFullSize')}</span>
                 </div>
               </div>
             </div>
             <div className="absolute top-4 left-4 px-3 py-1.5 bg-black/40 backdrop-blur-md rounded-full text-white text-xs font-medium">
-              Featured
+              {t('sections.featured')}
             </div>
           </div>
 
@@ -102,7 +104,7 @@ export function ImageGallery({ images, siteName }: ImageGalleryProps) {
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-theme-primary/80 to-theme-secondary/80 group-hover:from-theme-primary group-hover:to-theme-secondary transition-all duration-300">
                 <ImageIcon size={32} className="text-white mb-2" />
                 <span className="text-white font-medium text-lg">+{images.length - 5}</span>
-                <span className="text-white/90 text-sm">More Photos</span>
+                <span className="text-white/90 text-sm">{t('sections.morePhotos')}</span>
               </div>
             </div>
           )}
@@ -165,7 +167,7 @@ export function ImageGallery({ images, siteName }: ImageGalleryProps) {
           </div>
 
           {/* Thumbnail Strip */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2 max-w-[90vw] overflow-x-auto pb-2 px-2 scrollbar-hide">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2 max-w-[90vw] overflow-x-auto pb-2 px-2 scrollbar-hide h-24">
             {images.map((image, index) => (
               <button
                 key={index}
@@ -174,9 +176,9 @@ export function ImageGallery({ images, siteName }: ImageGalleryProps) {
                   setSelectedImageIndex(index);
                 }}
                 className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden transition-all duration-300 ${selectedImageIndex === index
-                    ? 'ring-4 ring-theme-primary scale-110'
-                    : 'ring-2 ring-white/30 hover:ring-white/60 opacity-70 hover:opacity-100'
-                  }`}
+                  ? 'ring-4 ring-theme-primary scale-110'
+                  : 'ring-2 ring-white/30 hover:ring-white/60 opacity-70 hover:opacity-100'
+                  } relative -bottom-2`}
               >
                 <img
                   src={image}

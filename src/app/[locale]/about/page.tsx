@@ -21,7 +21,7 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="relative h-[50vh] md:h-[60vh] w-full overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1553913861-c0fddf2619ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlZ3lwdGlhbiUyMGFyY2hhZW9sb2d5JTIwcmVzZWFyY2h8ZW58MXx8fHwxNzY2MzM5NDI2fDA&ixlib=rb-4.1.0&q=80&w=1080"
+          src="/styles/images/img/about.jpeg"
           alt="Egyptian Archaeology Research"
           className="w-full h-full object-cover"
         />

@@ -41,15 +41,15 @@ export interface Era {
 export const eras: Era[] = [
   {
     id: 'pharaonic',
-    name: { en: 'Ancient Egyptian', ar: 'المصريون القدماء' },
+    name: { en: 'Ancient Egyptian', ar: 'المصرية القديمة' },
     period: { en: '3100 BC - 332 BC', ar: '3100 ق.م - 332 ق.م' },
     shortDescription: {
-      en: 'The age of the pharaohs, pyramids, and hieroglyphs. Ancient Egypt\'s most iconic period spanning over 3000 years.',
-      ar: 'عصر الفراعنة، الأهرامات، واللغة الهيروغليفية. الفترة الأكثر شهرة في مصر القديمة والتي تمتد لأكثر من 3000 عام.'
+      en: 'The age of the Kings of the Old Kingdom, pyramids, and hieroglyphs. Ancient Egypt\'s most iconic period spanning over 3000 years.',
+      ar: 'عصر المصريين القدماء و  الأهرامات، واللغة الهيروغليفية. الفترة الأكثر شهرة في مصر القديمة والتي تمتد لأكثر من 3000 عام.'
     },
     fullDescription: {
-      en: 'The Ancient Egyptian era represents the zenith of ancient Egyptian civilization, characterized by powerful dynasties, monumental architecture, and sophisticated religious beliefs. This period witnessed the construction of the Great Pyramids, the establishment of complex bureaucratic systems, and the development of hieroglyphic writing. The pharaohs were considered divine rulers, mediating between gods and humans, and their legacy continues to fascinate the world today.',
-      ar: 'تمثل الحقبة المصرية القديمة ذروة الحضارة المصرية القديمة، وتتميز بسلالات حاكمة قوية وعمارة ضخمة ومعتقدات دينية متطورة. شهدت هذه الفترة بناء الأهرامات الكبرى، وتأسيس أنظمة بيروقراطية معقدة، وتطوير الكتابة الهيروغليفية. كان ملوك الدولة القديمة يعتبرون حكاماً إلهيين، يتوسطون بين الآلهة والبشر، ولا يزال إرثهم يبهر العالم اليوم.'
+      en: 'The Ancient Egyptian era represents the zenith of ancient Egyptian civilization, characterized by powerful dynasties, monumental architecture, and sophisticated religious beliefs. This period witnessed the construction of the Great Pyramids, the establishment of complex bureaucratic systems, and the development of hieroglyphic writing. The Kings of the Old Kingdom were considered divine rulers, mediating between gods and humans, and their legacy continues to fascinate the world today.',
+      ar: 'تمثل الحقبة المصرية القديمة ذروة الحضارة المصرية القديمة، وتتميز بسلالات حاكمة قوية وعمارة ضخمة ومعتقدات دينية متطورة. شهدت هذه الفترة بناء الأهرامات الكبرى، وتأسيس أنظمة بيروقراطية معقدة، وتطوير الكتابة الهيروغليفية. كان ملوك الدولة القديمة يعتبرون حكاماً إلهيون، يتوسطون بين الآلهة والبشر، ولا يزال إرثهم يبهر العالم اليوم.'
     },
     imageUrl: '/styles/images/ancient_Egypt/photo_1.jpeg',
     color: {
@@ -58,10 +58,10 @@ export const eras: Era[] = [
       badge: 'bg-yellow-500/20 text-white border-yellow-500/30'
     },
     keyCharacteristics: [
-      { en: 'Divine kingship and pharaonic rule', ar: 'الملكية الإلهية والحكم الفرعوني' },
+      { en: 'Divine kingship and Kings rule', ar: 'الملكية الإلهية وحكم الملوك' },
       { en: 'Monumental pyramid construction', ar: 'بناء الأهرامات الضخمة' },
       { en: 'Hieroglyphic writing system', ar: 'نظام الكتابة الهيروغليفية' },
-      { en: 'Polytheistic religion with complex mythology', ar: 'ديانة شركية ذات أساطير معقدة' },
+      { en: 'Religion with complex mythology', ar: 'دين ذو أساطير معقدة' },
       { en: 'Advanced mummification practices', ar: 'ممارسات التحنيط المتقدمة' },
       { en: 'Sophisticated agricultural economy along the Nile', ar: 'اقتصاد زراعي متطور على طول نهر النيل' }
     ],
@@ -82,12 +82,12 @@ export const eras: Era[] = [
       ar: 'وضعت مصر القديمة مفاهيم أساسية في العمارة والرياضيات والطب وعلم الفلك أثرت على الحضارات اللاحقة. أصبح مفهوم الحياة الآخرة، وعمارة المقابر الضخمة، والاتفاقيات الفنية التي تطورت خلال هذه الفترة رموزاً أيقونية لمصر القديمة.'
     },
     architecturalStyle: {
-      en: 'Characterized by massive stone structures including pyramids, temples with hypostyle halls, obelisks, and rock-cut tombs. Architecture emphasized symmetry, mathematical precision, and astronomical alignment. Extensive use of columns, hieroglyphic inscriptions, and relief carvings depicting gods and pharaohs.',
-      ar: 'تميزت بالهياكل الحجرية الضخمة بما في ذلك الأهرامات والمعابد ذات القاعات الكبرى، والمسلات، والمقابر المنحوتة في الصخر. ركزت العمارة على التناظر والدقة الرياضية والمحاذاة الفلكية. استخدام مكثف للأعمدة والنقوش الهيروغليفية والمنحوتات البارزة التي تصور الآلهة الملوك.'
+      en: 'Characterized by massive stone structures, including pyramids, temples with hypostyle halls, obelisks, and rock-cut tombs. Architecture emphasized symmetry, mathematical precision, and astronomical alignment. Extensive use of columns, hieroglyphic inscriptions, and relief carvings depicting gods and Kings of the Old Kingdom.',
+      ar: 'تميزت بالهياكل الحجرية الضخمة بما في ذلك الأهرامات والمعابد ذات القاعات الكبرى، والمسلات، والمقابر المنحوتة في الصخر. ركزت العمارة على التناظر والدقة الرياضية والمحاذاة الفلكية. استخدام مكثف للأعمدة والنقوش الهيروغليفية والمنحوتات البارزة التي تصور الآلهة و الملوك.'
     },
     religiousBeliefs: {
-      en: 'Complex polytheistic system with major deities including Ra (sun god), Osiris (god of the afterlife), Isis (goddess of magic), Horus (sky god), and Anubis (god of mummification). Strong belief in the afterlife led to elaborate burial practices and tomb construction. The pharaoh was considered a living god, the son of Ra.',
-      ar: 'نظام شركي معقد مع آلهة رئيسية تشمل رع (إله الشمس)، أوزيريس (إله العالم الآخر)، إيزيس (إلهة السحر)، حورس (إله السماء)، وأنوبيس (إله التحنيط). أدى الإيمان القوي بالحياة الآخرة إلى ممارسات دفن متقنة وبناء مقابر. كان الفرعون يعتبر إلهاً حياً، ابن رع.'
+      en: 'Complex polytheistic system with major deities including Ra (sun god), Osiris (god of the afterlife), Isis (goddess of magic), Horus (sky god), and Anubis (god of mummification). Strong belief in the afterlife led to elaborate burial practices and tomb construction.',
+      ar: 'نظام شركي معقد مع آلهة رئيسية تشمل رع (إله الشمس)، أوزيريس (إله العالم الآخر)، إيزيس (إلهة السحر)، حورس (إله السماء)، وأنوبيس (إله التحنيط). أدى الإيمان القوي بالحياة الآخرة إلى ممارسات دفن متقنة وبناء مقابر.'
     },
     timeline: {
       start: -3100,
@@ -141,8 +141,8 @@ export const eras: Era[] = [
         name: { en: 'New Kingdom (Dynasties 18-20)', ar: 'الدولة الحديثة (الأسرات 18-20)' },
         period: { en: '1550 BC - 1070 BC', ar: '1550 ق.م - 1070 ق.م' },
         description: {
-          en: 'The New Kingdom represents Egypt\'s imperial age and greatest territorial extent. This era produced famous pharaohs like Tutankhamun and Ramses II.',
-          ar: 'تمثل الدولة الحديثة العصر الإمبراطوري لمصر وأكبر توسع إقليمي لها. أنتج هذا العصر فراعنة مشهورين مثل توت عنخ آمون ورمسيس الثاني.'
+          en: 'The New Kingdom represents Egypt\'s imperial age and greatest territorial extent. This era produced famous kings like Tutankhamun and Ramses II.',
+          ar: 'تمثل الدولة الحديثة العصر الإمبراطوري لمصر وأكبر توسع إقليمي لها. أنتج هذا العصر ملوك مشهورين مثل توت عنخ آمون ورمسيس الثاني.'
         },
         imageUrl: '/styles/images/ancient_Egypt/photo_4.jpeg',
         notableRulers: [
@@ -163,7 +163,7 @@ export const eras: Era[] = [
   },
   {
     id: 'ptolemaic',
-    name: { en: 'Ptolemaic', ar: 'البطلمة' },
+    name: { en: 'Ptolemaic', ar: 'البطلمية' },
     period: { en: '332 BC - 30 BC', ar: '332 ق.م - 30 ق.م' },
     shortDescription: {
       en: 'The Hellenistic period when Greek rulers governed Egypt, blending Greek and Egyptian cultures.',
@@ -216,7 +216,7 @@ export const eras: Era[] = [
     id: 'roman',
     name: { en: 'Roman', ar: 'الرومانية' },
     period: { en: '30 BC - 395 AD', ar: '30 ق.م - 395 م' },
-    shortDescription: { en: 'Egypt as a vital province of the Roman Empire.', ar: 'مصر كولاية حيوية في الإمبراطورية الرومانية.' },
+    shortDescription: { en: 'Egypt as a vital province of the Roman Empire.', ar: 'مصر ولاية حيوية في الإمبراطورية الرومانية.' },
     fullDescription: { en: 'Following Cleopatra\'s defeat, Egypt became a key provider of grain to Rome.', ar: 'بعد هزيمة كليوباترا، أصبحت مصر مزوداً رئيسياً للحبوب لروما.' },
     imageUrl: '/styles/images/roman/photo_1.jpeg',
     color: {
@@ -316,7 +316,7 @@ export const eras: Era[] = [
   {
     id: 'islamic',
     name: { en: 'Islamic', ar: 'الإسلامية' },
-    period: { en: '641 AD - Present', ar: '641 م - الحالي' },
+    period: { en: '641 AD - Present', ar: '641 م - حتى اليوم' },
     shortDescription: { en: 'Egypt\'s transformation into a major Islamic center.', ar: 'تحول مصر إلى مركز إسلامي رئيسي.' },
     fullDescription: { en: 'The age of magnificent mosques and the foundation of Cairo.', ar: 'عصر المساجد الرائعة وتأسيس القاهرة.' },
     imageUrl: '/styles/images/islamic/photo_1.jpeg',

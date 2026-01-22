@@ -524,6 +524,11 @@ input[type="range"].slider::-moz-range-thumb:active {
     }
 }
 
+.description-era {
+    line-height: 1.55 !important;
+    margin-bottom: 0 !important;
+}
+
 [dir="rtl"] .mr-2 {
     margin-right: 0;
     margin-left: calc(var(--spacing) * 2);
@@ -548,4 +553,19 @@ input[type="range"].slider::-moz-range-thumb:active {
 
 [dir="rtl"] .Pagination svg {
     transform: rotate(180deg);
+}
+
+[dir="rtl"] .relative .left-0 {
+    right: 0;
+    left: auto;
+}
+
+[dir="rtl"] .relative .space-y-6 {
+    margin-right: calc(var(--spacing) * 6);
+    margin-left: 0;
+}
+
+[dir="rtl"] .relative .border-theme-bg {
+    right: calc(30px * -1);
+    left: auto;
 }

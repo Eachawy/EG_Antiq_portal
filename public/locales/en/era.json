@@ -38,8 +38,8 @@
             "viewAllButton": "View All {eraName} Sites"
         },
         "dynasties": {
-            "title": "Dynasties & Periods",
-            "description": "Explore the major dynasties and periods that defined the {eraName} era"
+            "title": "Periods",
+            "description": "Explore the major periods that defined the {eraName} era"
         },
         "notableRulers": {
             "title": "Notable Rulers"

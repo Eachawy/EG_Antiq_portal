@@ -20,7 +20,21 @@
         "timeline": "Timeline",
         "locationMap": "Location Map",
         "nearbySites": "Nearby Sites",
-        "favorite": "Favorite"
+        "favorite": "Favorite",
+        "imageGallery": "Image Gallery",
+        "viewFullSize": "View Full Size",
+        "morePhotos": "More Photos",
+        "photos": "photos",
+        "featured": "Featured",
+        "shareThisSite": "Share This Site",
+        "shareOnSocialMedia": "Share on Social Media",
+        "facebook": "Facebook",
+        "twitter": "Twitter",
+        "whatsapp": "WhatsApp",
+        "email": "Email",
+        "linkedin": "LinkedIn",
+        "telegram": "Telegram",
+        "copyLink": "Copy Link"
     },
     "labels": {
         "reliableSources": "Reliable and verifiable references",

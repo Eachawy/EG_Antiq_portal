@@ -326,12 +326,12 @@ export const historicalPeriods = [
     description: { en: 'Predynastic period before the unification of Egypt', ar: 'فترة ما قبل الأسرات قبل توحيد مصر' },
   },
   {
-    name: { en: 'Ancient Egyptian', ar: 'المصري القديم' },
+    name: { en: 'Dynastic Period', ar: 'عصر الأسرات' },
     dateRange: { en: '3100 BC – 332 BC', ar: '3100 ق.م – 332 ق.م' },
     description: { en: 'Ancient Egyptian dynasties from the Old Kingdom through the Late Period', ar: 'الأسرات المصرية القديمة من الدولة القديمة حتى العصر المتأخر' },
   },
   {
-    name: { en: 'Ptolemaic', ar: 'البطلمي' },
+    name: { en: 'Ptolemaic', ar: 'البطالمة' },
     dateRange: { en: '332 BC – 30 BC', ar: '332 ق.م – 30 ق.م' },
     description: { en: 'Ptolemaic rule of Egypt', ar: 'الحكم البطلمي لمصر' },
   },

@@ -142,7 +142,7 @@ export default function EraDetailsPage() {
                             </div>
 
                             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-                                {t('hero.title', { eraName: currentLocale === 'ar' ? era.nameAr : era.nameEn })}
+                                {t('hero.title', { eraName: mockEra.name[currentLocale] })}
                             </h1>
 
                             <div className="flex items-center gap-3 mb-6">
@@ -162,7 +162,7 @@ export default function EraDetailsPage() {
                                 </div>
                             </div>
 
-                            <p className="text-base md:text-lg text-white/95 leading-relaxed max-w-3xl">
+                            <p className="text-base md:text-lg text-white/95 leading-relaxed max-w-3xl description-era">
                                 {mockEra.fullDescription[currentLocale]}
                             </p>
                         </div>
@@ -278,8 +278,8 @@ export default function EraDetailsPage() {
                                 const imageUrl = monument.galleries && monument.galleries.length > 0
                                     ? getImageUrl(monument.galleries[0].galleryPath)
                                     : monument.image
-                                    ? getImageUrl(monument.image)
-                                    : '/placeholder-monument.jpg';
+                                        ? getImageUrl(monument.image)
+                                        : '/placeholder-monument.jpg';
 
                                 const monumentName = currentLocale === 'ar' ? monument.monumentNameAr : monument.monumentNameEn;
                                 const monumentDescription = currentLocale === 'ar' ? monument.monumentBiographyAr : monument.monumentBiographyEn;

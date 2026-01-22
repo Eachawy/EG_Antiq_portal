@@ -165,7 +165,7 @@ export default function ContactPage() {
             {/* Full-Width Hero Section */}
             <section className="relative h-[40vh] md:h-[50vh] w-full overflow-hidden">
                 <img
-                    src="https://images.unsplash.com/photo-1542601098-3adb3b5be01e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlZ3lwdGlhbiUyMG11c2V1bSUyMGNvbnRhY3R8ZW58MXx8fHwxNzY2MzM5NDI2fDA&ixlib=rb-4.1.0&q=80&w=1080"
+                    src="/styles/images/img/contact.jpeg"
                     alt="Contact Us"
                     className="w-full h-full object-cover"
                 />
@@ -239,11 +239,10 @@ export default function ContactPage() {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className={`w-full bg-theme-card border rounded-lg px-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none transition-colors ${
-                                        fieldErrors.name
-                                            ? 'border-red-500 focus:border-red-500'
-                                            : 'border-theme-border focus:border-theme-primary'
-                                    }`}
+                                    className={`w-full bg-theme-card border rounded-lg px-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none transition-colors ${fieldErrors.name
+                                        ? 'border-red-500 focus:border-red-500'
+                                        : 'border-theme-border focus:border-theme-primary'
+                                        }`}
                                 />
                                 {fieldErrors.name && (
                                     <p className="text-red-500 text-sm mt-1.5 flex items-center gap-1">
@@ -258,11 +257,10 @@ export default function ContactPage() {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className={`w-full bg-theme-card border rounded-lg px-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none transition-colors ${
-                                        fieldErrors.email
-                                            ? 'border-red-500 focus:border-red-500'
-                                            : 'border-theme-border focus:border-theme-primary'
-                                    }`}
+                                    className={`w-full bg-theme-card border rounded-lg px-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none transition-colors ${fieldErrors.email
+                                        ? 'border-red-500 focus:border-red-500'
+                                        : 'border-theme-border focus:border-theme-primary'
+                                        }`}
                                 />
                                 {fieldErrors.email && (
                                     <p className="text-red-500 text-sm mt-1.5 flex items-center gap-1">
@@ -277,11 +275,10 @@ export default function ContactPage() {
                                     name="message"
                                     value={formData.message}
                                     onChange={handleChange}
-                                    className={`w-full bg-theme-card border rounded-lg px-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none transition-colors resize-none ${
-                                        fieldErrors.message
-                                            ? 'border-red-500 focus:border-red-500'
-                                            : 'border-theme-border focus:border-theme-primary'
-                                    }`}
+                                    className={`w-full bg-theme-card border rounded-lg px-4 py-3 text-theme-text placeholder-theme-muted/50 focus:outline-none transition-colors resize-none ${fieldErrors.message
+                                        ? 'border-red-500 focus:border-red-500'
+                                        : 'border-theme-border focus:border-theme-primary'
+                                        }`}
                                 ></textarea>
                                 {fieldErrors.message && (
                                     <p className="text-red-500 text-sm mt-1.5 flex items-center gap-1">
