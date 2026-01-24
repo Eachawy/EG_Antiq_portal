@@ -146,7 +146,7 @@ export function getMonumentImageUrl(monument: Monument): string {
   }
 
   // Return placeholder if no images
-  return '/images/placeholder.jpg';
+  return '/images/placeholder.svg';
 }
 
 /**

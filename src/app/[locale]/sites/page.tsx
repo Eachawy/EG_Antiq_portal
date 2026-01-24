@@ -268,7 +268,7 @@ export default function SitesPage() {
     return (
         <div className="min-h-screen bg-theme-bg">
             {/* Hero Section */}
-            <section className="hidden md:block relative h-[40vh] md:h-[50vh] w-full overflow-hidden">
+            {/* <section className="hidden md:block relative h-[40vh] md:h-[50vh] w-full overflow-hidden">
                 <img
                     src="https://images.unsplash.com/photo-1539768942893-daf53e448371?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlZ3lwdGlhbiUyMHRlbXBsZXMlMjBhZXJpYWx8ZW58MXx8fHwxNzY2MzM5NDI2fDA&ixlib=rb-4.1.0&q=80&w=1080"
                     alt="Egyptian Archaeological Sites"
@@ -285,10 +285,10 @@ export default function SitesPage() {
                         </p>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Main Content */}
-            <div className="pt-24 pb-12 md:pt-12 md:pb-16">{/* Added pt-24 (96px) for mobile spacing, removed from here and keeping standard desktop spacing */}
+            <div className="pt-24 pb-12 md:pt-40 md:pb-16">{/* Added pt-24 (96px) for mobile spacing, removed from here and keeping standard desktop spacing */}
                 <div className="container mx-auto px-6 md:px-12 max-w-7xl">
                     {/* Advanced Search */}
                     <div className="mb-12">

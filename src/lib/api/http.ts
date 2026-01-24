@@ -19,13 +19,8 @@ httpClient.interceptors.request.use(
     // Get token from cookie
     const token = Cookies.get('auth_token');
 
-    console.log('HTTP Request:', {
-      url: config.url,
-      hasToken: !!token,
-      tokenPreview: token ? token.substring(0, 20) + '...' : null
-    });
-
-    if (token && config.headers) {
+    // Only attach token if it exists and looks valid (basic check)
+    if (token && token.length > 20 && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
@@ -46,28 +41,33 @@ httpClient.interceptors.response.use(
       _retry?: boolean;
     };
 
-    console.log('HTTP Response Error:', {
-      status: error.response?.status,
-      url: originalRequest?.url,
-      retry: originalRequest?._retry
-    });
-
     // Handle 401 - Unauthorized
     if (error.response?.status === 401 && !originalRequest._retry) {
-      console.log('401 Error detected');
       originalRequest._retry = true;
 
-      // Clear token
+      // Clear invalid token
       Cookies.remove('auth_token');
 
-      // Only redirect if on a protected route (not for API errors during normal browsing)
-      // Let the component handle the error instead of forcing a redirect
       if (typeof window !== 'undefined') {
         const currentPath = window.location.pathname;
 
-        // Only redirect if we're on a protected route (dashboard, profile, etc.)
-        const isProtectedRoute = currentPath.includes('/dashboard') ||
-                                 currentPath.includes('/profile') ||
+        // Check if this is a public endpoint (portal/monuments, etc.)
+        const isPublicEndpoint = originalRequest?.url?.includes('/portal/monuments') ||
+                                 originalRequest?.url?.includes('/portal/eras') ||
+                                 originalRequest?.url?.includes('/portal/books');
+
+        // If it's a public endpoint, retry without the token
+        if (isPublicEndpoint && originalRequest.headers) {
+          delete originalRequest.headers.Authorization;
+          try {
+            return await httpClient.request(originalRequest);
+          } catch (retryError) {
+            return Promise.reject(normalizeError(retryError as AxiosError));
+          }
+        }
+
+        // Only redirect if we're on a protected route
+        const isProtectedRoute = currentPath.includes('/profile') ||
                                  currentPath.includes('/favorites') ||
                                  currentPath.includes('/saved-searches') ||
                                  currentPath.includes('/history') ||
@@ -75,10 +75,7 @@ httpClient.interceptors.response.use(
 
         if (isProtectedRoute) {
           const locale = currentPath.split('/')[1] || 'en';
-          console.log('Redirecting to login from protected route:', currentPath);
           window.location.href = `/${locale}/login?returnUrl=${encodeURIComponent(currentPath)}`;
-        } else {
-          console.log('401 error on non-protected route, not redirecting');
         }
       }
 

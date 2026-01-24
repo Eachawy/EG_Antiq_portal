@@ -362,53 +362,38 @@ export default function InteractiveMapPage() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-theme-accent">
-            {/* Header Section - Hidden on Mobile */}
-            <div className="hidden md:block pt-24 md:pt-32 pb-8 md:pb-12 px-4 md:px-6 bg-gradient-to-br from-theme-primary/20 via-theme-secondary/10 to-theme-primary/20 border-b border-theme-border">
-                <div className="container mx-auto">
-                    <div className="text-center mb-6 md:mb-8">
-                        <p className="text-theme-primary tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-sm mb-3 md:mb-4 pt-4 md:pt-6">{tMap('hero.subtitle')}</p>
-                        <h1 className="text-theme-text mb-4 md:mb-6 text-2xl md:text-3xl lg:text-4xl">{tMap('hero.title')}</h1>
-                        <p className="text-theme-text/70 max-w-3xl mx-auto text-sm md:text-base px-4">
-                            {tMap('hero.description')}
-                        </p>
-                    </div>
-
-                    {/* Find My Location Button - Desktop Only */}
-                    <div className="flex justify-center mt-6 md:mt-8">
-                        <Button
-                            onClick={handleFindMyLocation}
-                            className="bg-theme-primary text-white border-2 border-theme-primary hover:bg-theme-primary/90 hover:border-theme-primary/90 shadow-xl hover:shadow-2xl transition-all px-4 md:px-6 py-2.5 md:py-3 rounded-full text-sm md:text-base"
-                            severity="info"
-                            raised
-                        >
-                            <Navigation className="h-4 w-4 md:h-5 md:w-5 mr-2" />
-                            <span>{tMap('buttons.findLocation')}</span>
-                        </Button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Full Width Map Container */}
-            <div className="relative w-full h-screen md:h-[calc(100vh-16rem)] pt-20 md:pt-0">
-                <div className="flex h-full">
-                    {/* Map Section - Full Width */}
-                    <div className="flex-1 bg-theme-card relative">
+        <div className="min-h-screen bg-theme-accent pt-20 lg:pt-24">
+            {/* Desktop: Flex Layout (Map Sticky + List Scrollable) | Mobile: Stack */}
+            <div className="lg:flex">
+                {/* Map Section - Full Viewport Height Minus Header Sticky on Desktop, Full Screen on Mobile */}
+                <div className="lg:sticky lg:top-20 xl:top-24 lg:self-start h-[calc(100vh-5rem)] lg:h-[calc(100vh-6rem)] lg:w-[65%] xl:w-[70%] bg-theme-card relative">
                         {/* Control Buttons - Top Right */}
                         <div className="absolute top-4 right-4 md:right-6 z-20 flex flex-col gap-2">
-                            {/* Filter Toggle Button */}
-                            <button
-                                onClick={() => setShowFilters(!showFilters)}
-                                className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-3 bg-theme-card border border-theme-border rounded-lg shadow-lg hover:shadow-xl transition-all hover:bg-theme-accent"
-                            >
-                                <Filter size={18} className="text-theme-primary" />
-                                <span className="text-theme-text font-medium text-sm md:text-base">{tMap('buttons.filters')}</span>
-                                {!showFilters && (appliedPeriod !== 'all' || appliedDynasty !== 'all' || appliedSiteType !== 'all' || appliedStartDate !== -3100 || appliedEndDate !== 2025) && (
-                                    <span className="ml-1 px-2 py-0.5 bg-theme-primary text-white rounded-full text-xs">
-                                        {tMap('buttons.active')}
-                                    </span>
-                                )}
-                            </button>
+                            {/* Desktop Row: Filter + Location */}
+                            <div className="flex flex-row gap-2">
+                                {/* Filter Toggle Button */}
+                                <button
+                                    onClick={() => setShowFilters(!showFilters)}
+                                    className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-3 bg-theme-card border border-theme-border rounded-lg shadow-lg hover:shadow-xl transition-all hover:bg-theme-accent"
+                                >
+                                    <Filter size={18} className="text-theme-primary" />
+                                    <span className="text-theme-text font-medium text-sm md:text-base">{tMap('buttons.filters')}</span>
+                                    {!showFilters && (appliedPeriod !== 'all' || appliedDynasty !== 'all' || appliedSiteType !== 'all' || appliedStartDate !== -3100 || appliedEndDate !== 2025) && (
+                                        <span className="ml-1 px-2 py-0.5 bg-theme-primary text-white rounded-full text-xs">
+                                            {tMap('buttons.active')}
+                                        </span>
+                                    )}
+                                </button>
+
+                                {/* Get Current Location Button (Desktop Only) */}
+                                <button
+                                    onClick={handleFindMyLocation}
+                                    className="hidden md:flex items-center gap-2 px-3 md:px-4 py-2 md:py-3 bg-theme-card border border-theme-border rounded-lg shadow-lg hover:shadow-xl transition-all hover:bg-theme-accent"
+                                >
+                                    <Navigation size={18} className="text-theme-primary" />
+                                    <span className="text-theme-text font-medium text-sm md:text-base">{tMap('buttons.findLocation')}</span>
+                                </button>
+                            </div>
 
                             {/* Sites List Toggle Button (Mobile) */}
                             <button
@@ -641,93 +626,96 @@ export default function InteractiveMapPage() {
                         </div>
                     </div>
 
-                    {/* Sites in View Sidebar - Desktop or Mobile Overlay */}
-                    {showSidebar && (
-                        <div
-                            className="lg:hidden fixed inset-0 bg-black/50 z-40"
+                {/* Sites List Section - Always Visible on Desktop, Overlay on Mobile */}
+                {/* Mobile Backdrop */}
+                {showSidebar && (
+                    <div
+                        className="lg:hidden fixed inset-0 bg-black/50 z-40"
+                        onClick={() => setShowSidebar(false)}
+                    />
+                )}
+
+                {/* Sites List Container */}
+                <div className={`${showSidebar ? 'fixed' : 'hidden'
+                    } lg:relative lg:block inset-0 lg:inset-auto z-50 lg:z-0 w-full lg:w-[35%] xl:w-[30%] bg-theme-card lg:border-l border-theme-border shadow-2xl lg:shadow-none overflow-y-auto lg:overflow-visible`}>
+                    {/* Mobile Header with Close Button */}
+                    <div className="lg:hidden sticky top-0 z-10 bg-theme-card border-b border-theme-border p-4 flex items-center justify-between shadow-sm">
+                        <h3 className="text-theme-text font-medium">{tMap('sidebar.title', { count: filteredSites.length })}</h3>
+                        <button
                             onClick={() => setShowSidebar(false)}
-                        />
-                    )}
+                            className="p-2.5 rounded-lg bg-theme-primary text-white hover:bg-theme-primary/90 transition-colors shadow-md"
+                            aria-label="Close sites list"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
 
-                    <div className={`${showSidebar ? 'fixed' : 'hidden'
-                        } lg:relative lg:block inset-0 lg:inset-auto z-50 lg:z-0 w-full lg:w-80 xl:w-96 bg-theme-card lg:border-l border-theme-border flex flex-col overflow-hidden shadow-2xl lg:shadow-none`}>
-                        {/* Mobile Header with Close Button */}
-                        <div className="lg:hidden sticky top-0 z-10 bg-theme-card border-b border-theme-border p-4 flex items-center justify-between shadow-sm">
-                            <h3 className="text-theme-text font-medium">{tMap('sidebar.title', { count: filteredSites.length })}</h3>
-                            <button
-                                onClick={() => setShowSidebar(false)}
-                                className="p-2.5 rounded-lg bg-theme-primary text-white hover:bg-theme-primary/90 transition-colors shadow-md"
-                                aria-label="Close sites list"
+                    {/* Desktop Header - Static */}
+                    <div className="hidden lg:block bg-theme-card border-b border-theme-border p-4 md:p-6">
+                        <h3 className="text-theme-text font-medium">{tMap('sidebar.title', { count: filteredSites.length })}</h3>
+                    </div>
+
+                    {/* Sites List - Flows Naturally */}
+                    <div className="space-y-3 p-4 md:p-6 pb-6 lg:pb-12">
+                        {filteredSites.map((site) => (
+                            <div
+                                key={site.id}
+                                className={`group relative w-full transition-all duration-300 ${hoveredSite === site.id ? 'z-10' : ''
+                                    }`}
                             >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-
-                        {/* Desktop Header */}
-                        <h3 className="hidden lg:block text-theme-text mb-0 p-4 md:p-6 pb-0">{tMap('sidebar.title', { count: filteredSites.length })}</h3>
-
-                        {/* Sites List */}
-                        <div className="space-y-3 flex-1 overflow-y-auto p-4 md:p-6 pt-4">
-                            {filteredSites.map((site) => (
-                                <div
-                                    key={site.id}
-                                    className={`group relative w-full transition-all duration-300 ${hoveredSite === site.id ? 'z-10' : ''
+                                <button
+                                    onClick={() => handleSiteClick(site.id)}
+                                    onMouseEnter={() => setHoveredSite(site.id)}
+                                    onMouseLeave={() => setHoveredSite(null)}
+                                    className={`w-full flex gap-3 p-3 bg-theme-accent border rounded-lg transition-all duration-300 text-left ${hoveredSite === site.id
+                                        ? 'border-theme-primary shadow-lg'
+                                        : 'border-theme-border hover:border-theme-primary'
                                         }`}
                                 >
-                                    <button
-                                        onClick={() => handleSiteClick(site.id)}
-                                        onMouseEnter={() => setHoveredSite(site.id)}
-                                        onMouseLeave={() => setHoveredSite(null)}
-                                        className={`w-full flex gap-3 p-3 bg-theme-accent border rounded-lg transition-all duration-300 text-left ${hoveredSite === site.id
-                                            ? 'border-theme-primary shadow-lg'
-                                            : 'border-theme-border hover:border-theme-primary'
-                                            }`}
-                                    >
-                                        <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                                            <img
-                                                src={site.imageUrl}
-                                                alt={site.name.english}
-                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                            />
-                                        </div>
-
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-start gap-2 mb-1">
-                                                <div
-                                                    className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${getPeriodColor(site.historicalPeriod)}`}
-                                                ></div>
-                                                <h4 className="text-theme-text group-hover:text-theme-primary transition-colors text-sm line-clamp-2">
-                                                    {site.name[currentLocale === 'en' ? 'english' : 'arabic']}
-                                                </h4>
-                                            </div>
-                                            <p className="text-theme-muted text-xs flex items-center gap-1 mb-1">
-                                                <MapPin size={10} />
-                                                {site.location.city}
-                                            </p>
-                                            <p className="text-theme-muted/70 text-xs">
-                                                {formatDate(site.dateRange.start, tCommon)} – {formatDate(site.dateRange.end, tCommon)}
-                                            </p>
-                                        </div>
-                                    </button>
-
-                                    <button
-                                        onClick={(e) => toggleFavorite(site.id, e)}
-                                        className={`absolute top-3 right-3 p-1.5 rounded-full transition-all hover:scale-110 ${favoriteSites.includes(site.id)
-                                            ? 'bg-theme-primary text-white hover:bg-theme-primary/90'
-                                            : 'bg-theme-bg text-theme-muted hover:bg-theme-accent hover:text-theme-primary'
-                                            }`}
-                                        title={favoriteSites.includes(site.id) ? 'Remove from favorites' : 'Add to favorites'}
-                                    >
-                                        <Heart
-                                            size={14}
-                                            fill={favoriteSites.includes(site.id) ? 'currentColor' : 'none'}
+                                    <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                                        <img
+                                            src={site.imageUrl}
+                                            alt={site.name.english}
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                         />
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
+                                    </div>
+
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-start gap-2 mb-1">
+                                            <div
+                                                className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${getPeriodColor(site.historicalPeriod)}`}
+                                            ></div>
+                                            <h4 className="text-theme-text group-hover:text-theme-primary transition-colors text-sm line-clamp-2">
+                                                {site.name[currentLocale === 'en' ? 'english' : 'arabic']}
+                                            </h4>
+                                        </div>
+                                        <p className="text-theme-muted text-xs flex items-center gap-1 mb-1">
+                                            <MapPin size={10} />
+                                            {site.location.city}
+                                        </p>
+                                        <p className="text-theme-muted/70 text-xs">
+                                            {formatDate(site.dateRange.start, tCommon)} – {formatDate(site.dateRange.end, tCommon)}
+                                        </p>
+                                    </div>
+                                </button>
+
+                                <button
+                                    onClick={(e) => toggleFavorite(site.id, e)}
+                                    className={`absolute top-3 right-3 p-1.5 rounded-full transition-all hover:scale-110 ${favoriteSites.includes(site.id)
+                                        ? 'bg-theme-primary text-white hover:bg-theme-primary/90'
+                                        : 'bg-theme-bg text-theme-muted hover:bg-theme-accent hover:text-theme-primary'
+                                        }`}
+                                    title={favoriteSites.includes(site.id) ? 'Remove from favorites' : 'Add to favorites'}
+                                >
+                                    <Heart
+                                        size={14}
+                                        fill={favoriteSites.includes(site.id) ? 'currentColor' : 'none'}
+                                    />
+                                </button>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

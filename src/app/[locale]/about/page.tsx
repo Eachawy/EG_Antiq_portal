@@ -19,7 +19,7 @@ export default function AboutPage() {
   return (
     <div className="bg-theme-bg">
       {/* Hero Section */}
-      <section className="relative h-[50vh] md:h-[60vh] w-full overflow-hidden">
+      {/* <section className="relative h-[50vh] md:h-[60vh] w-full overflow-hidden">
         <img
           src="/styles/images/img/about.jpeg"
           alt="Egyptian Archaeology Research"
@@ -40,10 +40,10 @@ export default function AboutPage() {
             </p>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Classification Section */}
-      <section className="py-6 md:py-8 bg-theme-bg">
+      <section className="py-6 md:py-8 bg-theme-bg md:pt-40">
         <div className="container mx-auto px-6 md:px-12 max-w-6xl">
           <div className="bg-theme-card border border-theme-border rounded-xl p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
@@ -103,7 +103,7 @@ export default function AboutPage() {
               {historicalPeriods.map((period, index) => (
                 <div
                   key={index}
-                  className="relative pl-8 pb-6 border-l-2 border-theme-border last:border-l-0 last:pb-0"
+                  className="relative pl-8 pb-6 border-l-2 border-theme-border last:pb-0"
                 >
                   <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-theme-primary border-4 border-theme-bg"></div>
 

@@ -93,8 +93,16 @@ export interface MonumentBook {
     authorAr?: string;
     descriptionEn?: string;
     descriptionAr?: string;
-    imageUrl?: string;
-    publishYear?: number;
+    coverImage?: string;  // Backend sends coverImage, not imageUrl
+    publicationYear?: number;  // Backend sends publicationYear, not publishYear
+    publisher?: string;
+    isbn?: string;
+    pages?: number;
+    description?: string;
+    readUrl?: string;
+    purchaseUrl?: string;
+    language?: string;
+    edition?: string;
   };
   createdAt: string;
   updatedAt: string;

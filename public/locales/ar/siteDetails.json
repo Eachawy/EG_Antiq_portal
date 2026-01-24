@@ -34,7 +34,8 @@
         "email": "Email",
         "linkedin": "LinkedIn",
         "telegram": "Telegram",
-        "copyLink": "Copy Link"
+        "copyLink": "Copy Link",
+        "openInGoogleMaps": "افتح في خرائط جوجل"
     },
     "labels": {
         "reliableSources": "مراجع موثوقة ويمكن التحقق منها",

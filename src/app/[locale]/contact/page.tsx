@@ -163,7 +163,7 @@ export default function ContactPage() {
     return (
         <div className="bg-theme-bg">
             {/* Full-Width Hero Section */}
-            <section className="relative h-[40vh] md:h-[50vh] w-full overflow-hidden">
+            {/* <section className="relative h-[40vh] md:h-[50vh] w-full overflow-hidden">
                 <img
                     src="/styles/images/img/contact.jpeg"
                     alt="Contact Us"
@@ -184,10 +184,10 @@ export default function ContactPage() {
                         </p>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Main Content Section */}
-            <section className="py-16 md:py-20 bg-theme-bg">
+            <section className="py-16 md:py-20 bg-theme-bg md:pt-40">
                 <div className="container mx-auto px-6 md:px-12 max-w-6xl">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
                         {/* Contact Info */}
@@ -225,7 +225,7 @@ export default function ContactPage() {
                                 </div>
                                 <div>
                                     <h3 className="text-theme-text mb-2">{tInfo('emailTitle')}</h3>
-                                    <p className="text-theme-text/70">info@ancientegypt.com</p>
+                                    <p className="text-theme-text/70">info@kemetra.org</p>
                                 </div>
                             </div>
                         </div>

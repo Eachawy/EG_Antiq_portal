@@ -34,7 +34,8 @@
         "email": "Email",
         "linkedin": "LinkedIn",
         "telegram": "Telegram",
-        "copyLink": "Copy Link"
+        "copyLink": "Copy Link",
+        "openInGoogleMaps": "Open in Google Maps"
     },
     "labels": {
         "reliableSources": "Reliable and verifiable references",

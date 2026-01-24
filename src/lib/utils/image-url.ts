@@ -2,11 +2,16 @@
 
 /**
  * Construct full image URL from path
- * @param path - Relative path from uploads directory
+ * @param path - Relative path from uploads directory or absolute URL
  * @returns Full URL or empty string if path is invalid
  */
 export function getImageUrl(path?: string): string {
   if (!path) return '';
+
+  // If path is already an absolute URL (http:// or https://), return as-is
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path;
+  }
 
   const baseUrl =
     process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api/v1';
