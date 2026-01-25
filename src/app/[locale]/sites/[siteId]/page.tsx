@@ -618,6 +618,18 @@ export default function SiteDetailsPage() {
                                                 </p>
                                             </div>
                                         )}
+
+                                        {/* Registration Number - Display FIRST */}
+                                        {monument.artifactRegistrationNumber && (
+                                            <div>
+                                                <label className="text-theme-muted text-xs uppercase tracking-wider">
+                                                    {t('labels.registrationNumber')}
+                                                </label>
+                                                <p className="text-theme-text mt-1 font-mono">
+                                                    {monument.artifactRegistrationNumber}
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 

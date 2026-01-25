@@ -121,6 +121,7 @@ export interface Monument {
   endDate?: string;
   startDateHijri?: string;
   endDateHijri?: string;
+  artifactRegistrationNumber?: string;
 
   // Location fields - API uses both naming conventions
   lat?: string;

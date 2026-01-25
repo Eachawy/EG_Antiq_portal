@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Facebook, Instagram, Twitter, Youtube, Linkedin } from 'lucide-react';
 // import { usePathname } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
+import { newsletterEndpoints } from '@/lib/api/endpoints';
 
 export default function Footer() {
     const t = useTranslations('layout.footer');
@@ -12,8 +13,12 @@ export default function Footer() {
     const [email, setEmail] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubscribe = () => {
+    const handleSubscribe = async () => {
+        // Prevent multiple submissions
+        if (isSubmitting) return;
+
         // Reset messages
         setShowSuccess(false);
         setErrorMessage('');
@@ -31,14 +36,27 @@ export default function Footer() {
             return;
         }
 
-        // Show success message
-        setShowSuccess(true);
-        setEmail('');
+        try {
+            setIsSubmitting(true);
 
-        // Hide success message after 5 seconds
-        setTimeout(() => {
-            setShowSuccess(false);
-        }, 5000);
+            // Call the API to subscribe
+            await newsletterEndpoints.subscribe({ email });
+
+            // Show success message
+            setShowSuccess(true);
+            setEmail('');
+
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                setShowSuccess(false);
+            }, 5000);
+        } catch (error: any) {
+            // Handle error
+            const errorMsg = error?.response?.data?.error?.message || error?.message || 'Failed to subscribe';
+            setErrorMessage(errorMsg);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -117,13 +135,18 @@ export default function Footer() {
                             <input
                                 type="email"
                                 placeholder={t('newsletter.placeholder')}
-                                className="flex-1 px-4 py-3 bg-theme-bg border border-theme-border rounded-lg text-theme-text text-sm focus:outline-none focus:border-theme-primary transition-colors"
+                                className="flex-1 px-4 py-3 bg-theme-bg border border-theme-border rounded-lg text-theme-text text-sm focus:outline-none focus:border-theme-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 onKeyPress={handleKeyPress}
+                                disabled={isSubmitting}
                             />
-                            <button className="bg-theme-primary hover:bg-theme-secondary text-white px-6 py-3 rounded-lg transition-colors duration-300 text-sm whitespace-nowrap" onClick={handleSubscribe}>
-                                {t('newsletter.button')}
+                            <button
+                                className="bg-theme-primary hover:bg-theme-secondary text-white px-6 py-3 rounded-lg transition-colors duration-300 text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                                onClick={handleSubscribe}
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? t('newsletter.subscribing') || 'Subscribing...' : t('newsletter.button')}
                             </button>
                         </div>
                         {errorMessage && <p className="text-red-500 text-sm mt-2">{errorMessage}</p>}
