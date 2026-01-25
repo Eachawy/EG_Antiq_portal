@@ -78,7 +78,7 @@ export default function Footer() {
                         </p>
                         <div className="flex gap-3">
                             <a
-                                href="https://facebook.com"
+                                href="https://www.facebook.com/people/Kemetra/61586724888007/"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="bg-theme-accent hover:bg-theme-primary p-2.5 rounded-full transition-all duration-300 group"
@@ -87,7 +87,7 @@ export default function Footer() {
                                 <Facebook className="text-theme-text group-hover:text-white" size={18} />
                             </a>
                             <a
-                                href="https://twitter.com"
+                                href="https://x.com/Kemetra_Egypt"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="bg-theme-accent hover:bg-theme-primary p-2.5 rounded-full transition-all duration-300 group"
@@ -96,7 +96,7 @@ export default function Footer() {
                                 <Twitter className="text-theme-text group-hover:text-white" size={18} />
                             </a>
                             <a
-                                href="https://instagram.com"
+                                href="https://www.instagram.com/kemetra_egypt/"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="bg-theme-accent hover:bg-theme-primary p-2.5 rounded-full transition-all duration-300 group"
@@ -104,7 +104,7 @@ export default function Footer() {
                             >
                                 <Instagram className="text-theme-text group-hover:text-white" size={18} />
                             </a>
-                            <a
+                            {/* <a
                                 href="https://youtube.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -121,7 +121,7 @@ export default function Footer() {
                                 aria-label="LinkedIn"
                             >
                                 <Linkedin className="text-theme-text group-hover:text-white" size={18} />
-                            </a>
+                            </a> */}
                         </div>
                     </div>
 
