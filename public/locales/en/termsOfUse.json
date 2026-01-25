@@ -1,0 +1,152 @@
+{
+    "title": "Terms of Use",
+    "lastUpdated": "Last Updated: January 25, 2026",
+    "intro": "Welcome to KEMETRA. These Terms of Use (\"Terms\") govern your access to and use of the KEMETRA website and services. By accessing or using our website, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use our services.",
+    "sections": {
+        "acceptance": {
+            "title": "Acceptance of Terms",
+            "p1": "By creating an account, browsing our website, or using any of our services, you acknowledge that you have read, understood, and agree to be bound by these Terms and our Privacy Policy. These Terms apply to all visitors, users, and others who access or use the service.",
+            "p2": "We reserve the right to modify these Terms at any time. Your continued use of KEMETRA following any changes constitutes acceptance of those changes."
+        },
+        "usage": {
+            "title": "Use of Services",
+            "permitted": {
+                "title": "Permitted Use",
+                "p1": "KEMETRA provides educational and informational content about Egyptian archaeological sites. You may use our services for:",
+                "items": [
+                    "Educational research and learning purposes",
+                    "Planning visits to archaeological sites",
+                    "Accessing historical and cultural information",
+                    "Connecting with tour guides and educational resources",
+                    "Purchasing educational materials and books"
+                ]
+            },
+            "account": {
+                "title": "Account Registration",
+                "p1": "To access certain features, you may need to create an account. You agree to:",
+                "items": [
+                    "Provide accurate and complete information",
+                    "Maintain the security of your account credentials",
+                    "Notify us immediately of any unauthorized access",
+                    "Accept responsibility for all activities under your account",
+                    "Be at least 13 years old, or have parental consent if younger"
+                ]
+            }
+        },
+        "prohibited": {
+            "title": "Prohibited Activities",
+            "p1": "You agree NOT to:",
+            "items": [
+                "Use the service for any illegal or unauthorized purpose",
+                "Violate any applicable laws or regulations",
+                "Infringe upon intellectual property rights of KEMETRA or others",
+                "Upload malicious code, viruses, or harmful content",
+                "Attempt to gain unauthorized access to our systems",
+                "Scrape, copy, or download content using automated means without permission",
+                "Impersonate others or provide false information",
+                "Harass, abuse, or harm other users",
+                "Interfere with or disrupt the service or servers",
+                "Use the service for commercial purposes without authorization",
+                "Remove or modify any copyright, trademark, or proprietary notices"
+            ]
+        },
+        "ip": {
+            "title": "Intellectual Property Rights",
+            "content": {
+                "title": "Our Content",
+                "p1": "All content on KEMETRA, including text, graphics, logos, images, videos, software, and compilation of content, is the property of KEMETRA or its content suppliers and is protected by international copyright, trademark, and other intellectual property laws."
+            },
+            "license": {
+                "title": "License to Use",
+                "p1": "We grant you a limited, non-exclusive, non-transferable license to access and use our content for personal, non-commercial, educational purposes. You may not modify, reproduce, distribute, create derivative works, publicly display, or exploit our content without express written permission."
+            },
+            "userContent": {
+                "title": "User Content",
+                "p1": "If you submit content to KEMETRA (reviews, comments, photos), you grant us a worldwide, royalty-free license to use, reproduce, modify, and display that content in connection with our services. You represent that you own or have the necessary rights to the content you submit."
+            },
+            "academic": {
+                "title": "Academic Use",
+                "p1": "Educational institutions and researchers may use our content for academic purposes with proper attribution. Please contact us for specific permissions regarding academic use, citations, and publications."
+            }
+        },
+        "thirdParty": {
+            "title": "Third-Party Services and Links",
+            "p1": "KEMETRA may contain links to third-party websites and services, including:",
+            "items": [
+                "Google Maps for location services",
+                "UNESCO World Heritage resources",
+                "Academic and museum websites",
+                "Book retailers and publishers",
+                "Tour guide booking platforms"
+            ],
+            "p2": "We are not responsible for the content, privacy policies, or practices of third-party websites. Your use of third-party services is at your own risk and subject to their terms and conditions."
+        },
+        "tourGuides": {
+            "title": "Tour Guide Services",
+            "p1": "KEMETRA facilitates connections with certified tour guides but does not directly provide tour services. We are not responsible for the quality, safety, or outcome of tour services provided by third-party guides. All bookings and agreements are between you and the tour guide. Please exercise due diligence when selecting and booking tour services."
+        },
+        "ecommerce": {
+            "title": "E-Commerce and Purchases",
+            "p1": "When purchasing books or other materials through KEMETRA:",
+            "items": [
+                "All prices are subject to change without notice",
+                "We reserve the right to refuse or cancel orders",
+                "Payment processing is handled securely through third-party providers",
+                "Refund and return policies apply as stated at the time of purchase",
+                "Shipping and delivery times are estimates and not guaranteed"
+            ]
+        },
+        "disclaimer": {
+            "title": "Disclaimer of Warranties",
+            "p1": "KEMETRA is provided on an \"AS IS\" and \"AS AVAILABLE\" basis without warranties of any kind, either express or implied, including but not limited to:",
+            "items": [
+                "Accuracy, completeness, or reliability of content",
+                "Uninterrupted or error-free service",
+                "Security of data transmission",
+                "Fitness for a particular purpose"
+            ],
+            "p2": "While we strive for accuracy, historical and archaeological information is subject to ongoing research and interpretation. We do not guarantee the accuracy of all information presented."
+        },
+        "liability": {
+            "title": "Limitation of Liability",
+            "p1": "To the maximum extent permitted by law, KEMETRA and its affiliates, officers, employees, and agents shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or other intangible losses, resulting from your use or inability to use the service."
+        },
+        "indemnification": {
+            "title": "Indemnification",
+            "p1": "You agree to indemnify, defend, and hold harmless KEMETRA and its affiliates from any claims, liabilities, damages, losses, and expenses arising from your violation of these Terms, your use of the service, or your violation of any rights of another party."
+        },
+        "termination": {
+            "title": "Termination",
+            "p1": "We reserve the right to suspend or terminate your access to KEMETRA at any time, without notice, for:",
+            "items": [
+                "Violation of these Terms",
+                "Fraudulent or illegal activity",
+                "Requests by law enforcement or government agencies",
+                "Discontinuation or material modification of the service"
+            ],
+            "p2": "Upon termination, your right to use the service will immediately cease. All provisions that should survive termination shall survive, including intellectual property rights, disclaimers, and limitations of liability."
+        },
+        "law": {
+            "title": "Governing Law and Jurisdiction",
+            "p1": "These Terms shall be governed by and construed in accordance with the laws of Egypt, without regard to its conflict of law provisions. Any disputes arising from these Terms or your use of KEMETRA shall be subject to the exclusive jurisdiction of the courts of Cairo, Egypt."
+        },
+        "severability": {
+            "title": "Severability",
+            "p1": "If any provision of these Terms is found to be unenforceable or invalid, that provision shall be limited or eliminated to the minimum extent necessary, and the remaining provisions shall remain in full force and effect."
+        },
+        "agreement": {
+            "title": "Entire Agreement",
+            "p1": "These Terms, together with our Privacy Policy and Cookie Policy, constitute the entire agreement between you and KEMETRA regarding the use of our services and supersede any prior agreements."
+        },
+        "contact": {
+            "title": "Questions About These Terms?",
+            "p1": "If you have any questions about these Terms of Use, please contact us:",
+            "email": "Email",
+            "address": "Address",
+            "phone": "Phone",
+            "emailValue": "legal@kemetra.com",
+            "addressValue": "KEMETRA - Ancient Egypt Research Center, Cairo, Egypt",
+            "phoneValue": "+20 (0) 2 1234 5678"
+        }
+    }
+}

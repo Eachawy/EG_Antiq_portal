@@ -29,6 +29,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
       history: (await import(`../../public/locales/${locale}/history.json`)).default,
       savedSearches: (await import(`../../public/locales/${locale}/savedSearches.json`)).default,
       settings: (await import(`../../public/locales/${locale}/settings.json`)).default,
+      cookieConsent: (await import(`../../public/locales/${locale}/cookieConsent.json`)).default,
+      privacyPolicy: (await import(`../../public/locales/${locale}/privacyPolicy.json`)).default,
+      termsOfUse: (await import(`../../public/locales/${locale}/termsOfUse.json`)).default,
+      cookiePolicy: (await import(`../../public/locales/${locale}/cookiePolicy.json`)).default,
     },
     onError(error) {
       if (process.env.NODE_ENV === 'development') {

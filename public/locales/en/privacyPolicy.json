@@ -1,0 +1,111 @@
+{
+    "title": "Privacy Policy",
+    "lastUpdated": "Last Updated: January 25, 2026",
+    "intro": "Welcome to KEMETRA. We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services related to Egyptian archaeological sites.",
+    "sections": {
+        "collect": {
+            "title": "Information We Collect",
+            "personal": {
+                "title": "Personal Information",
+                "description": "When you register for an account, subscribe to our newsletter, or contact us, we may collect:",
+                "items": [
+                    "Name and contact information (email address, phone number)",
+                    "Account credentials (username and password)",
+                    "Profile information and preferences",
+                    "Communication history with our support team"
+                ]
+            },
+            "usage": {
+                "title": "Usage Information",
+                "description": "We automatically collect certain information when you use KEMETRA:",
+                "items": [
+                    "Browser type and version",
+                    "Device information and operating system",
+                    "IP address and location data",
+                    "Pages visited and time spent on our website",
+                    "Search queries and site interactions",
+                    "Favorite sites and saved searches"
+                ]
+            }
+        },
+        "usage": {
+            "title": "How We Use Your Information",
+            "description": "We use the collected information for the following purposes:",
+            "items": [
+                "To provide and maintain our services",
+                "To personalize your experience and content recommendations",
+                "To process your requests and respond to inquiries",
+                "To send administrative information and updates",
+                "To improve our website functionality and user experience",
+                "To analyze usage patterns and trends",
+                "To detect and prevent fraud or unauthorized access",
+                "To comply with legal obligations"
+            ]
+        },
+        "cookies": {
+            "title": "Cookies and Tracking Technologies",
+            "description": "We use cookies and similar tracking technologies to track activity on our website and store certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our service.",
+            "policyLink": "For more information about our use of cookies, please refer to our <link>Cookie Policy</link>."
+        },
+        "security": {
+            "title": "Data Security",
+            "description": "We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. These measures include:",
+            "items": [
+                "Encryption of sensitive data in transit and at rest",
+                "Regular security assessments and updates",
+                "Access controls and authentication mechanisms",
+                "Secure data storage and backup procedures"
+            ],
+            "note": "However, please note that no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute security."
+        },
+        "sharing": {
+            "title": "Data Sharing and Disclosure",
+            "description": "We do not sell your personal information. We may share your information in the following circumstances:",
+            "items": [
+                "<strong>Service Providers:</strong> With third-party vendors who perform services on our behalf (hosting, analytics, customer support)",
+                "<strong>Legal Requirements:</strong> When required by law or to protect our rights and safety",
+                "<strong>Business Transfers:</strong> In connection with a merger, acquisition, or sale of assets",
+                "<strong>With Your Consent:</strong> When you explicitly agree to the sharing"
+            ]
+        },
+        "rights": {
+            "title": "Your Privacy Rights",
+            "description": "Depending on your location, you may have the following rights:",
+            "items": [
+                "<strong>Access:</strong> Request access to your personal information",
+                "<strong>Correction:</strong> Request correction of inaccurate data",
+                "<strong>Deletion:</strong> Request deletion of your personal information",
+                "<strong>Data Portability:</strong> Request transfer of your data to another service",
+                "<strong>Opt-Out:</strong> Unsubscribe from marketing communications",
+                "<strong>Restrict Processing:</strong> Request limitation of how we use your data"
+            ],
+            "footer": "To exercise these rights, please contact us using the information provided below."
+        },
+        "children": {
+            "title": "Children's Privacy",
+            "description": "KEMETRA is intended for educational purposes and is suitable for all ages. However, we do not knowingly collect personal information from children under 13 without parental consent. If you believe we have collected information from a child under 13, please contact us immediately."
+        },
+        "thirdParty": {
+            "title": "Third-Party Links",
+            "description": "Our website may contain links to third-party websites, including Google Maps, UNESCO, and academic resources. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies before providing any personal information."
+        },
+        "international": {
+            "title": "International Data Transfers",
+            "description": "Your information may be transferred to and maintained on servers located outside of your country, where data protection laws may differ. By using KEMETRA, you consent to the transfer of your information to these locations."
+        },
+        "changes": {
+            "title": "Changes to This Privacy Policy",
+            "description": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date. You are advised to review this Privacy Policy periodically for any changes."
+        },
+        "contact": {
+            "title": "Contact Us",
+            "description": "If you have any questions about this Privacy Policy or our data practices, please contact us:",
+            "email": "Email",
+            "address": "Address",
+            "phone": "Phone",
+            "emailValue": "privacy@kemetra.com",
+            "addressValue": "KEMETRA - Ancient Egypt Research Center, Cairo, Egypt",
+            "phoneValue": "+20 (0) 2 1234 5678"
+        }
+    }
+}

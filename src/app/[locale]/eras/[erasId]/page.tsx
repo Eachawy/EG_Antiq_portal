@@ -95,7 +95,7 @@ export default function EraDetailsPage() {
                     <p className="text-theme-text/70 mb-6">{error || t('notFound.description')}</p>
                     <button
                         onClick={() => router.push('/')}
-                        className="mt-6 px-6 py-2 bg-theme-primary text-white rounded-lg hover:opacity-90 transition-colors"
+                        className="mt-6 px-6 py-2 bg-theme-primary text-white rounded-lg hover:opacity-70 transition-colors"
                     >
                         {t('notFound.backButton')}
                     </button>
@@ -118,7 +118,7 @@ export default function EraDetailsPage() {
                         alt={currentLocale === 'ar' ? era.nameAr : era.nameEn}
                         className="w-full h-full object-cover"
                     />
-                    <div className={`absolute inset-0 bg-gradient-to-br ${mockEra.color.primary} opacity-90`}></div>
+                    <div className={`absolute inset-0 bg-gradient-to-br ${mockEra.color.primary} opacity-70`}></div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
                 </div>
 

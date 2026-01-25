@@ -5,6 +5,7 @@ import { Facebook, Instagram, Twitter, Youtube, Linkedin } from 'lucide-react';
 // import { usePathname } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { newsletterEndpoints } from '@/lib/api/endpoints';
+import { Link } from '@/i18n/routing';
 
 export default function Footer() {
     const t = useTranslations('layout.footer');
@@ -161,15 +162,21 @@ export default function Footer() {
                             {t('bottom.copyright', { year: currentYear })}
                         </p>
                         <div className="flex gap-6">
-                            <a href="#privacy" className="text-theme-text/50 hover:text-theme-primary text-sm transition-colors">
-                                {t('bottom.privacyPolicy')}
-                            </a>
-                            <a href="#terms" className="text-theme-text/50 hover:text-theme-primary text-sm transition-colors">
-                                {t('bottom.termsOfUse')}
-                            </a>
-                            <a href="#cookies" className="text-theme-text/50 hover:text-theme-primary text-sm transition-colors">
-                                {t('bottom.cookiePolicy')}
-                            </a>
+                            <Link
+                                href="/privacy-policy"
+                                className="text-theme-text/50 hover:text-theme-primary text-sm transition-colors"
+                                aria-label={t('bottom.privacyPolicy')}
+                            >{t('bottom.privacyPolicy')}</Link>
+                            <Link
+                                href="/terms-of-use"
+                                className="text-theme-text/50 hover:text-theme-primary text-sm transition-colors"
+                                aria-label={t('bottom.termsOfUse')}
+                            >{t('bottom.termsOfUse')}</Link>
+                            <Link
+                                href="/cookie-policy"
+                                className="text-theme-text/50 hover:text-theme-primary text-sm transition-colors"
+                                aria-label={t('bottom.cookiePolicy')}
+                            >{t('bottom.cookiePolicy')}</Link>
                         </div>
                     </div>
                 </div>

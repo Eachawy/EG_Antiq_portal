@@ -10,6 +10,7 @@ import { ThemeProvider } from '@/components/common/ThemeContext';
 import { AuthProvider } from '@/components/auth/AuthContext';
 import { FavoriteProvider } from '@/components/auth/FavoriteContext';
 import { CartProvider } from '@/components/auth/CartContext';
+import CookieConsent from '@/components/common/cookieConsent';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -48,6 +49,7 @@ export default async function LocaleLayout({
                     <Header />
                     <main className="flex-1">{children}</main>
                     <Footer />
+                    <CookieConsent />
                   </div>
                 </CartProvider>
               </FavoriteProvider>

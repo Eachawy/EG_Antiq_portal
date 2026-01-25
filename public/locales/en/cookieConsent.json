@@ -1,0 +1,31 @@
+{
+    "title": "We Value Your Privacy",
+    "description": "KEMETRA uses cookies to enhance your experience, provide personalized content, analyze site traffic, and deliver relevant information about Egyptian archaeological sites. By clicking \"Accept All\", you consent to our use of cookies.",
+    "acceptAll": "Accept All",
+    "rejectAll": "Reject All",
+    "customize": "Customize",
+    "cookiePolicy": "Cookie Policy",
+    "settings": {
+        "title": "Cookie Preferences",
+        "description": "Manage your cookie preferences. Essential cookies are required for the website to function and cannot be disabled.",
+        "save": "Save Preferences",
+        "back": "Back",
+        "essential": {
+            "title": "Essential Cookies",
+            "description": "Required for the website to function. These cannot be disabled.",
+            "status": "Always Active"
+        },
+        "functional": {
+            "title": "Functional Cookies",
+            "description": "Remember your preferences like language, theme, and saved searches."
+        },
+        "analytics": {
+            "title": "Analytics Cookies",
+            "description": "Help us understand how visitors interact with our website."
+        },
+        "advertising": {
+            "title": "Advertising Cookies",
+            "description": "Used to deliver relevant advertisements and measure campaign effectiveness."
+        }
+    }
+}
