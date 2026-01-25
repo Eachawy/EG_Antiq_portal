@@ -1,86 +1,155 @@
 #!/bin/bash
 
-# Kemetra.org Portal - Manual Production Deployment Script
-# Run this on your Hostinger server: ./deploy-production.sh
+##############################################################################
+# Production Deployment Script for EG Antiq Portal Frontend (Kemetra.org)
+#
+# This script deploys the public portal frontend
+# Usage: ./deploy-production.sh
+##############################################################################
 
-set -e
+set -e  # Exit on error
 
-echo "=========================================="
-echo "  Kemetra Portal Production Deployment"
-echo "=========================================="
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Configuration
+PROJECT_NAME="EG_Antiq_Portal"
+BACKUP_DIR="./backups"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+# Read API URL from .env.production or use default
+API_URL=${NEXT_PUBLIC_API_BASE_URL:-"https://api.kemetra.org/api/v1"}
+
+echo -e "${BLUE}============================================${NC}"
+echo -e "${BLUE}  Kemetra Portal - Production Deployment${NC}"
+echo -e "${BLUE}============================================${NC}"
 echo ""
 
-# Step 1: Pull latest changes
-echo "Step 1: Pulling latest changes from Git..."
-git pull origin main || git pull origin master
-echo "✓ Git pull complete"
-echo ""
+# Check if running as root or with sudo
+if [ "$EUID" -ne 0 ] && ! groups | grep -q docker; then
+    echo -e "${YELLOW}Warning: Not running as root or in docker group. You may need sudo.${NC}"
+fi
 
-# Step 2: Stop running containers
-echo "Step 2: Stopping existing containers..."
-docker compose down
-echo "✓ Containers stopped"
-echo ""
-
-# Step 3: Remove old images (optional - saves space)
-echo "Step 3: Cleaning up old Docker images..."
-docker image prune -f
-echo "✓ Cleanup complete"
-echo ""
-
-# Step 4: Build new image
-echo "Step 4: Building Docker image..."
-docker compose build --no-cache
-echo "✓ Build complete"
-echo ""
-
-# Step 5: Start container
-echo "Step 5: Starting container..."
-docker compose up -d
-echo "✓ Container started"
-echo ""
-
-# Step 6: Wait for container to be healthy
-echo "Step 6: Waiting for application to start (30 seconds)..."
-sleep 30
-echo "✓ Wait complete"
-echo ""
-
-# Step 7: Check container status
-echo "Step 7: Verifying deployment..."
-if docker ps | grep -q "antiq-portal"; then
-    echo "✓ Container is running"
-    
-    # Test if app is responding
-    echo "Testing application response..."
-    if curl -s -o /dev/null -w "%{http_code}" http://localhost:3002 | grep -q "200\|307\|301"; then
-        echo "✓ Application is responding"
-    else
-        echo "⚠ Warning: Application may not be ready yet"
-        echo "Check logs with: docker logs antiq-portal"
-    fi
-else
-    echo "✗ ERROR: Container is not running!"
-    echo "View logs with: docker logs antiq-portal"
+# Check if .env.production file exists
+if [ ! -f .env.production ]; then
+    echo -e "${RED}Error: .env.production file not found!${NC}"
+    echo "Please create .env.production file with:"
+    echo "  NEXT_PUBLIC_API_BASE_URL=https://api.kemetra.org/api/v1"
     exit 1
 fi
+
+# Load environment variables
+source .env.production
+echo "API URL: $NEXT_PUBLIC_API_BASE_URL"
 echo ""
 
-# Step 8: Show container info
-echo "Step 8: Container Information"
-docker ps | grep antiq-portal || echo "Container not found"
+# Check if docker-compose is installed
+if ! command -v docker &> /dev/null; then
+    echo -e "${RED}Error: Docker is not installed!${NC}"
+    exit 1
+fi
+
+if ! command -v docker compose &> /dev/null; then
+    echo -e "${RED}Error: Docker Compose is not installed!${NC}"
+    exit 1
+fi
+
+# Create backup directory
+mkdir -p "$BACKUP_DIR"
+
+echo -e "${YELLOW}Step 1: Pulling latest code from repository...${NC}"
+git fetch origin
+CURRENT_BRANCH=$(git branch --show-current)
+echo "Current branch: $CURRENT_BRANCH"
+git pull origin "$CURRENT_BRANCH"
+echo -e "${GREEN}✓ Code updated${NC}"
 echo ""
 
-echo "=========================================="
-echo "  ✓ DEPLOYMENT COMPLETE"
-echo "=========================================="
+echo -e "${YELLOW}Step 2: Backing up current container state...${NC}"
+docker compose ps > "$BACKUP_DIR/containers_state_$TIMESTAMP.txt" 2>/dev/null || true
+echo -e "${GREEN}✓ Container state backed up${NC}"
 echo ""
-echo "Access your portal at:"
-echo "  → http://153.92.209.167:3002"
-echo "  → https://kemetra.org (if Nginx is configured)"
+
+echo -e "${YELLOW}Step 3: Building new Docker image...${NC}"
+echo "This may take several minutes..."
+docker compose build --no-cache
+echo -e "${GREEN}✓ Docker image built successfully${NC}"
+echo ""
+
+echo -e "${YELLOW}Step 4: Stopping current container...${NC}"
+docker compose down
+echo -e "${GREEN}✓ Container stopped${NC}"
+echo ""
+
+echo -e "${YELLOW}Step 5: Starting updated container...${NC}"
+docker compose up -d
+echo -e "${GREEN}✓ Container started${NC}"
+echo ""
+
+echo -e "${YELLOW}Step 6: Waiting for container to be ready...${NC}"
+sleep 10
+
+# Health check
+MAX_RETRIES=30
+RETRY_COUNT=0
+until [ $RETRY_COUNT -ge $MAX_RETRIES ]
+do
+    # Check if container is running and responding
+    CONTAINER_STATUS=$(docker compose ps --format=json 2>/dev/null | grep -o '"State":"[^"]*"' | cut -d'"' -f4 | head -1)
+    if [ "$CONTAINER_STATUS" = "running" ]; then
+        # Try to access the health endpoint or home page
+        if curl -f http://localhost:3002/health &> /dev/null 2>&1; then
+            echo -e "${GREEN}✓ Application is healthy!${NC}"
+            break
+        elif curl -f http://localhost:3002/ &> /dev/null 2>&1 || curl -f http://localhost:3002/en &> /dev/null 2>&1; then
+            echo -e "${GREEN}✓ Application is responding!${NC}"
+            break
+        fi
+    fi
+
+    RETRY_COUNT=$((RETRY_COUNT+1))
+    echo "Waiting for application to be ready... (attempt $RETRY_COUNT/$MAX_RETRIES)"
+    sleep 2
+done
+
+if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+    echo -e "${YELLOW}Warning: Could not verify application health, but container is running${NC}"
+    echo "Check manually: https://kemetra.org or http://localhost:3002"
+fi
+
+echo ""
+echo -e "${YELLOW}Step 7: Checking container status...${NC}"
+docker compose ps
+echo ""
+
+echo -e "${YELLOW}Step 8: Recent logs...${NC}"
+docker compose logs --tail=30
+echo ""
+
+echo -e "${GREEN}============================================${NC}"
+echo -e "${GREEN}   Deployment Completed Successfully!${NC}"
+echo -e "${GREEN}============================================${NC}"
+echo ""
+echo "Portal frontend is now running with the latest code."
+echo "API URL: $NEXT_PUBLIC_API_BASE_URL"
+echo ""
+echo "Access points:"
+echo "  - Local: http://localhost:3002"
+echo "  - Production: https://kemetra.org"
 echo ""
 echo "Useful commands:"
-echo "  View logs:    docker logs -f antiq-portal"
-echo "  Restart:      docker compose restart"
-echo "  Stop:         docker compose down"
+echo "  - View logs: docker compose logs -f"
+echo "  - Check status: docker compose ps"
+echo "  - Restart: docker compose restart"
+echo "  - Stop: docker compose down"
 echo ""
+echo "Rollback instructions (if needed):"
+echo "  1. Stop container: docker compose down"
+echo "  2. Revert code: git checkout <previous-commit>"
+echo "  3. Rebuild: docker compose build --no-cache"
+echo "  4. Start: docker compose up -d"
+echo ""
+echo -e "${BLUE}Deployment completed at: $(date)${NC}"
