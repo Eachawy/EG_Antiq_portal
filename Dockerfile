@@ -32,6 +32,14 @@ RUN npm run build
 # Stage 3: Runner
 FROM node:20-alpine AS runner
 
+# Image metadata
+LABEL maintainer="Kemetra Team"
+LABEL description="Portal Frontend for Kemetra Antiquities Management System"
+LABEL version="1.0.0"
+
+# Install wget for health checks
+RUN apk add --no-cache wget
+
 WORKDIR /app
 
 # Set to production
@@ -58,6 +66,10 @@ EXPOSE 3000
 # Set hostname
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
 
 # Start the application
 CMD ["node", "server.js"]

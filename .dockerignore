@@ -38,17 +38,20 @@ yarn-error.log*
 .git
 .gitignore
 
-# Docker
-Dockerfile
-docker-compose.yml
-.dockerignore
-
 # CI/CD
 .github
 
 # Testing
 coverage
 .nyc_output
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
 
-# Misc
-README.md
+# Documentation
+*.md
+!CLAUDE.md
+
+# Logs
+*.log

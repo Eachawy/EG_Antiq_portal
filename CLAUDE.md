@@ -541,6 +541,141 @@ All routes matching these patterns require authentication:
 - `/[locale]/history`
 - `/[locale]/settings`
 
+## Docker Development Setup
+
+### Local Development with Docker
+
+**Quick Start:**
+```bash
+# Start development environment
+docker-compose -f docker-compose.dev.yml up
+
+# Access at http://localhost:3002
+# Next.js dev server with hot reload enabled
+```
+
+**What You Get:**
+- ✅ Hot module replacement (HMR) - instant code updates
+- ✅ Source maps enabled for debugging
+- ✅ All dev tools (TypeScript, ESLint, Prettier)
+- ✅ File watching with live reload
+- ✅ Fast refresh for React components
+
+**Architecture:**
+```
+Host Browser (http://localhost:3002)
+    ↓
+Docker Container (Next.js dev server on port 3000)
+    ↓
+Volume Mount (./src → /app/src)
+    ↓
+Hot Reload on File Changes
+```
+
+**Requirements:**
+- Docker Desktop installed
+- Backend API running on host or in Docker network
+- Source files mounted as volumes for live editing
+
+**Commands:**
+```bash
+# Build and start
+docker-compose -f docker-compose.dev.yml up --build
+
+# Run in background
+docker-compose -f docker-compose.dev.yml up -d
+
+# View logs
+docker-compose -f docker-compose.dev.yml logs -f portal-frontend-dev
+
+# Stop and remove
+docker-compose -f docker-compose.dev.yml down
+
+# Rebuild after package.json changes
+docker-compose -f docker-compose.dev.yml build --no-cache
+docker-compose -f docker-compose.dev.yml up
+```
+
+**Environment Variables:**
+- `NEXT_PUBLIC_API_BASE_URL` - API endpoint (default: `http://host.docker.internal:3000/api/v1`)
+- `NODE_ENV` - Set to `development` automatically
+- `CHOKIDAR_USEPOLLING` - Enables file watching in Docker
+
+**Troubleshooting:**
+
+*Issue: Changes not reflected*
+```bash
+# Ensure volumes are mounted correctly
+docker-compose -f docker-compose.dev.yml down -v
+docker-compose -f docker-compose.dev.yml up --build
+```
+
+*Issue: Can't connect to API*
+```bash
+# Check backend URL
+# For API on host: NEXT_PUBLIC_API_BASE_URL=http://host.docker.internal:3000/api/v1
+# For API in Docker network: NEXT_PUBLIC_API_BASE_URL=http://api:3000/api/v1
+```
+
+*Issue: Module not found after adding dependency*
+```bash
+# Rebuild container to install new dependencies
+docker-compose -f docker-compose.dev.yml build --no-cache
+```
+
+---
+
+## Quick Command Reference
+
+### Development (No Docker)
+```bash
+npm install              # Install dependencies
+npm run dev              # Start Next.js dev server (port 3002)
+npm run build            # Production build
+npm start                # Start production server (port 3002)
+npm run lint             # Run ESLint
+npm run format           # Format code with Prettier
+```
+
+### Development (Docker)
+```bash
+docker-compose -f docker-compose.dev.yml up --build  # Start dev environment
+docker-compose -f docker-compose.dev.yml down        # Stop dev environment
+docker-compose -f docker-compose.dev.yml logs -f     # View logs
+```
+
+### Production (Local)
+```bash
+npm run build                    # Build for production
+docker build -t portal .         # Docker production build
+docker-compose up -d             # Start production container
+```
+
+### Production (Unified Deployment)
+```bash
+cd /path/to/EG_Antiq
+docker-compose -f docker-compose.production.yml build portal-frontend
+docker-compose -f docker-compose.production.yml up -d portal-frontend
+docker-compose -f docker-compose.production.yml logs -f portal-frontend
+```
+
+---
+
+## Port Configuration
+
+| Environment | Port | Purpose | Access |
+|-------------|------|---------|--------|
+| Dev (no Docker) | 3002 | Next.js dev server | http://localhost:3002 |
+| Dev (Docker) | 3000 | Next.js dev server (internal) | - |
+| Dev (Docker) | 3002 | Host mapping to container | http://localhost:3002 |
+| Production (Docker) | 3000 | Next.js standalone (internal) | - |
+| Production (Docker) | 3002 | Host mapping to container | http://localhost:3002 |
+| Production (Gateway) | 443 | HTTPS public access | https://kemetra.org |
+
+**Important:** Always use port 3000 internally for Next.js standalone server!
+
+---
+
 ## Production Deployment (Unified Gateway Architecture)
 
 **⚠️ IMPORTANT**: This portal frontend is deployed as part of a unified architecture with centralized NGINX gateway managed in the EG_Antiq repository.
