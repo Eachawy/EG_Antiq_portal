@@ -548,7 +548,7 @@ All routes matching these patterns require authentication:
 **Quick Start:**
 ```bash
 # Start development environment
-docker-compose -f docker-compose.dev.yml up
+docker-compose -f docker-compose.yml up
 
 # Access at http://localhost:3002
 # Next.js dev server with hot reload enabled
@@ -580,20 +580,20 @@ Hot Reload on File Changes
 **Commands:**
 ```bash
 # Build and start
-docker-compose -f docker-compose.dev.yml up --build
+docker-compose -f docker-compose.yml up --build
 
 # Run in background
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose -f docker-compose.yml up -d
 
 # View logs
-docker-compose -f docker-compose.dev.yml logs -f portal-frontend-dev
+docker-compose -f docker-compose.yml logs -f portal-frontend-dev
 
 # Stop and remove
-docker-compose -f docker-compose.dev.yml down
+docker-compose -f docker-compose.yml down
 
 # Rebuild after package.json changes
-docker-compose -f docker-compose.dev.yml build --no-cache
-docker-compose -f docker-compose.dev.yml up
+docker-compose -f docker-compose.yml build --no-cache
+docker-compose -f docker-compose.yml up
 ```
 
 **Environment Variables:**
@@ -606,8 +606,8 @@ docker-compose -f docker-compose.dev.yml up
 *Issue: Changes not reflected*
 ```bash
 # Ensure volumes are mounted correctly
-docker-compose -f docker-compose.dev.yml down -v
-docker-compose -f docker-compose.dev.yml up --build
+docker-compose -f docker-compose.yml down -v
+docker-compose -f docker-compose.yml up --build
 ```
 
 *Issue: Can't connect to API*
@@ -620,7 +620,7 @@ docker-compose -f docker-compose.dev.yml up --build
 *Issue: Module not found after adding dependency*
 ```bash
 # Rebuild container to install new dependencies
-docker-compose -f docker-compose.dev.yml build --no-cache
+docker-compose -f docker-compose.yml build --no-cache
 ```
 
 ---
@@ -639,9 +639,9 @@ npm run format           # Format code with Prettier
 
 ### Development (Docker)
 ```bash
-docker-compose -f docker-compose.dev.yml up --build  # Start dev environment
-docker-compose -f docker-compose.dev.yml down        # Stop dev environment
-docker-compose -f docker-compose.dev.yml logs -f     # View logs
+docker-compose -f docker-compose.yml up --build  # Start dev environment
+docker-compose -f docker-compose.yml down        # Stop dev environment
+docker-compose -f docker-compose.yml logs -f     # View logs
 ```
 
 ### Production (Local)
@@ -650,17 +650,6 @@ npm run build                    # Build for production
 docker build -t portal .         # Docker production build
 docker-compose up -d             # Start production container
 ```
-
-### Production (Unified Deployment)
-```bash
-cd /path/to/EG_Antiq
-docker-compose -f docker-compose.production.yml build portal-frontend
-docker-compose -f docker-compose.production.yml up -d portal-frontend
-docker-compose -f docker-compose.production.yml logs -f portal-frontend
-```
-
----
-
 ## Port Configuration
 
 | Environment | Port | Purpose | Access |
@@ -668,218 +657,7 @@ docker-compose -f docker-compose.production.yml logs -f portal-frontend
 | Dev (no Docker) | 3002 | Next.js dev server | http://localhost:3002 |
 | Dev (Docker) | 3000 | Next.js dev server (internal) | - |
 | Dev (Docker) | 3002 | Host mapping to container | http://localhost:3002 |
-| Production (Docker) | 3000 | Next.js standalone (internal) | - |
-| Production (Docker) | 3002 | Host mapping to container | http://localhost:3002 |
-| Production (Gateway) | 443 | HTTPS public access | https://kemetra.org |
 
 **Important:** Always use port 3000 internally for Next.js standalone server!
 
 ---
-
-## Production Deployment (Unified Gateway Architecture)
-
-**⚠️ IMPORTANT**: This portal frontend is deployed as part of a unified architecture with centralized NGINX gateway managed in the EG_Antiq repository.
-
-### Architecture Overview
-
-```
-Internet (Port 80/443)
-         │
-         ▼
-  Unified NGINX Gateway (EG_Antiq repository)
-         │
-         ├─ api.kemetra.org → API Backend (port 3000)
-         ├─ admin.kemetra.org → Admin Frontend (port 8080)
-         └─ kemetra.org → Portal Frontend (port 3000)
-```
-
-### Docker Container Configuration
-
-**Dockerfile**: Multi-stage build using Next.js standalone mode
-- **Stage 1 (Dependencies)**: Installs all dependencies
-- **Stage 2 (Builder)**: Builds Next.js app in standalone mode
-- **Stage 3 (Runner)**: Node.js Alpine runtime
-  - **Internal Port**: 3000 (Next.js standalone server)
-  - **Runs as**: Non-root user
-  - **No NGINX inside container** (pure Next.js standalone)
-
-**Important Port Configuration**:
-- **Container internal port**: 3000
-- **Production mapping**: `127.0.0.1:3002:3000` (host 3002 → container 3000)
-- **Access URL**: https://kemetra.org (via unified gateway)
-
-### Production Deployment
-
-**Do NOT deploy this portal standalone**. It's deployed via the main API repository (`EG_Antiq`) which orchestrates all services.
-
-**From EG_Antiq repository**:
-```bash
-# Deploy all services (API + Admin + Portal + Gateway)
-cd /root/EG_Antiq
-docker compose -f docker-compose.production.yml up -d --build
-```
-
-**Portal service configuration** (in EG_Antiq's docker-compose.production.yml):
-```yaml
-portal-frontend:
-  build:
-    context: ../EG_Antiq_portal  # This repository
-    dockerfile: Dockerfile
-  container_name: production-portal
-  environment:
-    NODE_ENV: production
-    NEXT_PUBLIC_API_BASE_URL: https://api.kemetra.org/api/v1  # Via gateway!
-  ports:
-    - '127.0.0.1:3002:3000'  # Localhost only, gateway proxies
-  networks:
-    - production-network
-  restart: always
-```
-
-**Key Points**:
-- ✅ Unified gateway handles SSL termination, CORS, rate limiting, routing
-- ✅ Portal serves via Next.js standalone (no internal NGINX)
-- ✅ All API calls go through unified gateway at `https://api.kemetra.org`
-- ✅ Portal accessible via `https://kemetra.org` and `https://www.kemetra.org`
-- ✅ Container binds to localhost only for security
-
-### DNS Configuration
-
-| Domain | Points To | Purpose |
-|--------|-----------|---------|
-| kemetra.org | 153.92.209.167 | Portal Frontend |
-| www.kemetra.org | 153.92.209.167 | Redirects to kemetra.org |
-| admin.kemetra.org | 153.92.209.167 | Admin Frontend |
-| api.kemetra.org | 153.92.209.167 | Backend API |
-
-### Deprecated Files (No Longer Used in Production)
-
-**⚠️ DEPRECATED - Do Not Use**:
-- ~~`setup-nginx.sh`~~ - **REMOVED**: Host NGINX setup (unified gateway handles this)
-- ~~`nginx.conf.example`~~ - **REMOVED**: Host NGINX config (unified gateway handles this)
-- ~~`deploy-production.sh`~~ - **REMOVED**: Standalone deployment (use EG_Antiq deployment)
-- ~~`deploy.sh`~~ - **REMOVED**: Old deployment script
-- ~~`fix-deployment.sh`~~ - **REMOVED**: Old fix script
-- ~~`diagnose.sh`~~ - **REMOVED**: Old diagnostics script
-
-**Reason**: All production traffic routing, SSL, and CORS are managed by the unified NGINX gateway in the EG_Antiq repository. Host-level NGINX scripts are no longer needed.
-
-### Environment Variables (Production)
-
-```env
-# API URL - Must point to unified gateway domain!
-NEXT_PUBLIC_API_BASE_URL=https://api.kemetra.org/api/v1  # NOT direct IP!
-
-# Node environment
-NODE_ENV=production
-```
-
-**Critical**: Always use the gateway domain (`https://api.kemetra.org/api/v1`), never hardcoded IPs. This ensures proper CORS handling and SSL termination.
-
-### Local Development (Standalone - For Testing Only)
-
-```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-# Access at: http://localhost:3002
-
-# Or build and run production locally
-npm run build
-npm start
-# Access at: http://localhost:3002
-```
-
-**Local Docker Testing**:
-```bash
-# Build image
-docker build -t portal-test .
-
-# Run container
-docker run -p 3002:3000 \
-  -e NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api/v1 \
-  portal-test
-
-# Access at: http://localhost:3002
-```
-
-### Troubleshooting Production
-
-**Portal not loading**:
-```bash
-# Check if container is running
-docker ps | grep production-portal
-
-# View logs
-docker logs production-portal
-
-# Restart portal
-docker restart production-portal
-```
-
-**API calls failing**:
-- ✅ Verify unified gateway is running: `docker ps | grep nginx`
-- ✅ Check API URL is correct: should be `https://api.kemetra.org/api/v1`
-- ✅ Test API directly: `curl https://api.kemetra.org/api/v1/health`
-- ✅ Check CORS configuration in API `.env.production`
-- ❌ Do NOT use hardcoded IPs like `http://153.92.209.167:3000`
-
-**Container won't start**:
-```bash
-# Check port conflicts
-lsof -i :3002
-
-# Check if network exists
-docker network ls | grep production-network
-
-# View detailed logs
-docker logs --tail 50 production-portal
-```
-
-**Next.js build errors**:
-```bash
-# Clear build cache
-cd /root/EG_Antiq_portal
-rm -rf .next
-
-# Rebuild from main repository
-cd /root/EG_Antiq
-docker compose -f docker-compose.production.yml build --no-cache portal-frontend
-docker compose -f docker-compose.production.yml up -d portal-frontend
-```
-
-### Unified Gateway Benefits
-
-1. **Single SSL Certificate**: One Let's Encrypt certificate for all domains
-2. **Centralized CORS**: Consistent CORS headers across all services
-3. **Unified Rate Limiting**: Protection for API (100 req/min), Auth (10 req/min), Frontends (200 req/min)
-4. **Security Headers**: HSTS, CSP, X-Frame-Options applied globally
-5. **Simplified Deployment**: All services orchestrated together
-6. **Better Monitoring**: Centralized logging and metrics
-
-### Production Verification
-
-After deployment, verify:
-
-```bash
-# Test portal via gateway
-curl -I https://kemetra.org/
-
-# Test www redirect
-curl -I https://www.kemetra.org/  # Should redirect to https://kemetra.org
-
-# Test API access
-curl https://api.kemetra.org/api/v1/health
-
-# Check SSL certificate
-openssl s_client -connect kemetra.org:443 -servername kemetra.org | grep "subject="
-```
-
-### Architecture Documentation
-
-For complete architecture details, see:
-- **EG_Antiq repository**: `nginx-configs/unified-kemetra.conf` (main gateway config)
-- **EG_Antiq repository**: `docker-compose.production.yml` (orchestration)
-- **EG_Antiq repository**: `CLAUDE.md` (unified gateway documentation)
