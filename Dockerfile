@@ -1,75 +1,41 @@
-# Stage 1: Dependencies
-FROM node:20-alpine AS deps
+# Development Dockerfile for Portal Frontend
+# Purpose: Local development with hot reload and debugging
 
-# Install libc6-compat for compatibility
-RUN apk add --no-cache libc6-compat
+FROM node:20-alpine
 
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Set working directory
 WORKDIR /app
+
+# Create non-root user
+RUN addgroup -g 1001 -S nextjs && \
+    adduser -u 1001 -S nextjs -G nextjs
 
 # Copy package files
-COPY package.json package-lock.json* ./
+COPY --chown=nextjs:nextjs package*.json ./
 
-# Install dependencies with legacy peer deps to handle Tailwind CSS v4
+# Install ALL dependencies (including dev dependencies)
 RUN npm ci --legacy-peer-deps
 
-# Stage 2: Builder
-FROM node:20-alpine AS builder
+# Copy application source
+COPY --chown=nextjs:nextjs . .
 
-WORKDIR /app
-
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
-
-# Copy all source files
-COPY . .
-
-# Disable telemetry during build
-ENV NEXT_TELEMETRY_DISABLED=1
-
-# Build the application
-RUN npm run build
-
-# Stage 3: Runner
-FROM node:20-alpine AS runner
-
-# Image metadata
-LABEL maintainer="Kemetra Team"
-LABEL description="Portal Frontend for Kemetra Antiquities Management System"
-LABEL version="1.0.0"
-
-# Install wget for health checks
-RUN apk add --no-cache wget
-
-WORKDIR /app
-
-# Set to production
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-
-# Create a non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# Copy necessary files from builder
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-
-# Copy standalone output
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Set environment
+ENV NODE_ENV=development \
+    NEXT_TELEMETRY_DISABLED=1 \
+    PORT=3000
 
 # Switch to non-root user
 USER nextjs
 
-# Expose port 3000
+# Expose Next.js dev server port
 EXPOSE 3000
-
-# Set hostname
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+  CMD curl -f http://localhost:3000/ || exit 1
 
-# Start the application
-CMD ["node", "server.js"]
+# Start Next.js dev server with hot reload
+CMD ["npm", "run", "dev", "--", "-p", "3000"]
