@@ -23,7 +23,7 @@ services:
       - /app/.next
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_BASE_URL=http://host.docker.internal:3000/api/v1 # Connect to API on host
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api/v1 # Connect to API on host
       - NEXT_TELEMETRY_DISABLED=1
       - CHOKIDAR_USEPOLLING=true # Enable polling for Docker file watching
       - WATCHPACK_POLLING=true

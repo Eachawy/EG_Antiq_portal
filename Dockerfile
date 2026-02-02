@@ -22,6 +22,11 @@ RUN npm ci --legacy-peer-deps
 # Copy application source
 COPY --chown=nextjs:nextjs . .
 
+# Create directories with correct permissions
+RUN mkdir -p .next node_modules/.cache && \
+    chown -R nextjs:nextjs .next node_modules/.cache && \
+    chmod -R 775 .next node_modules/.cache
+
 # Set environment
 ENV NODE_ENV=development \
     NEXT_TELEMETRY_DISABLED=1 \
