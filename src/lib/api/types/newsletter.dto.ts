@@ -12,6 +12,7 @@ export interface SubscribeNewsletterDto {
  */
 export interface NewsletterSubscriptionResponse {
   subscriptionId: string;
+  alreadySubscribed: boolean;
 }
 
 /**

@@ -41,10 +41,13 @@ export default function Footer() {
             setIsSubmitting(true);
 
             // Call the API to subscribe
-            await newsletterEndpoints.subscribe({ email });
+            const result = await newsletterEndpoints.subscribe({ email });
 
-            // Show success message
-            setShowSuccess(true);
+            if (result.alreadySubscribed) {
+                setErrorMessage(t('newsletter.alreadySubscribed'));
+            } else {
+                setShowSuccess(true);
+            }
             setEmail('');
 
             // Hide success message after 5 seconds
