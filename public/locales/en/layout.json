@@ -43,7 +43,8 @@
                 "invalid": "Please enter a valid email address"
             },
             "success": "You have been subscribed successfully!",
-            "alreadySubscribed": "This email is already subscribed to our newsletter."
+            "alreadySubscribed": "This email is already subscribed to our newsletter.",
+            "subscribing": "Subscribing..."
         },
         "bottom": {
             "copyright": "© {year} KEMETRA - Ancient Egypt Archaeological Sites. All rights reserved.",
