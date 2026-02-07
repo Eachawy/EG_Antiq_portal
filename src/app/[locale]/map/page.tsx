@@ -15,6 +15,7 @@ import { Monument, Era, Dynasty, MonumentType } from '@/lib/api/types/monuments.
 import { useParams } from 'next/navigation';
 import { type Locale } from '@/i18n/config';
 import { formatDate } from '@/lib/utils/utils';
+import { buildMonumentUrl } from '@/lib/utils/monument-url';
 // Transform Monument API data to Site interface for map component
 interface Site {
     id: string;
@@ -192,8 +193,13 @@ export default function InteractiveMapPage() {
     }, []);
 
     const handleSiteClick = useCallback((siteId: string) => {
-        router.push(`/sites/${siteId}`);
-    }, [router]);
+        const monument = monuments.find(m => m.id.toString() === siteId);
+        if (monument) {
+            router.push(buildMonumentUrl(monument.id, monument.slugEn, monument.slugAr, currentLocale));
+        } else {
+            router.push(`/${currentLocale}/sites/${siteId}`);
+        }
+    }, [router, monuments, currentLocale]);
 
     // Fetch reference data on mount
     useEffect(() => {

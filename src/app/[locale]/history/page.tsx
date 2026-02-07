@@ -13,6 +13,7 @@ import { historyEndpoints } from '@/lib/api/endpoints';
 import { BrowsingHistoryEntry, BrowsingHistoryStats } from '@/lib/api/types/history.dto';
 import { getImageUrl } from '@/lib/utils/image-url';
 import { type Locale } from '@/i18n/config';
+import { buildMonumentUrl } from '@/lib/utils/monument-url';
 
 export default function HistoryPage() {
     const { isAuthenticated, user } = useAuth();
@@ -97,6 +98,12 @@ export default function HistoryPage() {
         return '';
     };
 
+n    const getMonumentSlug = (entry: BrowsingHistoryEntry): string => {
+        if (!entry.monument) return '';
+        return locale === 'ar'
+            ? (entry.monument.slugAr || '')
+            : (entry.monument.slugEn || ''');
+    };
     const getMonumentImage = (entry: BrowsingHistoryEntry): string => {
         if (!entry.monument) return '';
         const imagePath = entry.monument.image || entry.monument.galleries?.[0]?.galleryPath || '';
@@ -267,6 +274,7 @@ export default function HistoryPage() {
                             const monumentLocation = getMonumentLocation(item);
                             const monumentPeriod = getMonumentPeriod(item);
                             const monumentImage = getMonumentImage(item);
+                            const monumentSlug = getMonumentSlug(item);
 
                             return (
                                 <div
@@ -322,7 +330,7 @@ export default function HistoryPage() {
                                                 <Button
                                                     label="Visit Again"
                                                     size="small"
-                                                    onClick={() => router.push(`/sites/${item.monumentId}`)}
+                                                    onClick={() => router.push(buildMonumentUrl(item.monumentId, item.monument?.slugEn, item.monument?.slugAr, locale))}
                                                     className="bg-gradient-to-r from-theme-primary to-theme-secondary border-0 hover:shadow-lg hover:scale-105 transition-all h-9"
                                                 />
                                                 <button

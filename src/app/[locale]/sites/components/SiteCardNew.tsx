@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { useAuth } from '@/components/auth/AuthContext';
 import { historyEndpoints } from '@/lib/api/endpoints';
 import { formatDate } from '@/lib/utils/utils';
+import { buildMonumentUrl } from '@/lib/utils/monument-url';
 
 export function SiteCardNew({ site }: any) {
   const tCard = useTranslations('sites.card');
@@ -44,7 +45,7 @@ export function SiteCardNew({ site }: any) {
       }
     }
     // Navigate to detail page
-    router.push(`/${locale}/sites/${site.id}`);
+    router.push(buildMonumentUrl(site.id, site.slugEn, site.slugAr, locale as string));
   };
 
   return (

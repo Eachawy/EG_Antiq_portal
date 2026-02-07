@@ -10,6 +10,7 @@ import { eraEndpoints } from '@/lib/api/endpoints';
 import { Era, Monument } from '@/lib/api/types/monuments.dto';
 import { getImageUrl } from '@/lib/utils/image-url';
 import { getEraById } from '../../HomePage-Components/data/erasData';
+import { buildMonumentUrl } from '@/lib/utils/monument-url';
 
 export default function EraDetailsPage() {
     const params = useParams();
@@ -287,7 +288,7 @@ export default function EraDetailsPage() {
                                 return (
                                     <div
                                         key={monument.id}
-                                        onClick={() => router.push(`/sites/${monument.id}`)}
+                                        onClick={() => router.push(buildMonumentUrl(monument.id, monument.slugEn, monument.slugAr, currentLocale))}
                                         className="group cursor-pointer bg-theme-card border border-theme-border rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300"
                                     >
                                         <div className="relative h-48 overflow-hidden">

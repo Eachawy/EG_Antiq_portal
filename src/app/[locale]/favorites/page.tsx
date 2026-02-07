@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from '@/i18n/routing';
+import { useRouter, useParams } from '@/i18n/routing';
 import { Heart, MapPin, Calendar, Trash2, Search } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthContext';
 import { useFavorites } from '@/components/auth/FavoriteContext';
@@ -9,11 +9,15 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { ImageWithFallback } from '../books/components/ImageWithFallback';
 
+import { useParams } from "next/navigation";
+import { buildMonumentUrl } from '@/lib/utils/monument-url';
 export default function FavoritesPage() {
   const { isAuthenticated, user } = useAuth();
   const { favorites, removeFavorite } = useFavorites();
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
+  const params = useParams();
+  const locale = params.locale as string;
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -136,7 +140,7 @@ export default function FavoritesPage() {
                   </div>
 
                   <button
-                    onClick={() => router.push(`/sites/${site.id}`)}
+                    onClick={() => router.push(buildMonumentUrl(site.id, site.slugEn, site.slugAr, locale))}
                     className="w-full py-2.5 bg-gradient-to-r from-theme-primary to-theme-secondary text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-300"
                   >
                     View Details
