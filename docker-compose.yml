@@ -1,42 +1,25 @@
 services:
-  portal-frontend-dev:
+  portal-frontend:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: portal-frontend-dev
+      dockerfile: Dockerfile.prod
+    container_name: portal-frontend
     ports:
-      - "3002:3000" # Map host 3002 to container Next.js dev server 3000
-    volumes:
-      # Mount source code for hot reload
-      - ./src:/app/src:ro
-      - ./public:/app/public:ro
-      - ./package.json:/app/package.json:ro
-      - ./package-lock.json:/app/package-lock.json:ro
-      - ./tsconfig.json:/app/tsconfig.json:ro
-      - ./next.config.js:/app/next.config.js:ro
-      - ./tailwind.config.ts:/app/tailwind.config.ts:ro
-      - ./postcss.config.js:/app/postcss.config.js:ro
-      # Anonymous volume for node_modules and .next (don't overwrite with host)
-      - /app/node_modules
-      - /app/.next
+      - "3003:3000"
     environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api/v1 # Connect to API on host
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_BASE_URL=http://153.92.209.167:3000/api/v1
       - NEXT_TELEMETRY_DISABLED=1
-      - CHOKIDAR_USEPOLLING=true # Enable polling for Docker file watching
-      - WATCHPACK_POLLING=true
     networks:
-      - dev-network
+      - portal-network
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:3000/" ]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
       interval: 30s
-      timeout: 10s
+      timeout: 5s
       retries: 3
-      start_period: 40s
-    stdin_open: true # Keep STDIN open (for interactive debugging)
-    tty: true # Allocate pseudo-TTY
+      start_period: 30s
 
 networks:
-  dev-network:
+  portal-network:
     driver: bridge
