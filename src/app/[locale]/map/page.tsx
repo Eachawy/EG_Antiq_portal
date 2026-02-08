@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { MapPin, Filter, Landmark, Church, Mountain, Pyramid, Sparkles, Map, Moon, GraduationCap, Crown, Castle, ShoppingBag, DoorOpen, House, Droplet, Bath, Heart, Navigation } from 'lucide-react';
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
