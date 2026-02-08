@@ -281,33 +281,29 @@ export default function SiteDetailsPage() {
 
             <div className="min-h-screen bg-theme-bg">
                 {/* Full-Width Hero Image */}
-                <div className="relative h-[60vh] md:h-[70vh] w-full mb-12">
-                    <img src={mainImage} alt={name} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+               <div className="bg-theme-card border-b border-theme-border pt-24 pb-6">
+                    <div className="container mx-auto px-6 md:px-12 pt-8">
+                        <div className="max-w-6xl mx-auto">
 
-                    {/* Back Button - Positioned over hero */}
-                    <button
-                        onClick={() => router.push('/sites')}
-                        className="absolute top-24 md:top-28 left-6 md:left-12 text-white hover:text-theme-primary transition-colors flex items-center gap-2 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-lg"
-                    >
-                        <ArrowLeft className="w-5 h-5 mr-2" />
-                        {t('buttons.back')}
-                    </button>
+                            {/* Back Button */}
+                            <button
+                                onClick={() => router.push('/sites')}
+                                className="text-theme-muted hover:text-theme-primary transition-colors flex items-center gap-2 mb-8 cursor-pointer"
+                            >
+                                <ArrowLeft size={18} />
+                                <span className="text-sm"> {t('buttons.back')}</span>
+                            </button>
 
-                    {/* Hero Content */}
-                    <div className="absolute bottom-0 left-0 right-0">
-                        <div className="container mx-auto px-6 md:px-12 pb-8 md:pb-12">
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-md">
-                                {name}
-                            </h1>
-                            <div className="flex flex-wrap gap-3 md:gap-4">
+                            {/* Title and Metadata */}
+                            <h1 className="text-theme-text xl-title">{name}</h1>
+                            <div className="flex flex-wrap gap-3">
                                 {eraName && (
-                                    <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white text-sm">
+                                    <span className="px-3 py-1.5 bg-theme-accent border border-theme-border rounded-lg text-theme-text text-sm">
                                         {eraName}
                                     </span>
                                 )}
                                 {monument.locationDescriptionEn && (
-                                    <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white text-sm flex items-center gap-2">
+                                    <span className="px-3 py-1.5 bg-theme-accent border border-theme-border rounded-lg text-theme-text text-sm flex items-center gap-2">
                                         <MapPin size={16} />
                                         {locale === 'ar' ? monument.locationDescriptionAr : monument.locationDescriptionEn}
                                     </span>
@@ -317,7 +313,9 @@ export default function SiteDetailsPage() {
                     </div>
                 </div>
 
-                <div className="container mx-auto px-6">
+
+
+                <div className="container mx-auto px-6 py-8">
                     <div className="max-w-6xl mx-auto">
                         {/* Content Grid */}
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">

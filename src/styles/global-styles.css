@@ -54,6 +54,9 @@ h1 {
     font-weight: var(--font-weight-medium);
     line-height: 1.4;
     letter-spacing: -0.02em;
+    &.xl-title {
+        font-size: var(--text-xl);
+    }
 }
 
 h2 {
