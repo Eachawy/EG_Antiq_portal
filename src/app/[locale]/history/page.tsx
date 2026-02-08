@@ -98,11 +98,11 @@ export default function HistoryPage() {
         return '';
     };
 
-n    const getMonumentSlug = (entry: BrowsingHistoryEntry): string => {
+    const getMonumentSlug = (entry: BrowsingHistoryEntry): string => {
         if (!entry.monument) return '';
         return locale === 'ar'
             ? (entry.monument.slugAr || '')
-            : (entry.monument.slugEn || ''');
+            : (entry.monument.slugEn || '');
     };
     const getMonumentImage = (entry: BrowsingHistoryEntry): string => {
         if (!entry.monument) return '';

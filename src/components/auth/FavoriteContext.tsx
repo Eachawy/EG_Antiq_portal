@@ -11,6 +11,8 @@ export interface FavoriteSite {
   period: string;
   historicalDates: string;
   image: string;
+  slugEn?: string;
+  slugAr?: string;
 }
 
 interface FavoriteContextType {
@@ -71,6 +73,8 @@ export function FavoriteProvider({ children }: { children: ReactNode }) {
           period: fav.monument?.era?.nameEn || fav.monument?.dynasty?.nameEn || '',
           historicalDates: `${fav.monument?.startDate || ''} - ${fav.monument?.endDate || ''}`,
           image: getImageUrl(fav.monument?.image || fav.monument?.galleries?.[0]?.galleryPath || ''),
+          slugEn: fav.monument?.slugEn,
+          slugAr: fav.monument?.slugAr,
         }));
 
         // Build favoriteIds map

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useParams } from '@/i18n/routing';
+import { useRouter } from '@/i18n/routing';
 import { Heart, MapPin, Calendar, Trash2, Search } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthContext';
 import { useFavorites } from '@/components/auth/FavoriteContext';
