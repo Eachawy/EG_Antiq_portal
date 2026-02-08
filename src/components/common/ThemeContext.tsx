@@ -16,9 +16,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         // Check if user has a saved preference
-        const checkTheme = localStorage.getItem('site-theme') as Theme
+        const checkTheme = localStorage.getItem('site-theme') as Theme;
         const savedTheme = checkTheme !== '' ? checkTheme : 'dark';;
-        setTheme(savedTheme);
+        if (savedTheme) {
+            setTheme(savedTheme);
+        }
+    }, []);
+
+    useEffect(() => {
+        // Check if user has a saved preference
+        const checkTheme = localStorage.getItem('site-theme') as Theme;
+        const savedTheme = checkTheme !== '' ? checkTheme : 'dark';;
         // Apply theme to document
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('site-theme', theme === '' ? savedTheme : theme);
