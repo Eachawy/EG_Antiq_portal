@@ -43,6 +43,21 @@ const parseYear = (dateStr?: string): number => {
     return isNaN(year) ? 0 : year;
 };
 
+
+// Helper to build full image URL
+const getImageUrl = (imagePath?: string): string => {
+    const fallback = 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400';
+    if (!imagePath) return fallback;
+    
+    // If already absolute URL, return as-is
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        return imagePath;
+    }
+    
+    // Prefix relative paths with API domain
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '') || 'https://api.kemetra.org';
+    return `${apiBaseUrl}${imagePath}`;
+};
 // Transform monument to site (memoized outside component)
 const transformMonumentToSite = (monument: Monument): Site => {
     const lat = parseFloat(monument.lat || monument.locationLat || '0');
@@ -66,8 +81,8 @@ const transformMonumentToSite = (monument: Monument): Site => {
             end: parseYear(monument.endDate),
         },
         description: monument.monumentBiographyEn || '',
-        thumbnailUrl: monument.image || 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400',
-        imageUrl: monument.image || 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400',
+        thumbnailUrl: getImageUrl(monument.image),
+        imageUrl: getImageUrl(monument.image),
     };
 };
 
