@@ -29,6 +29,8 @@ export interface ArchaeologicalSite {
   type: string;
   oldName?: string;
   otherName?: string;
+  slugEn?: string;
+  slugAr?: string;
 }
 
 /**
@@ -126,6 +128,8 @@ export function mapMonumentToSite(
     type: monumentTypeName,
     oldName: monument.oldName,
     otherName: monument.otherName,
+    slugEn: monument.slugEn,
+    slugAr: monument.slugAr,
   };
 }
 
