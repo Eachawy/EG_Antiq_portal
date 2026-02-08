@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-type Theme = 'dark' | 'light';
+type Theme = 'dark' | 'light' | '';
 
 interface ThemeContextType {
     theme: Theme;
@@ -12,20 +12,16 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-    const [theme, setTheme] = useState<Theme>('dark');
+    const [theme, setTheme] = useState<Theme>('');
 
     useEffect(() => {
         // Check if user has a saved preference
-        const savedTheme = localStorage.getItem('site-theme') as Theme;
-        if (savedTheme) {
-            setTheme(savedTheme);
-        }
-    }, []);
-
-    useEffect(() => {
+        const checkTheme = localStorage.getItem('site-theme') as Theme
+        const savedTheme = checkTheme !== '' ? checkTheme : 'dark';;
+        setTheme(savedTheme);
         // Apply theme to document
         document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('site-theme', theme);
+        localStorage.setItem('site-theme', theme === '' ? savedTheme : theme);
     }, [theme]);
 
     const toggleTheme = () => {
